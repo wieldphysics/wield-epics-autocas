@@ -1,5 +1,4 @@
 """
-TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
 
@@ -7,8 +6,8 @@ import declarative
 from declarative import bunch
 
 from . import reactor
-from . import cas
-from . import relay_values
+from . import pcaspy_backend
+#from . import relay_values
 
 
 class ShadowBunchN(bunch.ShadowBunch):
@@ -28,7 +27,7 @@ class ShadowBunchView(bunch.ShadowBunch):
     }
 
 class InstaCAS(
-        cas.CASCollector,
+        pcaspy_backend.CASCollector,
         declarative.OverridableObject
 ):
 
@@ -71,7 +70,7 @@ class InstaCAS(
     def run(self):
         #TODO make a db generator
         db = self.cas_db_generate()
-        with cas.CADriverServer(db, self.reactor):
+        with pcaspy_backend.CADriverServer(db, self.reactor):
             self.reactor.run_reactor()
 
     @declarative.dproperty
@@ -84,6 +83,7 @@ class InstaCAS(
         if isinstance(arg, ShadowBunchView):
             arg = arg.extractidx('new')
 
+        about = bunch.DeepBunchSingleAssign()
         full = bunch.DeepBunchSingleAssign()
         immed = bunch.DeepBunchSingleAssign()
         dicts = [full, immed, ]
@@ -91,16 +91,22 @@ class InstaCAS(
         #add in the argument one as the last
         if arg is not declarative.NOARG:
             dicts.append(arg)
-        return ShadowBunchN(dicts)
+        return ShadowBunchN(dicts, abdict = about)
 
 
 class CASUser(declarative.OverridableObject):
+    name_default = None
+
     @declarative.dproperty
     def parent(self, val):
         return val
 
     @declarative.dproperty
-    def name(self, val):
+    def name(self, val = None):
+        if val is None:
+            val = self.name_default
+        if val is None:
+            raise RuntimeError("Must specify object name")
         return val
 
     @declarative.dproperty
@@ -137,3 +143,35 @@ class CASUser(declarative.OverridableObject):
             prefix = self.prefix_full,
             **kwargs
         )
+
+dproperty = declarative.dproperty
+mproperty = declarative.mproperty
+__NOARG = declarative.utilities.unique_generator()
+
+def dproperty_ctree(func = None, default = __NOARG):
+    """
+    automatically grabs the value from the ctree to pass along. The function should do the string conversion and validation
+    """
+    def deferred(func):
+        if default is __NOARG:
+            def superfunc(self, val):
+                val = self.ctree.setdefault(
+                    func.__name__, val,
+                    about = func.__doc__,
+                )
+                return func(val)
+        else:
+            def superfunc(self, val = default):
+                val = self.ctree.setdefault(
+                    func.__name__, val,
+                    about = func.__doc__,
+                )
+                return func(val)
+        superfunc.__name__ = func.__name__
+        superfunc.__doc__  = func.__doc__
+        return declarative.dproperty(superfunc)
+    if func is None:
+        return deferred
+    else:
+        return deferred(func)
+

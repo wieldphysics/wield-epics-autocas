@@ -1,12 +1,12 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/YALL/YALL/controls/instacas/test.adl"
+	name="/home/mcculler/local/home_sync/projects/YALL/cas9epics/test2.adl"
 	version=030109
 }
 display {
 	object {
-		x=789
-		y=372
+		x=3388
+		y=262
 		width=400
 		height=400
 	}
@@ -95,7 +95,7 @@ display {
 		height=40
 	}
 	control {
-		chan="X1:TEST-VAL"
+		chan="X1:TST-TEST_VAL"
 		clr=14
 		bclr=4
 	}
@@ -112,22 +112,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="X1:TEST-VAL"
-}
-"text entry" {
-	object {
-		x=214
-		y=56
-		width=100
-		height=20
-	}
-	control {
-		chan="X1:TEST-VAL.hilim"
-		clr=14
-		bclr=4
-	}
-	limits {
-	}
+	textix="X1:TST-TEST_VAL"
 }
 meter {
 	object {
@@ -137,7 +122,7 @@ meter {
 		height=103
 	}
 	monitor {
-		chan="X1:TEST-VAL"
+		chan="X1:TST-TEST_VAL"
 		clr=14
 		bclr=4
 	}

@@ -10,9 +10,16 @@ from . import relay_values
 
 
 class CADriverServer(pcaspy.Driver):
-    def _put_cb_generator(self, channel):
+    def _put_cb_generator_immediate(self, channel):
         def put_cb(value):
             self.setParam(channel, value)
+            self.updatePVs()
+        return put_cb
+
+    def _put_cb_generator_deferred(self, channel):
+        def put_cb(value):
+            self.setParam(channel, value)
+            self.updatePVs()
         return put_cb
 
     def _put_elem_cb_generator(self, channel, elem):
@@ -27,6 +34,7 @@ class CADriverServer(pcaspy.Driver):
             self,
             db,
             reactor,
+            deferred_write_period = 1/4.
     ):
         self.db = db
         self.reactor = reactor
@@ -40,9 +48,20 @@ class CADriverServer(pcaspy.Driver):
         for channel, db_entry in self.db.items():
             rv = db_entry['rv']
             entry_use = {}
-            rv.register(
-                callback = self._put_cb_generator(channel)
-            )
+
+            if db_entry.get('immediate', True):
+                rv.register(
+                    callback = self._put_cb_generator_immediate(channel)
+                )
+            else:
+                if deferred_write_period is not None and deferred_write_period > 0:
+                    rv.register(
+                        callback = self._put_cb_generator_deferred(channel)
+                    )
+                else:
+                    rv.register(
+                        callback = self._put_cb_generator_immediate(channel)
+                    )
 
             #setup relays for any of the channel values to be inserted
             for elem in [
@@ -89,6 +108,13 @@ class CADriverServer(pcaspy.Driver):
             self.setParamInfo(channel, db_entry)
         self.updatePVs()
 
+        #the deferred writes will happen this often
+        if deferred_write_period is not None and deferred_write_period > 0:
+            self.reactor.enqueue_looping(
+                self.updatePVs,
+                period_s = deferred_write_period,
+            )
+
     def write(self, channel, value):
         # NOTE: for enum records the value here is the numeric value,
         # not the string.  setParam() expects the numeric value.
@@ -110,14 +136,22 @@ class CADriverServer(pcaspy.Driver):
         ):
             return False
 
-        rv = self.db[channel]['rv']
+        db = self.db[channel]
+        rv = db['rv']
+        mt_assign = db.get('mt_assign', False)
         try:
-            with self.reactor.task_lock:
+            if mt_assign:
                 rv.put(value)
+            else:
+                with self.reactor.task_lock:
+                    rv.put(value)
         except relay_values.RelayValueCoerced as E:
             value = E.preferred
-            with self.reactor.task_lock:
+            if mt_assign:
                 rv.put_valid(E.preferred)
+            else:
+                with self.reactor.task_lock:
+                    rv.put_valid(E.preferred)
             self.setParam(channel, value)
             self.updatePVs()
             return False
@@ -169,24 +203,25 @@ class CASCollector(declarative.OverridableObject):
     def cas_host(
             self,
             rv,
-            name     = None,
-            prefix   = None,
-            writable = None,
-            EDCU     = None,
-            type     = None,
-            count    = None,
-            enum     = None,
-            states   = None,
-            prec     = None,
-            unit     = None,
-            lolim    = None,
-            hilim    = None,
-            low      = None,
-            high     = None,
-            lolo     = None,
-            hihi     = None,
-            adel     = None,
-            mdel     = None,
+            name      = None,
+            prefix    = None,
+            writable  = None,
+            EDCU      = None,
+            type      = None,
+            count     = None,
+            enum      = None,
+            states    = None,
+            prec      = None,
+            unit      = None,
+            lolim     = None,
+            hilim     = None,
+            low       = None,
+            high      = None,
+            lolo      = None,
+            hihi      = None,
+            adel      = None,
+            mdel      = None,
+            mt_assign = None,
     ):
         self.rv_names[rv] = list(prefix) + [name]
 

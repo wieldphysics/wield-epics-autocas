@@ -1,14 +1,14 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/YALL/YALL/controls/instacas/test2.adl"
+	name="/home/mcculler/local/home_sync/projects/cas9epics/test/test_simple1.adl"
 	version=030109
 }
 display {
 	object {
-		x=3388
-		y=262
-		width=400
-		height=400
+		x=789
+		y=372
+		width=224
+		height=278
 	}
 	clr=14
 	bclr=4
@@ -89,13 +89,13 @@ display {
 }
 "text entry" {
 	object {
-		x=4
-		y=37
-		width=208
+		x=12
+		y=45
+		width=200
 		height=40
 	}
 	control {
-		chan="X1:TST-TEST_VAL"
+		chan="X1:TEST-VAL"
 		clr=14
 		bclr=4
 	}
@@ -104,28 +104,58 @@ display {
 }
 text {
 	object {
-		x=5
-		y=6
+		x=13
+		y=14
 		width=168
 		height=28
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="X1:TST-TEST_VAL"
+	textix="X1:TEST-VAL"
 }
 meter {
 	object {
-		x=68
-		y=123
-		width=172
-		height=103
+		x=12
+		y=85
+		width=200
+		height=120
 	}
 	monitor {
-		chan="X1:TST-TEST_VAL"
+		chan="X1:TEST-VAL"
 		clr=14
 		bclr=4
 	}
 	limits {
 	}
+}
+"message button" {
+	object {
+		x=12
+		y=206
+		width=100
+		height=38
+	}
+	control {
+		chan="X1:TEST-VAL"
+		clr=14
+		bclr=4
+	}
+	label="Set 50"
+	release_msg="50"
+}
+"message button" {
+	object {
+		x=112
+		y=206
+		width=100
+		height=38
+	}
+	control {
+		chan="X1:TEST-VAL"
+		clr=14
+		bclr=4
+	}
+	label="Set 0"
+	release_msg="0"
 }

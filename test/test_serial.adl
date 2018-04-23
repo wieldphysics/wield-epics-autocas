@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/YALL/YALL/controls/instacas/test_serial.adl"
+	name="/home/mcculler/local/home_sync/projects/YALL/cas9epics/test_serial.adl"
 	version=030109
 }
 display {

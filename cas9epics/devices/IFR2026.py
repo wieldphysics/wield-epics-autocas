@@ -3,22 +3,22 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 from __future__ import division, print_function, unicode_literals
 
-import declarative
+import cas9core
 
-from . import relay_values
-from . import instacas
+from .. import relay_values
+from .. import cas9core
 
 #from . import utilities
 
 
 class IFR2026Controls(
-    instacas.CASUser,
+    cas9core.CASUser,
 ):
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial(self, val):
         return val
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial_id_check(self):
         def action_sequence(cmd):
             print("START BLOCK 2026")
@@ -41,7 +41,7 @@ class IFR2026Controls(
         )
         return block
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def chnA(self):
         return IFR2026Channel(
             parent = self,
@@ -50,7 +50,7 @@ class IFR2026Controls(
             prefix = 'CLF2',
         )
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def chnB(self):
         return IFR2026Channel(
             parent = self,
@@ -61,19 +61,19 @@ class IFR2026Controls(
 
 
 class IFR2026Channel(
-    instacas.CASUser,
+    cas9core.CASUser,
 ):
     "Must be hosted by a IFR2026"
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial(self):
         return self.parent.serial
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def channel_name(self, val):
         return val
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial_set_chn(self):
         def action_sequence(cmd):
             #cmd.writeline('*IDN?')
@@ -94,7 +94,7 @@ class IFR2026Channel(
         )
         return block
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def rf_frequency_set(self):
         default = self.ctree.setdefault('frequency_set', -1)
         rv = relay_values.RelayValueFloat(default)
@@ -111,7 +111,7 @@ class IFR2026Channel(
         )
         return rv
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial_freq_set(self):
         def action_sequence(cmd):
             #cmd.writeline('*IDN?')
@@ -131,9 +131,9 @@ class IFR2026Channel(
         self.serial.block_chain(block, self.serial_freq_RB)
         return block
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def rv_frequency_RB(self):
-        default = self.ctree.setdefault('frequency_RB', -1)
+        default = self.ctree.setdefault('frequency_RB', -1, about = "frequency readback default (used when value unavailable)")
         rv = relay_values.RelayValueFloat(default)
         self.cas_host(
             rv,
@@ -142,7 +142,7 @@ class IFR2026Channel(
         )
         return rv
 
-    @declarative.dproperty
+    @cas9core.dproperty
     def serial_freq_RB(self):
         def action_sequence(cmd):
             print("FREQ RB")

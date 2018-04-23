@@ -2,20 +2,13 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
-from YALL.controls.instacas import reactor
-from YALL.controls.instacas import cas
-from YALL.controls.instacas import instacas
+import cas9epics
 import declarative
 
-from YALL.controls.instacas.relay_values import (
-    RelayValueFloat, RelayValueCoerced, RelayValueRejected
-)
-
-
-class RVTester(instacas.CASUser):
+class RVTester(cas9epics.CASUser):
     @declarative.dproperty
     def rv_test(self):
-        rv = RelayValueFloat(0)
+        rv = cas9epics.RelayValueFloat(0)
         self.cas_host(
             rv, 'VAL',
             unit  = 'seconds',
@@ -29,26 +22,43 @@ class RVTester(instacas.CASUser):
             hilim = self.rv_test_hi,
         )
         def cb(value):
-            print("RV_TEST: ", value)
+            print("RV_TEST({0}): ".format(self.name), value)
         rv.register(callback = cb)
         return rv
 
     @declarative.dproperty
     def rv_test_hi(self):
-        return RelayValueFloat(10)
+        return cas9epics.RelayValueFloat(10)
+
+    task_period_s = 1/8.
+
+    @declarative.dproperty
+    def my_action(self):
+        def task():
+            if self.rv_test.value >= 100:
+                self.rv_test.value = 0
+                self.rv_test_hi.value += 1
+            else:
+                self.rv_test.value += 1
+        self.reactor.enqueue_looping(task, period_s = self.task_period_s)
+        #return the task in case we want to tell the reactor to stop later
+        return task
 
 
 if __name__ == "__main__":
-    root = instacas.InstaCAS()
+    root = cas9epics.InstaCAS()
     test = RVTester(
         name = 'TEST',
         parent = root,
     )
 
-    print(root.rv_names)
-    print(root.rv_db)
-    print(root.cas_db_generate())
+    test2 = RVTester(
+        name = 'TEST2',
+        parent = root,
+        task_period_s = 1,
+    )
 
     test.rv_test.value = 10
     test.rv_test_hi.value = 100
+    test2.rv_test_hi.value = 25
     root.run()

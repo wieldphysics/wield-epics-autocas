@@ -2,16 +2,16 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
-from YALL.controls.instacas import reactor
-from YALL.controls.instacas import cas
-from YALL.controls.instacas import instacas
+from cas9epics import reactor
+from cas9epics import cas
+from cas9epics import instacas
 import declarative
 
-from YALL.controls.instacas.relay_values import (
+from cas9epics.relay_values import (
     RelayValueFloat, RelayValueCoerced, RelayValueRejected
 )
 
-from YALL.controls.instacas import serial
+from cas9epics import serial
 
 
 if __name__ == "__main__":

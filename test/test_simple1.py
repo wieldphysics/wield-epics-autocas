@@ -2,17 +2,10 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
-from YALL.controls.instacas import reactor
-from YALL.controls.instacas import cas
-import pcaspy
-import pcaspy.tools
+import cas9epics
 
-from YALL.controls.instacas.relay_values import (
-    RelayValueFloat, RelayValueCoerced, RelayValueRejected
-)
-
-rv_test = RelayValueFloat(0)
-rv_test_hi = RelayValueFloat(10)
+rv_test = cas9epics.RelayValueFloat(0)
+rv_test_hi = cas9epics.RelayValueFloat(10)
 
 db = {
     'X1:TEST-VAL': {
@@ -36,9 +29,16 @@ def cb(value):
 rv_test.register(callback = cb)
 
 if __name__ == "__main__":
-    react = reactor.Reactor()
+    reactor = cas9epics.Reactor()
 
-    with cas.CADriverServer(db, react):
+    with cas9epics.CADriverServer(db, reactor):
         rv_test.value = 10
         rv_test_hi.value = 100
-        react.run_reactor()
+        while True:
+            reactor.flush(modulo_s = 1/8.)
+
+            if rv_test.value >= 100:
+                rv_test.value = 0
+                rv_test_hi.value += 1
+            else:
+                rv_test.value += 1

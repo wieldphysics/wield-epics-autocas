@@ -99,7 +99,23 @@ class Reactor(object):
         print("Reactor canary revived!")
         return
 
-    def flush(self, to_time = None):
+    def flush(
+            self,
+            for_s = None,
+            modulo_s = None,
+            mtime_to = None,
+    ):
+        if for_s is not None:
+            if mtime_to is None:
+                mtime_to = time.time()
+            mtime_to += for_s
+
+        if modulo_s is not None:
+            if mtime_to is None:
+                mtime_to = time.time()
+            mtime_to = (mtime_to + modulo_s - mtime_to % modulo_s)
+        #if mtime_to is None at this point, then it means to flush and quit immediately
+
         self._queue_lock.acquire()
         self.task_lock.release()
         self._current_reactor_thread = threading.current_thread()
@@ -118,11 +134,11 @@ class Reactor(object):
                         try:
                             item = self._task_queue.get(False)
                         except queue.Empty:
-                            if to_time is None or mtime >= to_time:
+                            if mtime_to is None or mtime >= mtime_to:
                                 break
                             try:
                                 self._queue_lock.release()
-                                item = self._task_queue.get(True, min(to_time - mtime, ntime - mtime, self.max_wait_s))
+                                item = self._task_queue.get(True, min(mtime_to - mtime, ntime - mtime, self.max_wait_s))
                             except queue.Empty:
                                 continue
                             finally:
@@ -131,11 +147,11 @@ class Reactor(object):
                     try:
                         item = self._task_queue.get(False)
                     except queue.Empty:
-                        if to_time is None or mtime >= to_time:
+                        if mtime_to is None or mtime >= mtime_to:
                             break
                         try:
                             self._queue_lock.release()
-                            item = self._task_queue.get(True, min(to_time - mtime, self.max_wait_s))
+                            item = self._task_queue.get(True, min(mtime_to - mtime, self.max_wait_s))
                         except queue.Empty:
                             continue
                         finally:
@@ -229,7 +245,7 @@ class Reactor(object):
         self._task_send_num += 1
         if (self._task_send_num % self.rate_latency_check) == 0:
             my_time = time.time()
-            self._send_task(lambda : self._check_latency(my_time))
+            self.send_task(lambda : self._check_latency(my_time))
         _queue = self._task_queue
         if _queue is None:
             print(("Send occured after queue death! {0}".format(item)))
@@ -336,7 +352,7 @@ class Reactor(object):
         if modulo_s is not None:
             if mtime is None:
                 mtime = time.time()
-            mtime = (mtime - mtime % modulo_s)
+            mtime = (mtime + modulo_s - mtime % modulo_s)
         #if mtime is None at this point, then it means to not enqueue or to cancel queuing if force_requeue is set
 
         qdat_prev = self._task_history.get(key, None)

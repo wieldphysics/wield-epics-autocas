@@ -6,7 +6,8 @@ from __future__ import division, print_function, unicode_literals
 import declarative
 
 from . import relay_values
-from . import instacas
+from . import cas9core
+from .. import error
 
 #from . import utilities
 
@@ -16,7 +17,7 @@ class SerialError(Exception):
 
 
 class SerialConnection(
-    instacas.CASUser,
+    cas9core.CASUser,
 ):
     @declarative.dproperty
     def rb_connected(self):
@@ -49,14 +50,10 @@ class SerialConnection(
         return rb
 
     @declarative.dproperty
-    def rv_error(self):
-        rv = relay_values.RelayValueString('')
-        self.cas_host(
-            rv,
-            name = 'ERROR',
-            writable = False,
+    def error(self):
+        return error.RVError(
+            parent = self,
         )
-        return rv
 
     @declarative.dproperty
     def _block_data(self):
@@ -82,6 +79,11 @@ class SerialConnection(
         self._blocks_queued.append(blockfunc)
 
         self.reactor.enqueue_limited(self.run, future_s = .1, limit_s = 1)
+        return
+
+    def queue_clear(self):
+        self._blocks_queued[:] = []
+        return
 
     def block_add(
             self,
