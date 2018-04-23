@@ -1,0 +1,17 @@
+
+add warning and error flag with a warning clear button. Warnings indicate to check the system logs. Make an MEDM button to grab the log from systemctl on the correct host
+
+have a ezca_host call to connect through ezca with SPM/connection monitoring
+
+logging variables into json-gz with adjustable rate and rollover rate
+
+setpoint monitoring to go with the logging
+
+
+startup command-line interface (use declarative)
+export settings and full-settings. Provide a test interface to see if injected settings are "full"
+
+DONE:
+improve reactor
+
+
