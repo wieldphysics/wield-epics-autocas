@@ -19,7 +19,8 @@ class CASRelay(object):
     """
     def db_defaults(self):
         return {
-            'rv' : self,
+            'rv' :   self,
+            'burt' : True,
         }
 
 class CASRelayBool(CASRelay):
@@ -28,9 +29,10 @@ class CASRelayBool(CASRelay):
     """
     def db_defaults(self):
         return {
-            'type':  'enum',
-            'rv' :   self,
+            'type' :'enum',
+            'rv'   : self,
             "enums": ['False', 'True'],
+            'burt' : True,
         }
 
 class CASRelayBoolRO(CASRelay):
@@ -39,10 +41,11 @@ class CASRelayBoolRO(CASRelay):
     """
     def db_defaults(self):
         return {
-            'type':  'enum',
-            'rv' :   self,
-            "enums": ['False', 'True'],
+            'type':      'enum',
+            'rv' :       self,
+            "enums":     ['False', 'True'],
             "writable" : False,
+            'burt' :     True,
         }
 
 class RelayValueFloat(CASRelay, RelayValueDecl):
@@ -61,6 +64,7 @@ class RelayValueFloat(CASRelay, RelayValueDecl):
         return {
             'type': 'float',
             'rv' :  self,
+            'burt' : True,
         }
 
 
@@ -78,6 +82,7 @@ class RelayValueInt(CASRelay, RelayValueDecl):
         return {
             'type': 'int',
             'rv' :  self,
+            'burt' : True,
         }
 
 
@@ -95,6 +100,7 @@ class RelayValueString(CASRelay, RelayValueDecl):
         return {
             'type': 'string',
             'rv' :  self,
+            'burt' : True,
         }
 
 class RelayValueLongString(CASRelay, RelayValueDecl):
@@ -110,9 +116,10 @@ class RelayValueLongString(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
-            'type': 'char',
-            'rv' :  self,
+            'type':   'char',
+            'rv' :    self,
             'count' : self.max_length,
+            'burt' :  True,
         }
 
 
@@ -135,6 +142,7 @@ class RelayValueWaveform(CASRelay, RelayValueDecl):
             'type':   'float',
             'rv' :    self,
             'count' : self.max_length,
+            'burt' :  False,
         }
 
 class RelayValueEnum(CASRelay, RelayValueDecl):
@@ -205,6 +213,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
             'type':  'enum',
             'rv' :   self,
             "enums": states,
+            "burt" : True,
         }
 
 

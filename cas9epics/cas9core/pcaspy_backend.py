@@ -210,6 +210,7 @@ class CASCollector(declarative.OverridableObject):
             conf_name = None,
             writable  = None,
             EDCU      = None,
+            burt      = None,
             type      = None,
             count     = None,
             enum      = None,
@@ -265,6 +266,7 @@ class CASCollector(declarative.OverridableObject):
             hihi     = hihi,
             adel     = adel,
             mdel     = mdel,
+            burt     = burt,
         )
         for k, v in db_inj.items():
             if v is not None:
@@ -284,16 +286,19 @@ class CASCollector(declarative.OverridableObject):
                         high  = float,
                         lolo  = float,
                         hihi  = float,
+                        burt  = burt,
                     )
                 else:
                     ctdict = dict()
             elif dtype in ['enum']:
                 ctdict = dict(
                     EDCU  = bool,
+                    burt  = burt,
                 )
             elif dtype in ['char', 'string']:
                 ctdict = dict(
                     EDCU  = bool,
+                    burt  = burt,
                 )
             for pname, tfunc in ctdict.items():
                 cval = db.get(pname, None)
