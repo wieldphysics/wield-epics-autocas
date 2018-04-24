@@ -12,13 +12,27 @@ except ImportError:
 import sys
 
 from declarative.callbacks import callbackmethod
-from YALL.utilities.priority_queue.heap_priority_queue import HeapPriorityQueue
+from ..utilities.priority_queue.heap_priority_queue import HeapPriorityQueue
 
 import collections
 
 TThread = threading.Thread
 
 _EXIT = "Finish The Reactor"
+
+class QueueItem(collections.namedtuple('QueueTuple', ['run_at', 'item'])):
+    def __lt__(self, other):
+        return self[0] < other[0]
+    def __gt__(self, other):
+        return self[0] > other[0]
+    def __eq__(self, other):
+        return self[0] == other[0]
+    def __le__(self, other):
+        return self[0] <= other[0]
+    def __ge__(self, other):
+        return self[0] >= other[0]
+    def __ne__(self, other):
+        return self[0] != other[0]
 
 
 class Reactor(object):
@@ -253,7 +267,7 @@ class Reactor(object):
         if run_at is None:
             _queue.put(item)
         else:
-            self._pqueue.push((run_at, item))
+            self._pqueue.push(QueueItem(run_at, item))
             #put a do nother item in the main queue to force a wakeup if nothing is currently in it
             #TODO see if this can be avoided if an item is already in the queue (race condition?)
             _queue.put(lambda : None)
@@ -264,7 +278,7 @@ class Reactor(object):
             self.send_task(lambda : cb(*args, **kwargs))
         return deferred
 
-    def enqueue_limited(
+    def enqueue(
             self,
             command,
             key           = None,
@@ -387,7 +401,7 @@ class Reactor(object):
                         fraction = (mtime_next - mtime_current) / loop_settings.period_s
                         if fraction < loop_settings.skip_fraction:
                             mtime_next += loop_settings.period_s
-                            skip_cb = loop_settings
+                            skip_cb = loop_settings.skip_cb
                             if skip_cb is not None:
                                 skip_cb()
                         self._enqueue(

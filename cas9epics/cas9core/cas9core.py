@@ -67,11 +67,38 @@ class InstaCAS(
         chn = chn.upper()
         return chn
 
-    def run(self):
-        #TODO make a db generator
-        db = self.cas_db_generate()
-        with pcaspy_backend.CADriverServer(db, self.reactor):
-            self.reactor.run_reactor()
+    def start(self):
+        if self._db_generated is None:
+            self._db_generated = self.cas_db_generate()
+            self._cas_generated = pcaspy_backend.CADriverServer(self._db_generated, self.reactor)
+            self._cas_generated.start()
+            return True
+        return False
+
+    _db_generated = None
+    _cas_generated = None
+    def run(self, for_s = None, modulo_s = None, mtime_to = None):
+        #TODO decide if arguments should change how stopping is done on errors
+        self.start()
+
+        if for_s is None and modulo_s is None and mtime_to is None:
+            try:
+                self.reactor.run_reactor()
+            finally:
+                self.stop()
+        else:
+            self.reactor.flush(
+                for_s    = for_s,
+                modulo_s = modulo_s,
+                mtime_to = mtime_to,
+            )
+        return
+
+    def stop(self):
+        if self._db_generated is not None:
+            self._cas_generated.stop()
+            self._db_generated = None
+            self._cas_generated = None
 
     @declarative.dproperty
     def root(self):

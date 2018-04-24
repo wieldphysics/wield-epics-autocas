@@ -6,7 +6,6 @@ import declarative
 import contextlib
 
 from . import cas9core
-from . import relay_values
 
 
 class RVError(cas9core.CASUser):
@@ -14,7 +13,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_str(self):
-        rv = relay_values.RelayValueString('')
+        rv = cas9core.RelayValueString('')
         self.cas_host(
             rv, 'STR',
             unit  = 'message',
@@ -24,7 +23,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_level(self):
-        rv = relay_values.RelayValueInt(0)
+        rv = cas9core.RelayValueInt(0)
         self.cas_host(
             rv, 'LEVEL',
             unit  = 'level',
@@ -34,7 +33,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_thresh(self):
-        rv = relay_values.RelayValueInt(10)
+        rv = cas9core.RelayValueInt(10)
         self.cas_host(
             rv, 'THR',
             unit  = 'level',
