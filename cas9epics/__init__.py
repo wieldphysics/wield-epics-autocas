@@ -6,6 +6,7 @@ from .cas9core import (
     Reactor,
     CASUser,
     InstaCAS,
+    CAS9CmdLine,
     CADriverServer,
     RelayValueFloat,
     RelayValueInt,

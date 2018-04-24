@@ -10,29 +10,19 @@ try:
 except ImportError:
     import Queue as queue
 import sys
+import collections
 
 from declarative.callbacks import callbackmethod
-from ..utilities.priority_queue.heap_priority_queue import HeapPriorityQueue
+from ..utilities.priority_queue import HeapPriorityQueue
 
-import collections
+
+from . import interrupt_delay
 
 TThread = threading.Thread
 
-_EXIT = "Finish The Reactor"
+keyboard_interrupt_delay = interrupt_delay.DelayedKeyboardInterrupt()
 
-class QueueItem(collections.namedtuple('QueueTuple', ['run_at', 'item'])):
-    def __lt__(self, other):
-        return self[0] < other[0]
-    def __gt__(self, other):
-        return self[0] > other[0]
-    def __eq__(self, other):
-        return self[0] == other[0]
-    def __le__(self, other):
-        return self[0] <= other[0]
-    def __ge__(self, other):
-        return self[0] >= other[0]
-    def __ne__(self, other):
-        return self[0] != other[0]
+_EXIT = "Finish The Reactor"
 
 
 class Reactor(object):
@@ -174,7 +164,7 @@ class Reactor(object):
                     break
                 else:
                     #print("FLUSH: ", item)
-                    with self.task_lock:
+                    with self.task_lock, keyboard_interrupt_delay:
                         item()
         finally:
             self._current_reactor_thread = None
@@ -225,7 +215,7 @@ class Reactor(object):
                 if item is _EXIT:
                     break
                 else:
-                    with self.task_lock:
+                    with self.task_lock, keyboard_interrupt_delay:
                         item()
             try:
                 #slurp up remaining tasks
@@ -234,7 +224,8 @@ class Reactor(object):
                     self._task_num = task_num
 
                     item = self._task_queue.get_nowait()
-                    item()
+                    with self.task_lock, keyboard_interrupt_delay:
+                        item()
             except queue.Empty:
                 pass
         finally:
@@ -511,6 +502,7 @@ class Reactor(object):
             else:
                 ev_did_run = threading.Event()
                 retval = []
+
                 def reactor_run():
                     try:
                         ret = func(*args, **kwargs)
@@ -521,6 +513,7 @@ class Reactor(object):
                     finally:
                         ev_did_run.set()
                     return
+
                 print("Shifting call: {0} to reactor thread and waiting result")
                 self.send_task(reactor_run)
                 ev_did_run.wait()
@@ -535,3 +528,21 @@ class Reactor(object):
     def latency_cb(self, latency_s, latency_items):
         return
 
+
+class QueueItem(collections.namedtuple('QueueTuple', ['run_at', 'item'])):
+    """
+    Need a special container for the (mtime_run, item) pairs used in the scheduler.
+    The heap queue sometimes sorts on the second item and function callbacks cannot be sorted.
+    """
+    def __lt__(self, other):
+        return self[0] < other[0]
+    def __gt__(self, other):
+        return self[0] > other[0]
+    def __eq__(self, other):
+        return self[0] == other[0]
+    def __le__(self, other):
+        return self[0] <= other[0]
+    def __ge__(self, other):
+        return self[0] >= other[0]
+    def __ne__(self, other):
+        return self[0] != other[0]

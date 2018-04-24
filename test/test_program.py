@@ -2,6 +2,7 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
+import sys
 import cas9epics
 import declarative
 from cas9epics.utilities import pprint
@@ -24,8 +25,10 @@ class RVTester(cas9epics.CASUser):
             lolim = 1,
             hilim = self.rv_test_hi,
         )
+
         def cb(value):
             print("RV_TEST({0}): ".format(self.name), value)
+
         rv.register(callback = cb)
         return rv
 
@@ -48,22 +51,26 @@ class RVTester(cas9epics.CASUser):
         return task
 
 
+class Testers(cas9epics.CASUser):
+    @declarative.dproperty
+    def test(self):
+        return RVTester(
+            name = 'TEST',
+            parent = self,
+        )
+
+    @declarative.dproperty
+    def test2(self):
+        return RVTester(
+            name = 'TEST2',
+            parent = self,
+            task_period_s = 1,
+        )
+
+class Program(cas9epics.CAS9CmdLine):
+    t_task = Testers
+
+
 if __name__ == "__main__":
-    root = cas9epics.InstaCAS()
-    test = RVTester(
-        name = 'TEST',
-        parent = root,
-    )
+    Program.__cls_argparse__()
 
-    test2 = RVTester(
-        name = 'TEST2',
-        parent = root,
-        task_period_s = 1,
-    )
-
-    reloader = RestartOnEdit(
-        name = 'RESTARTER',
-        parent = root,
-    )
-
-    root.run()

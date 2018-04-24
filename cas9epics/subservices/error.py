@@ -41,9 +41,9 @@ class RVError(cas9core.CASUser):
         )
         return rv
 
-    _holding = False
+    _holding    = False
     _level_temp = None
-    _str_temp = None
+    _str_temp   = None
 
     def __call__(self, level, msg):
         if self._holding:

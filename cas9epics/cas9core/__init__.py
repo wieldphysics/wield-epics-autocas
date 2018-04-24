@@ -12,6 +12,10 @@ from .cas9core import (
     dproperty_ctree,
 )
 
+from .cas9program import (
+    CAS9CmdLine,
+)
+
 from .pcaspy_backend import (
     CADriverServer,
 )

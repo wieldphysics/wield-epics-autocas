@@ -1,0 +1,28 @@
+IFO: X1
+SITE: MIT
+subsystem_prefix: TEST
+task:
+  TEST:
+    PVs:
+      VAL:
+        EDCU: null
+        prefix: [TEST, XXX]
+        unit: seconds
+        unused: 20
+    prefix: [TEST, TEST]
+  TEST2:
+    unused: 20
+    PVs:
+      VAL:
+        EDCU: null
+        high: 10
+        hihi: 100
+        lolim: 1
+        lolo: -1
+        low: 0
+        prec: 4
+        prefix: [TEST, TEST2]
+        unit: seconds
+    prefix: [TEST, TEST2]
+  prefix: [TEST]
+

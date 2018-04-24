@@ -207,6 +207,7 @@ class CASCollector(declarative.OverridableObject):
             rv,
             name      = None,
             prefix    = None,
+            conf_name = None,
             writable  = None,
             EDCU      = None,
             type      = None,
@@ -224,7 +225,21 @@ class CASCollector(declarative.OverridableObject):
             adel      = None,
             mdel      = None,
             mt_assign = None,
+            ctree     = None,
     ):
+        if conf_name is None:
+            conf_name = name
+
+        if conf_name is None:
+            raise RuntimeError("Must specify either conf_name or name")
+
+        if ctree is not None:
+            cdb = ctree[conf_name]
+        else:
+            cdb = None
+
+        if cdb is not None:
+            prefix = cdb.setdefault('prefix', prefix, about = "Prefix to construct the PV channel name")
         self.rv_names[rv] = list(prefix) + [name]
 
         if isinstance(rv, relay_values.CASRelay):
@@ -254,6 +269,28 @@ class CASCollector(declarative.OverridableObject):
         for k, v in db_inj.items():
             if v is not None:
                 db[k] = v
+
+        if cdb is not None:
+            for pname, tfunc in dict(
+                EDCU  = bool,
+                prec  = int,
+                unit  = str,
+                lolim = float,
+                hilim = float,
+                low   = float,
+                high  = float,
+                lolo  = float,
+                hihi  = float,
+            ).items():
+                cval = db.get(pname, None)
+                #can't configure ones that are live
+                if isinstance(cval, relay_values.RelayValueDecl):
+                    continue
+                cval2 = cdb.setdefault(pname, cval)
+
+                #actually insert the parameter value
+                if cval2 is not None and cval2 != cval:
+                    db[pname] = tfunc(cval2)
 
         #if 'states' in db:
         #    states = db['states']

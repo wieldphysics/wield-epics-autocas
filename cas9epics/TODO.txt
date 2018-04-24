@@ -15,3 +15,5 @@ DONE:
 improve reactor
 
 
+
+warn about keyboard interrupt capture, but explain how it makes the program "better" in almost all circumstances.

@@ -4,11 +4,11 @@ from __future__ import division, print_function, unicode_literals
 
 import sys
 import os
+from os import path
 #TODO import this later or make it failsafe
 import inotify_simple
 
 from .. import cas9core
-from ..utilities.modlist import modlist
 
 
 class RestartOnEdit(cas9core.CASUser):
@@ -45,4 +45,26 @@ class RestartOnEdit(cas9core.CASUser):
             elif self.policy == 'EXIT':
                 print("Exiting Process")
                 sys.exit(0)
+
+
+def modlist(include_pyc = True):
+    pyname = 'python{v.major}.{v.minor}'.format(v = sys.version_info)
+    mods = []
+    for modname, mod in sys.modules.items():
+        if mod is not None:
+            try:
+                fname = mod.__file__
+            except AttributeError:
+                pass
+            else:
+                pbase, pext = path.splitext(fname)
+                if pext in ['.py', '.pyc']:
+                    fnamepy = pbase + '.py'
+                    fnamepyc = pbase + '.py'
+
+                    if fname.find(pyname) == -1 and fname.find('site-packages') == -1:
+                        if include_pyc:
+                            mods.append(fnamepyc)
+                        mods.append(fnamepy)
+    return mods
 
