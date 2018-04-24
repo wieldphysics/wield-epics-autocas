@@ -271,17 +271,31 @@ class CASCollector(declarative.OverridableObject):
                 db[k] = v
 
         if cdb is not None:
-            for pname, tfunc in dict(
-                EDCU  = bool,
-                prec  = int,
-                unit  = str,
-                lolim = float,
-                hilim = float,
-                low   = float,
-                high  = float,
-                lolo  = float,
-                hihi  = float,
-            ).items():
+            dtype = db['type']
+            if dtype in ['float', 'int']:
+                if db.get('count', None) is None:
+                    ctdict = dict(
+                        EDCU  = bool,
+                        prec  = int,
+                        unit  = str,
+                        lolim = float,
+                        hilim = float,
+                        low   = float,
+                        high  = float,
+                        lolo  = float,
+                        hihi  = float,
+                    )
+                else:
+                    ctdict = dict()
+            elif dtype in ['enum']:
+                ctdict = dict(
+                    EDCU  = bool,
+                )
+            elif dtype in ['char', 'string']:
+                ctdict = dict(
+                    EDCU  = bool,
+                )
+            for pname, tfunc in ctdict.items():
                 cval = db.get(pname, None)
                 #can't configure ones that are live
                 if isinstance(cval, relay_values.RelayValueDecl):
