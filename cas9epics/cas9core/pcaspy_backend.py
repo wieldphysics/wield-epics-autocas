@@ -167,6 +167,8 @@ class CADriverServer(pcaspy.Driver):
 
     def stop(self):
         self.cas_thread.stop()
+        #join needed to prevent a sigabrt in python3
+        self.cas_thread.join()
 
     def __enter__(self):
         self.start()
