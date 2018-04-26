@@ -7,6 +7,9 @@ from .reactor import Reactor
 from .cas9core import (
     CASUser,
     InstaCAS,
+)
+
+from .cas9declarative import (
     dproperty,
     mproperty,
     dproperty_ctree,
@@ -14,6 +17,7 @@ from .cas9core import (
 
 from .cas9program import (
     CAS9CmdLine,
+    CAS9Module,
 )
 
 from .pcaspy_backend import (

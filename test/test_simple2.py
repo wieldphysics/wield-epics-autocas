@@ -3,10 +3,10 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 from __future__ import division, print_function, unicode_literals
 import cas9epics
-import declarative
+
 
 class RVTester(cas9epics.CASUser):
-    @declarative.dproperty
+    @cas9epics.dproperty
     def rv_test(self):
         rv = cas9epics.RelayValueFloat(0)
         self.cas_host(
@@ -26,13 +26,13 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback = cb)
         return rv
 
-    @declarative.dproperty
+    @cas9epics.dproperty
     def rv_test_hi(self):
         return cas9epics.RelayValueFloat(10)
 
     task_period_s = 1/8.
 
-    @declarative.dproperty
+    @cas9epics.dproperty
     def my_action(self):
         def task():
             if self.rv_test.value >= 100:

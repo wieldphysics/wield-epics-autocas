@@ -7,45 +7,45 @@ from declarative import bunch
 
 from . import reactor
 from . import pcaspy_backend
-#from . import relay_values
+from . import cas9declarative
 
-
-class ShadowBunchN(bunch.ShadowBunch):
-    _names = {
-        'current'  :  0,
-        'names'    :  1,
-        'epics'    :  2,
-        'config'   :  3,
-    }
-
-class ShadowBunchNPull(ShadowBunchN):
-    """
-    ShadownBunch for ctree that also stores every access to determine what was stored. For diffs and config pruning
-    """
-    _pull_full = True
 
 class InstaCAS(
-        pcaspy_backend.CASCollector,
-        declarative.OverridableObject
+    pcaspy_backend.CASCollector,
+    declarative.OverridableObject
 ):
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def reactor(self):
         return reactor.Reactor()
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
+    def autosave(self):
+        from ..subservices import autosave
+        return autosave.AutoSave(
+            parent = self,
+            name = 'burt',
+        )
+
+    @cas9declarative.dproperty
     def prefix_base(self, val = None):
         if val is None:
             val = 'X1'
         return val
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def prefix_subsystem(self, val = None):
         if val is None:
             val = 'TEST'
         return val
 
-    @declarative.dproperty
+    @cas9declarative.dproperty_ctree(default = None)
+    def module_name(self, val):
+        if val is None:
+            val = '{0}{1}unnamed'.format(self.prefix_base, self.prefix_subsystem).lower()
+        return val
+
+    @cas9declarative.dproperty
     def prefix_full(self):
         if self.prefix_subsystem is None:
             val = ()
@@ -61,7 +61,11 @@ class InstaCAS(
     def start(self):
         if self._db_generated is None:
             self._db_generated = self.cas_db_generate()
-            self._cas_generated = pcaspy_backend.CADriverServer(self._db_generated, self.reactor)
+            self._cas_generated = pcaspy_backend.CADriverServer(
+                self._db_generated,
+                self.reactor,
+                saver = self.autosave,
+            )
             self._cas_generated.start()
             return True
         return False
@@ -91,12 +95,12 @@ class InstaCAS(
             self._db_generated = None
             self._cas_generated = None
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def root(self):
         return self
 
-    @declarative.mproperty
-    def ctree(self, arg = declarative.NOARG):
+    @cas9declarative.mproperty
+    def ctree(self, arg = cas9declarative.NOARG):
         about   = bunch.DeepBunchSingleAssign()
         current = bunch.DeepBunchSingleAssign()
         names   = bunch.DeepBunchSingleAssign()
@@ -104,13 +108,13 @@ class InstaCAS(
         dicts = [current, names, epics]
 
         #add in the configuration argument one as the last (it is never assigned into)
-        if arg is not declarative.NOARG:
+        if arg is not cas9declarative.NOARG:
             dicts.append(arg)
 
         if not self._ctree_pulling:
-            return ShadowBunchN(dicts, abdict = about)
+            return cas9declarative.ShadowBunchN(dicts, abdict = about)
         else:
-            return ShadowBunchNPull(dicts, abdict = about)
+            return cas9declarative.ShadowBunchNPull(dicts, abdict = about)
 
     #indicate that the configs should also be pulled. Useful for some ctree inspections
     _ctree_pulling = False
@@ -119,11 +123,11 @@ class InstaCAS(
 class CASUser(declarative.OverridableObject):
     name_default = None
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def parent(self, val):
         return val
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def name(self, val = None):
         if val is None:
             val = self.name_default
@@ -131,30 +135,39 @@ class CASUser(declarative.OverridableObject):
             raise RuntimeError("Must specify object name")
         return val
 
-    @declarative.dproperty
-    def prefix(self, val = declarative.NOARG):
-        if val is declarative.NOARG:
+    @cas9declarative.dproperty
+    def prefix(self, val = cas9declarative.NOARG):
+        if val is cas9declarative.NOARG:
             val = self.name
         return val
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def prefix_full(self):
         if self.prefix is None:
             default = tuple(self.parent.prefix_full)
         else:
             default = tuple(self.parent.prefix_full) + (self.prefix,)
-        val = self.ctree.useidx('names').setdefault('prefix', default)
+        val = self.ctree.useidx('names').setdefault(
+            'prefix',
+            default,
+            about = ("""
+                configtype : nested_prefix
+                List of strings which chain to construct channel names of child objects.
+                If parent prefixes are changed, then child prefixes will change unless
+                they are also specified in the configuration
+            """)
+        )
         return val
 
-    @declarative.dproperty
+    @cas9declarative.dproperty
     def root(self):
         return self.parent.root
 
-    @declarative.mproperty
+    @cas9declarative.mproperty
     def reactor(self):
         return self.root.reactor
 
-    @declarative.mproperty
+    @cas9declarative.mproperty
     def ctree(self):
         return self.parent.ctree[self.name]
 
@@ -166,35 +179,4 @@ class CASUser(declarative.OverridableObject):
             ctree  = self.ctree['PVs'].useidx('epics'),
             **kwargs
         )
-
-dproperty = declarative.dproperty
-mproperty = declarative.mproperty
-__NOARG = declarative.utilities.unique_generator()
-
-def dproperty_ctree(func = None, default = __NOARG):
-    """
-    automatically grabs the value from the ctree to pass along. The function should do the string conversion and validation
-    """
-    def deferred(func):
-        if default is __NOARG:
-            def superfunc(self, val):
-                val = self.ctree.setdefault(
-                    func.__name__, val,
-                    about = func.__doc__,
-                )
-                return func(val)
-        else:
-            def superfunc(self, val = default):
-                val = self.ctree.setdefault(
-                    func.__name__, val,
-                    about = func.__doc__,
-                )
-                return func(val)
-        superfunc.__name__ = func.__name__
-        superfunc.__doc__  = func.__doc__
-        return declarative.dproperty(superfunc)
-    if func is None:
-        return deferred
-    else:
-        return deferred(func)
 

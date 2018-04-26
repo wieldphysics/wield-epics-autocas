@@ -1,0 +1,65 @@
+make a systemd service maker. Have it scan imported modules to assemble ENV. Make it check if any modules are in /home/user/.local and name the service from this. Check if all modules are in an approved location list. If not then name service file appropriately and warn.
+
+change mtime's to ptime's for POSIX time
+
+split subcommands
+  run
+  config
+    print
+    diff
+    unused
+  list
+    PVs-hosted (list hosted PVs)
+    PVs-external (list connected PVs)
+  epics
+    cas-to-ioc (create ioc db and a config file with all PV's externalized)
+    burt-load (load a burt file)
+    burt-save (save a snapshot given configs)
+    burt-req (create a req file given the configs)
+  medm
+    palette-edit (generates temp files of palettes and opens MEDM in edit mode with specified files and the palettes)
+  systemd
+    --allowed-directories
+    unit (make a unit file)
+
+rename reactor to scheduler
+
+add some on-crash features:
+    slack-send
+    email-send
+    with tracebacks
+    freeze reactor? Add buttons for restarting?
+
+make the CAS9Program callable from a special method of CAS9User classes. They can generate their own program class and call it immediately.
+
+finish state logging, make it load state on startup.
+
+make the cas_host call take an explicit PV name argument (defaulting to prefix-generated).
+make the cas_host call take an "external" argument to connect via ezca or pyepics
+make a global argument to halt the scheduler if pyepics is not connected
+make the pyepics connector count connections and warn about unconnected channels (check how guardian does this)
+
+host scheduler statistics in some object to provide health
+
+create systemd templates
+
+logging variables into burt or burt-gz with adjustable rate and rollover rate
+make it save state when it dies too, but save to a different place
+
+make the config system able to move all variables to external hosting! Make it generate an IOC db for you in this case.
+
+make a rate-limiter argument for PVs
+
+start documenting...
+
+add warning and error flag with a warning clear button. Warnings indicate to check the system logs. Make an MEDM button to grab the log from systemctl on the correct host
+
+warn about keyboard interrupt capture, but explain how it makes the program "better" in almost all circumstances.
+
+---------------
+---Done--------
+- startup command-line interface (use declarative)
+- export settings and full-settings. Provide a test interface to see if injected settings are "full"
+
+
+

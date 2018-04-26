@@ -415,6 +415,8 @@ class Reactor(object):
             if mtime < qdat_current.mtime:
                 #push up the run time and reinject the task
                 qdat_current.mtime = mtime
+                #have to specify because the closure of inner_task needs it
+                qdata = qdat_current
                 self.send_task(inner_task, run_at = mtime)
             elif force_requeue or loop_settings is not None:
                 qdat_current.has_run = True

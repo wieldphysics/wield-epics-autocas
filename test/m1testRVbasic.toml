@@ -1,0 +1,16 @@
+module_name_template = "{ifo}{subsys}{base}"
+subsystem_prefix = "test"
+SITE = "MIT"
+module_name_base = "RVbasic"
+module_name = "m1testRVbasic"
+IFO = "M1"
+
+[burt]
+load_fname = "{modname}_last.snap"
+rollover_rate_s = 300
+zip_rollover_program = "None"
+#load_folder = "/home/mcculler/local/home_sync/projects/cas9epics/test/burting"
+save_rate_s = 60
+#save_folder = "/home/mcculler/local/home_sync/projects/cas9epics/test/burt"
+save_fname_template = "{modname}_burt_{year}{month}{day}_{hour}{minute}{second}.snap"
+

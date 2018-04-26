@@ -3,6 +3,7 @@
 from __future__ import division, print_function, unicode_literals
 
 import declarative
+import numpy as np
 import pcaspy
 import pcaspy.tools
 
@@ -24,7 +25,7 @@ class CADriverServer(pcaspy.Driver):
 
     def _put_elem_cb_generator(self, channel, elem):
         def put_cb(value):
-            use_entry = self.db_use[channel]
+            use_entry = self.db_cas_raw[channel]
             #TODO 'value' maybe shouldn't be in this..
             use_entry[elem] = value
             self.setParamInfo(channel, use_entry)
@@ -34,16 +35,18 @@ class CADriverServer(pcaspy.Driver):
             self,
             db,
             reactor,
+            saver = None,
             deferred_write_period = 1/4.
     ):
-        self.db = db
+        self.db      = db
         self.reactor = reactor
+        self.saver   = saver
 
         self.cas = pcaspy.SimpleServer()
         self.cas_thread = pcaspy.tools.ServerThread(self.cas)
         self.cas_thread.daemon = True
 
-        db_use = {}
+        db_cas_raw = {}
 
         for channel, db_entry in self.db.items():
             rv = db_entry['rv']
@@ -94,16 +97,16 @@ class CADriverServer(pcaspy.Driver):
 
             if 'value' not in entry_use:
                 entry_use['value'] = rv.value
-            db_use[channel] = entry_use
+            db_cas_raw[channel] = entry_use
 
             #writable = db_entry['writable']
-        self.db_use = db_use
+        self.db_cas_raw = db_cas_raw
         #have to setup createPV before starting the driver
         self.cas.createPV('', db)
         super(CADriverServer, self).__init__()
 
         #pre-set all values, since this is apparently not done for you
-        for channel, db_entry in self.db_use.items():
+        for channel, db_entry in self.db_cas_raw.items():
             self.setParam(channel, db_entry['value'])
             self.setParamInfo(channel, db_entry)
         self.updatePVs()
@@ -114,6 +117,12 @@ class CADriverServer(pcaspy.Driver):
                 self.updatePVs,
                 period_s = deferred_write_period,
             )
+
+        if self.saver is not None:
+            self.saver.set_db_driver(self.db, self)
+            self.saver.folders_make_ready()
+            self.saver.load_snap()
+        return  # ~__init__
 
     def write(self, channel, value):
         # NOTE: for enum records the value here is the numeric value,
@@ -139,6 +148,12 @@ class CADriverServer(pcaspy.Driver):
         db = self.db[channel]
         rv = db['rv']
         mt_assign = db.get('mt_assign', False)
+
+        if self.saver is not None:
+            urgentsave = db.get('urgentsave', None)
+            if urgentsave is not None and urgentsave >= 0:
+                self.saver.urgentsave_notify(channel, urgentsave)
+
         try:
             if mt_assign:
                 rv.put(value)
@@ -152,6 +167,78 @@ class CADriverServer(pcaspy.Driver):
             else:
                 with self.reactor.task_lock:
                     rv.put_valid(E.preferred)
+            self.setParam(channel, value)
+            self.updatePVs()
+            return False
+        except relay_values.RelayValueRejected:
+            return False
+        else:
+            self.setParam(channel, value)
+            #self.updatePVs()
+            return True
+
+    def write_sync(self, channel, value):
+        """
+        This is a special write function for burt/autosave and other users of the synchronous system. It does two things different:
+
+        A: it writes without grabbing the lock, since it should be called only with the lock held
+        B: It typecasts its input values, this allows them to be input as strings from a burt loader
+        """
+        # NOTE: for enum records the value here is the numeric value,
+        # not the string.  setParam() expects the numeric value.
+
+        # reject writes to non-writable channels
+        if not self.db[channel].get('writable', False):
+            return False
+
+        ctype = self.db[channel]['type']
+        if ctype == 'float':
+            ccount = self.db[channel].get('count', 1)
+            if ccount == 1:
+                value = float(value)
+            else:
+                value = np.asarray(value, dtype = float)
+        elif ctype == 'int':
+            ccount = self.db[channel].get('count', 1)
+            if ccount == 1:
+                value = int(value)
+            else:
+                value = np.asarray(value, dtype = int)
+        elif ctype == 'enum':
+            value = int(value)
+        elif ctype == 'string':
+            #should be happy
+            value = str(value)
+        elif ctype == 'char':
+            #also should be happy as a str
+            value = str(value)
+
+        # reject values that don't correspond to an actual index of
+        # the enum
+        # FIXME: this is apparently a feature? of cas that allows for
+        # setting numeric values higher than the enum?
+        if (
+                self.db[channel]['type'] == 'enum'
+                and (
+                    value >= len(self.db[channel]['enums'])
+                    or value < 0
+                )
+        ):
+            return False
+
+        db = self.db[channel]
+        rv = db['rv']
+        if self.saver is not None:
+            urgentsave = db.get('urgentsave', None)
+            if urgentsave is not None and urgentsave >= 0:
+                self.saver.urgentsave_notify(channel, urgentsave)
+
+        try:
+            rv.put(value)
+        except relay_values.RelayValueCoerced as E:
+            print("COERCED")
+            value = E.preferred
+            rv.put_valid(E.preferred)
             self.setParam(channel, value)
             self.updatePVs()
             return False
@@ -205,28 +292,29 @@ class CASCollector(declarative.OverridableObject):
     def cas_host(
             self,
             rv,
-            name      = None,
-            prefix    = None,
-            conf_name = None,
-            writable  = None,
-            EDCU      = None,
-            burt      = None,
-            type      = None,
-            count     = None,
-            enum      = None,
-            states    = None,
-            prec      = None,
-            unit      = None,
-            lolim     = None,
-            hilim     = None,
-            low       = None,
-            high      = None,
-            lolo      = None,
-            hihi      = None,
-            adel      = None,
-            mdel      = None,
-            mt_assign = None,
-            ctree     = None,
+            name       = None,
+            prefix     = None,
+            conf_name  = None,
+            writable   = None,
+            EDCU       = None,
+            burt       = None,
+            type       = None,
+            count      = None,
+            enum       = None,
+            states     = None,
+            prec       = None,
+            unit       = None,
+            lolim      = None,
+            hilim      = None,
+            low        = None,
+            high       = None,
+            lolo       = None,
+            hihi       = None,
+            adel       = None,
+            mdel       = None,
+            mt_assign  = None,
+            ctree      = None,
+            urgentsave = None,
     ):
         if conf_name is None:
             conf_name = name
@@ -250,66 +338,74 @@ class CASCollector(declarative.OverridableObject):
 
         # a convenient way to inject all of the settings
         db_inj = dict(
-            writable = writable,
-            EDCU     = EDCU,
-            type     = type,
-            count    = count,
-            enum     = enum,
-            states   = states,
-            prec     = prec,
-            unit     = unit,
-            lolim    = lolim,
-            hilim    = hilim,
-            low      = low,
-            high     = high,
-            lolo     = lolo,
-            hihi     = hihi,
-            adel     = adel,
-            mdel     = mdel,
-            burt     = burt,
+            writable   = writable,
+            EDCU       = EDCU,
+            type       = type,
+            count      = count,
+            enum       = enum,
+            states     = states,
+            prec       = prec,
+            unit       = unit,
+            lolim      = lolim,
+            hilim      = hilim,
+            low        = low,
+            high       = high,
+            lolo       = lolo,
+            hihi       = hihi,
+            adel       = adel,
+            mdel       = mdel,
+            burt       = burt,
+            urgentsave = urgentsave,
         )
         for k, v in db_inj.items():
             if v is not None:
                 db[k] = v
 
+        def ctree_check(pname, tfunc):
+            cval = db.get(pname, None)
+            #can't configure ones that are live
+            if isinstance(cval, relay_values.RelayValueDecl):
+                return
+            cval2 = cdb.setdefault(pname, cval)
+
+            #actually insert the parameter value
+            if cval2 is not None and cval2 != cval:
+                db[pname] = tfunc(cval2)
+            return
+
         if cdb is not None:
             dtype = db['type']
             if dtype in ['float', 'int']:
                 if db.get('count', None) is None:
-                    ctdict = dict(
-                        EDCU  = bool,
-                        prec  = int,
-                        unit  = str,
-                        lolim = float,
-                        hilim = float,
-                        low   = float,
-                        high  = float,
-                        lolo  = float,
-                        hihi  = float,
-                        burt  = burt,
-                    )
+                    ctree_check('EDCU', bool)
+                    ctree_check('prec', int)
+                    ctree_check('unit', str)
+                    ctree_check('lolim', float)
+                    ctree_check('hilim', float)
+                    ctree_check('low', float)
+                    ctree_check('high', float)
+                    ctree_check('lolo', float)
+                    ctree_check('hihi', float)
+                    ctree_check('burt', bool)
                 else:
-                    ctdict = dict()
+                    #nothing for waveforms
+                    pass
             elif dtype in ['enum']:
-                ctdict = dict(
-                    EDCU  = bool,
-                    burt  = burt,
-                )
+                ctree_check('EDCU', bool)
+                ctree_check('burt', burt)
             elif dtype in ['char', 'string']:
-                ctdict = dict(
-                    EDCU  = bool,
-                    burt  = burt,
-                )
-            for pname, tfunc in ctdict.items():
-                cval = db.get(pname, None)
-                #can't configure ones that are live
-                if isinstance(cval, relay_values.RelayValueDecl):
-                    continue
-                cval2 = cdb.setdefault(pname, cval)
+                ctree_check('EDCU', bool)
+                ctree_check('burt', burt)
 
-                #actually insert the parameter value
-                if cval2 is not None and cval2 != cval:
-                    db[pname] = tfunc(cval2)
+        #special case for urgentsave to only check the config if it is relevant
+        def urgentsave_float_bool_none(val):
+            if val is None:
+                return val
+            if isinstance(val, bool):
+                return val
+            return float(val)
+        if db.get('writable', False) and db.get('burt', False):
+            ctree_check('urgentsave', urgentsave_float_bool_none)
 
         #if 'states' in db:
         #    states = db['states']
@@ -328,7 +424,6 @@ class CASCollector(declarative.OverridableObject):
             pass
         elif type == 'enum':
             #check that this exists
-            print(db)
             db['enums']
         else:
             raise RuntimeError("Type Not Recognized")

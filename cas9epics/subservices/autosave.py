@@ -4,80 +4,230 @@ from __future__ import division, print_function, unicode_literals
 
 import sys
 import os
+import datetime
+import time
+import errno
 from os import path
-#TODO import this later or make it failsafe
-import inotify_simple
 
 from .. import cas9core
+from . import autosave_base
 
+save_programs = dict(
+    gzip = ['gzip'],
+    bzip2 = ['bzip2'],
+)
 
-class AutoSave(cas9core.CASUser):
-    _my_pvdb = None
+load_programs = dict(
+    gzip = ['gzip', '-c', '-d'],
+    bzip2 = ['bzip2', '-c', '-d'],
+)
 
-    save_rate_s = 10
+suffix_programs = {
+    '.gz' : 'gzip',
+    '.bz' : 'bzip2',
+}
+
+class AutoSave(autosave_base.AutoSaveBase):
+    """
+    The writing within the rollover rate is atomic. Writes are done to a temp file, then atomically moved to the old snapshot.
+    """
+    @cas9core.dproperty_ctree(default = 600)
+    def save_rate_s(self, val):
+        """
+        Rate to autosave the snapshot. within the rollover rate_these will all have the same name and will be overwritten until rollover.
+        This prevents excessive saving while providing recent saves. If variables are marked "urgentsave", then saving may be more frequent
+        as those variables are edited.
+        """
+        return val
+
+    @cas9core.dproperty_ctree(default = 8 * 3600)
+    def rollover_rate_s(self, val):
+        """
+        Rate to rollover to a new snapshot filename
+        """
+        return val
+
+    @cas9core.dproperty_ctree(default = 'bzip')
+    def zip_rollover_program(self, val):
+        """
+        Use this program to zip files as they rollover to take less space. If null, then the files will not be zipped. Good values are ['gzip', 'bzip']
+        """
+        return val
 
     @cas9core.dproperty_ctree(default = lambda self : path.abspath('./burt/'))
     def save_folder(self, val):
+        """
+        Folder to store burt save files within.
+        """
         return val
 
     @cas9core.dproperty_ctree(default = lambda self : self.save_folder)
     def load_folder(self, val):
+        """
+        folder to put the load-file symlinks. Defaults in unspecified to using save_folder.
+        """
         if val is None:
             val = self.save_folder
         return val
 
-    @cas9core.dproperty_ctree(default = '{progname}_burt_{year}{month}{day}_{Hour}{minute}{second}.snap')
+    @cas9core.dproperty_ctree(default = '{modname}_burt_{year}{month}{day}_{hour}{minute}{second}.snap')
     def save_fname_template(self, val):
-        return val
-
-    @cas9core.dproperty_ctree(default = '{progname}_last.snap')
-    def load_fname(self, val):
+        """
+        Template to generate save file names. It can use formatting keys:
+        {modname}, {year}, {month}, {day}, {hour}, {minute}, {second}
+        If null, then rolling save will NOT be active.
+        """
         return val
 
     @cas9core.dproperty
-    def setup_action(self):
-        self.reactor.enqueue(self._startup_task, future_s = 3)
+    def modname(self):
+        return self.root.module_name
 
-    def _startup_task(self):
-        modfiles = modlist()
-        inotify = inotify_simple.INotify()
-        for fpath in modfiles:
-            inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
-        self._my_pvdb = inotify
+    @cas9core.dproperty_ctree(default = '{modname}_last.snap')
+    def load_fname(self, val):
+        """
+        File name that the latest snapshot is symlinked to. May use {modname} template. It is also the snapshot loaded at startup. if null, then symlink save is not supported and load will not be automatic.
+        """
+        return val
 
-        self.reactor.enqueue_looping(self._loop_check_task, period_s = self.poll_rate_s)
+    @cas9core.dproperty
+    def load_fpath(self):
+        """
+        load_fname with templates resolved
+        """
+        if self.load_folder is None or self.load_fname is None:
+            return None
+        return path.join(self.load_folder, self.load_fname.format(modname = self.modname))
 
-    def _loop_check_task(self):
-        events = self._my_pvdb.read(timeout = 0)
-        #only modify is registered
-        if events:
-            print("RestartOnEdit noticed a modified file on inotify!")
-            if self.policy == 'REPLACE':
-                print("RESTARTING and REPLACING process")
-                os.execv(sys.executable, ['python{v.major}.{v.minor}'.format(v = sys.version_info)] + sys.argv)
-            elif self.policy == 'EXIT':
-                print("Exiting Process")
-                sys.exit(0)
-
-
-def modlist(include_pyc = True):
-    pyname = 'python{v.major}.{v.minor}'.format(v = sys.version_info)
-    mods = []
-    for modname, mod in sys.modules.items():
-        if mod is not None:
+    def folders_make_ready(self):
+        if self.save_folder is not None and self.save_fname_template is not None:
             try:
-                fname = mod.__file__
-            except AttributeError:
-                pass
-            else:
-                pbase, pext = path.splitext(fname)
-                if pext in ['.py', '.pyc']:
-                    fnamepy = pbase + '.py'
-                    fnamepyc = pbase + '.py'
+                os.mkdir(self.save_folder)
+            except OSError as E:
+                if E.errno != errno.EEXIST:
+                    raise
 
-                    if fname.find(pyname) == -1 and fname.find('site-packages') == -1:
-                        if include_pyc:
-                            mods.append(fnamepyc)
-                        mods.append(fnamepy)
-    return mods
+        if self.load_folder is not None and self.load_fpath is not None:
+            try:
+                os.mkdir(self.load_folder)
+            except OSError as E:
+                if E.errno != errno.EEXIST:
+                    raise
+        return
+
+    def load_snap(self):
+        """
+        Loads the configured snapshot into the CAS Driver database
+        """
+        load_fpath = path.join(self.load_folder, self.load_fpath)
+        self.load_snap_file(load_fpath)
+
+    def load_snap_file(self, fname):
+        """
+        May need to unzip first.
+        """
+        #store the program to unzip in zipper_prog
+        for suffix, zipper_prog in suffix_programs.items():
+            if fname.endswith(suffix):
+                break
+        else:
+            zipper_prog = None
+
+        #TODO
+        if zipper_prog is not None:
+            raise NotImplementedError("Can't unzip yet")
+
+        try:
+            with open(fname, 'r') as F:
+                self.load_snap_file_raw(F)
+        except IOError as E:
+            if E.errno == errno.ENOENT:
+                print("WARNING: No snapshot to load")
+            else:
+                raise
+
+    _future_savesnap = None
+    def urgentsave_notify(self, pvname, window_s):
+        """
+        Urgent channel was modified. This is notified through the CAS Driver.
+        """
+        if self._future_savesnap is None or window_s < self._future_savesnap:
+            self._future_savesnap = window_s
+            #push the rolling time ahead a bit in the queue to meet the urgency requirement
+            self.reactor.enqueue(self.save_snap_rolling, future_s = window_s)
+        return
+
+    _last_linkpath = None
+    def save_snap_rolling(self):
+        self._future_savesnap = None
+        ptime_now = time.time()
+        ptime_epoch = ptime_now - (ptime_now % self.rollover_rate_s)
+        dt_epoch = datetime.datetime.fromtimestamp(ptime_epoch)
+
+        if self.save_fname_template is None:
+            return
+
+        fill = str('0')
+        fname = self.save_fname_template.format(
+            year    = str(dt_epoch.year).rjust(4, fill),
+            month   = str(dt_epoch.month).rjust(2, fill),
+            day     = str(dt_epoch.day).rjust(2, fill),
+            hour    = str(dt_epoch.hour).rjust(2, fill),
+            minute  = str(dt_epoch.minute).rjust(2, fill),
+            second  = str(dt_epoch.second).rjust(2, fill),
+            ptime   = ptime_epoch,
+            modname = self.modname,
+        )
+        fpath_save = path.abspath(path.join(self.save_folder, fname))
+
+        prev_file_exists = path.exists(fpath_save)
+
+        if prev_file_exists:
+            fbase, fext = path.splitext(fpath_save)
+            fpath_temp = fbase + '_temp' + fext
+        else:
+            fpath_temp = fpath_save
+
+        with open(fpath_temp, 'w') as F:
+            self.save_snap_file_raw(F)
+
+        #atomic rename, so the existing snap file is always correct
+        if fpath_temp != fpath_save:
+            os.rename(fpath_temp, fpath_save)
+
+        fpath_previous = self._last_linkpath
+        fpath_do_link = True
+        if fpath_previous is None:
+            #now update the symlink
+            if path.exists(self.load_fpath):
+                if path.islink(self.load_fpath):
+                    fpath_previous = path.abspath(os.readlink(self.load_fpath))
+                else:
+                    print("WARNING: load path is not symlink, wont update load file")
+                    fpath_do_link = False
+
+        if fpath_do_link:
+            if fpath_previous != fpath_save:
+                try:
+                    os.unlink(self.load_fpath)
+                except OSError as E:
+                    if E.errno == errno.ENOENT:
+                        pass
+                    else:
+                        raise
+                #then update!
+                os.symlink(fpath_save, self.load_fpath)
+                self._last_linkpath = fpath_save
+                #TODO, optionally zip the previous path
+        return
+
+    @cas9core.dproperty
+    def setup_snap_rolling(self):
+        if self.save_rate_s is not None:
+            self.reactor.enqueue_looping(
+                self.save_snap_rolling,
+                period_s = self.save_rate_s,
+            )
+
+
 

@@ -24,6 +24,7 @@ class RVTester(cas9epics.CASUser):
             hihi  = 100,
             lolim = 1,
             hilim = self.rv_test_hi,
+            urgentsave = 0.1,
         )
 
         def cb(value):
@@ -51,7 +52,7 @@ class RVTester(cas9epics.CASUser):
         return task
 
 
-class Testers(cas9epics.CASUser):
+class Testers(cas9epics.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVTester(
@@ -67,10 +68,8 @@ class Testers(cas9epics.CASUser):
             task_period_s = 1,
         )
 
-class Program(cas9epics.CAS9CmdLine):
-    t_task = Testers
-
-
 if __name__ == "__main__":
-    Program.__cls_argparse__()
+    Testers.cmdline(
+        module_name_base = 'RVbasic',
+    )
 

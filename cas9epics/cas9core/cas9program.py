@@ -7,11 +7,15 @@ import sys
 import declarative
 import declarative.argparse as declarg
 from declarative.utilities.future_from_2 import unicode
-import yaml
 import collections
+import socket
 
 from . import cas9core
 
+from .program.config import pytoml
+
+def config_dumps(dddict):
+    return pytoml.dumps(dddict)
 
 class CAS9MetaProgram(
     declarative.OverridableObject
@@ -36,6 +40,7 @@ class CAS9MetaProgram(
         root = cas9core.InstaCAS(
             prefix_base      = self.cmd.ifo,
             prefix_subsystem = self.cmd.subsystem,
+            module_name     = self.cmd.module_name,
             ctree            = self.cmd.ctree,
             _ctree_pulling   = self.ctree_pull,
         )
@@ -65,8 +70,11 @@ class CAS9CmdLine(
     declarg.OOArgParse,
     declarative.OverridableObject
 ):
+    """
+    Command line interface to boot up an InstaCAS object and associated task. Cannot use some features such as dproperty_ctree since those are designed for CASUser or InstaCAS objects.
+    """
 
-    @declarg.argument(['-c, --config'])
+    @declarg.argument(['-c, --config'], metavar = 'fname')
     @declarative.dproperty
     def config_file(self, val = None):
         """
@@ -76,24 +84,22 @@ class CAS9CmdLine(
             print("Warning: No Configuration File Specified, using defaults", file = sys.stderr)
         return val
 
-    @declarg.store_true(['-j, --json-only'])
-    @declarative.dproperty
-    def json_use(self, val = False):
-        """
-        Use JSON to interpret configuration (no need to load yaml library)
-        """
-        if val:
-            raise NotImplementedError("Not yet implemented")
-        return val
-
     @declarative.dproperty
     def ctree(self):
         if self.config_file is not None:
             with open(self.config_file, 'r') as F:
-                conf_dict = yaml.safe_load(F)
+                conf_dict = pytoml.load(F)
             return declarative.bunch.DeepBunchSingleAssign(conf_dict)
         else:
             return declarative.bunch.DeepBunchSingleAssign()
+
+    @declarative.dproperty
+    def _ctree_about(self):
+        """
+        Additional dictionary to store configuration docstrings for this "pre-root" command line setup. The config commands to display these documentation will merge this with the
+        about dict in the root.ctree.
+        """
+        return declarative.bunch.DeepBunchSingleAssign()
 
     @declarg.argument(['-S, --site'])
     @declarative.dproperty
@@ -110,6 +116,11 @@ class CAS9CmdLine(
                 val = config_val
         if val is None:
             raise RuntimeError("SITE environment variable not set and not specified in config or on command line")
+        self._ctree_about['SITE'] = (
+            "Instrument site. Uses the command line --site parameter"
+            " or defaults to $SITE if not specified. Precedence of configurations"
+            " is 1. --site, 2. configfile.SITE 3. $SITE."
+        )
         return val.lower()
 
     @declarg.argument(['-i, --ifo'])
@@ -127,10 +138,15 @@ class CAS9CmdLine(
                 val = config_val
         if val is None:
             raise RuntimeError("IFO environment variable not set and not specified in config or on command line")
+        self._ctree_about['IFO'] = (
+            "Instrument (interferometer) prefix name. Uses the command line --ifo parameter"
+            " or defaults to $IFO if not specified. Precedence of configurations"
+            " is 1. --ifo, 2. configfile.IFO 3. $IFO."
+        )
         return val.lower()
 
     #can also override this in subclasses
-    @declarg.argument(['-s, --subsystem'])
+    @declarg.argument(['-s, --subsystem'], metavar = 'name')
     @declarative.dproperty
     def subsystem(self, val = None):
         """
@@ -138,12 +154,17 @@ class CAS9CmdLine(
         X1:PREFIX-XXX_YYY_ZZZ
         """
         if val is None:
-            config_val = 'TEST'
+            config_val = 'test'
         else:
             config_val = val
         config_val = self.ctree.setdefault('subsystem_prefix', config_val)
         if val is None:
             val = config_val
+        self._ctree_about['IFO'] = (
+            "Subsystem prefix name. Used for naming channels with the (default pattern) X1:PREFIX-XXX_YYY_ZZZ."
+            " Uses the command line --subsystem parameter"
+            " Precedence of configurations is 1. --subsystem, 2. configfile.subsystem_prefix"
+        )
         return val
 
     @declarg.store_true(['-R, --auto-restart'])
@@ -156,9 +177,66 @@ class CAS9CmdLine(
             val = False
         return val
 
-    #must specify in base classes
-    def t_task(self):
-        raise NotImplementedError("Subclasses must specify t_task as the system to start running")
+    #must specify in base classes or as a default
+    @declarative.dproperty
+    def t_task(self, val = None):
+        if val is None:
+            raise NotImplementedError("Subclasses must specify t_task as the system to start running")
+        return val
+
+    @declarative.dproperty
+    def module_name_base(self, val = None):
+        """
+        Subsystem prefix for channel names using the (default) format
+        X1:PREFIX-XXX_YYY_ZZZ
+        """
+        if val is None:
+            val = self.t_task.__name__.lower()
+        val = self.ctree.setdefault('module_name_base', val)
+        self._ctree_about['module_name_base'] = (
+            "base name to create the program name from using module_name_template. One can alternately"
+            " directly specify the program name if it does not depend on site, ifo, or other variables."
+        )
+        return val
+
+    @declarative.dproperty
+    def module_name_template(self, val = None):
+        if val is None:
+            val = '{ifo}{subsys}{base}'
+        val = self.ctree.setdefault('module_name_template', val)
+        self._ctree_about['module_name_base'] = (
+            "Template to use to create the program name from"
+            " directly specify the program name if it does not depend on site, ifo, or other variables."
+            " May use variables {ifo}, {site}, {subsys}, {base}, {host} in the template."
+        )
+        return val
+
+    @declarg.argument(
+        ['-H, --hostname'],
+        default = lambda : socket.gethostname().split('.')[0],
+        metavar = 'name'
+    )
+    @declarative.dproperty
+    def hostname(self, val = None):
+        """
+        Hostname variable used for naming templates. Defaults to the hostname before all dots in the system domain name: \"{default}\".
+        """
+        return val
+
+    @declarative.dproperty
+    def module_name(self):
+        """
+        The InstaCAS root object stores the configuration, this just computes the default value.
+        """
+        template = self.module_name_template
+        val = template.format(
+            ifo    = self.ifo,
+            site   = self.site,
+            subsys = self.subsystem,
+            base   = self.module_name_base,
+            host   = self.hostname,
+        )
+        return val
 
     t_meta_program = CAS9MetaProgram
 
@@ -229,31 +307,34 @@ class CAS9CmdLine(
             dabout = remap_recursive(program.root.ctree._abdict.mydict, remap)
             dabout_keep = declarative.DeepBunch()
             dict_kinclude(dabout, db, dabout_keep)
-            print(yaml.dump(dabout_keep.mydict))
+
+            dict_about_merge(dabout_keep, remap_recursive(self._ctree_about))
+
+            print(config_dumps(dabout_keep.mydict))
             return
 
         if args.check_unused:
             dunused, d1diff, d2diff = dict_diff(self.ctree.mydict, db)
             print("#Unused:")
-            print(yaml.dump(dunused))
+            print(config_dumps(dunused))
             if d2diff is not None:
                 print("#diff in used:")
-                print(yaml.dump(d2diff))
+                print(config_dumps(d2diff))
             if d1diff is not None:
                 print("#diff in config:")
-                print(yaml.dump(d1diff))
+                print(config_dumps(d1diff))
         elif args.check_remaining:
             dunused, d1diff, d2diff = dict_diff(db, self.ctree)
             print("#Remaining:")
-            print(yaml.dump(dunused))
+            print(config_dumps(dunused))
             if d2diff is not None:
                 print("#diff in config:")
-                print(yaml.dump(d2diff))
+                print(config_dumps(d2diff))
             if d1diff is not None:
                 print("#diff in used:")
-                print(yaml.dump(d1diff))
+                print(config_dumps(d1diff))
         else:
-            print(yaml.dump(db))
+            print(config_dumps(db))
 
 class ConfigPrintArgs(
     declarg.OOArgParse,
@@ -375,5 +456,36 @@ def dict_kinclude(d1, d2, d_keep):
         return False
 
 
+def dict_about_merge(d1, d2):
+    """
+    Merges d2 into d1, adds "about" keys which are missing from d2. Intended to merge the CAS9CmdLine._ctree_about with the root.ctree.about dictionary
+    """
+    if not isinstance(d2, collections.Mapping):
+        #TODO, avoid this cast
+        #have to cast to str to avoid unicode typing that annoys YAML
+        d1[str('about')] = d2
+    else:
+        for k, v in d2.items():
+            dict_about_merge(d1[k], v)
 
 
+class CAS9Module(cas9core.CASUser):
+    t_cas9cmdline = CAS9CmdLine
+
+    @classmethod
+    def cmdline(
+        cls,
+        args = None,
+        module_name_base = None,
+        t_cas9cmdline = None,
+        **kwargs
+    ):
+        if t_cas9cmdline is None:
+            t_cas9cmdline = cls.t_cas9cmdline
+
+        return t_cas9cmdline.__cls_argparse__(
+            args,
+            t_task = cls,
+            module_name_base = module_name_base,
+            **kwargs
+        )
