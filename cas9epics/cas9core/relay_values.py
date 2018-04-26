@@ -4,6 +4,7 @@ from __future__ import division, print_function, unicode_literals
 
 import numpy as np
 import declarative
+from declarative.utilities.future_from_2 import unicode
 
 from declarative import (
     RelayValueRejected,
@@ -107,7 +108,7 @@ class RelayValueLongString(CASRelay, RelayValueDecl):
     max_length = 100
     def validator(self, value):
         try:
-            new_val = str(value)[:self.max_length]
+            new_val = unicode(value)[:self.max_length]
         except ValueError:
             raise RelayValueRejected()
         if new_val != value:
@@ -150,7 +151,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
     Performs silent coercion to the integer state
     """
     def validator(self, value):
-        if isinstance(value, str):
+        if isinstance(value, (str, unicode)):
             try:
                 new_val = self.state2int[value]
                 return new_val
@@ -196,6 +197,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
 
         self.state2int = state2int
         self.int2state = int2state
+        super(RelayValueEnum, self).__init__(initial_value, validator = validator)
 
     @property
     def value_str(self):

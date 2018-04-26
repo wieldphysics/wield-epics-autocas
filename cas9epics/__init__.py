@@ -15,6 +15,15 @@ from .cas9core import (
     RelayValueLongString,
     RelayValueEnum,
     RelayValueCoerced,
-    RelayValueRejected
+    RelayValueRejected,
+    RelayBool,
+    RelayBoolNot,
+    RelayBoolAll,
+    RelayBoolAny,
+    RelayBoolNotAll,
+    RelayBoolNotAny,
+    dproperty,
+    dproperty_ctree,
+    mproperty,
 )
 

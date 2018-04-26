@@ -31,7 +31,13 @@ from .relay_values import (
     RelayValueLongString,
     RelayValueEnum,
     RelayValueCoerced,
-    RelayValueRejected
+    RelayValueRejected,
+    RelayBool,
+    RelayBoolNot,
+    RelayBoolAll,
+    RelayBoolAny,
+    RelayBoolNotAll,
+    RelayBoolNotAny,
 )
 
 

@@ -13,14 +13,20 @@ from . import relay_values
 class CADriverServer(pcaspy.Driver):
     def _put_cb_generator_immediate(self, channel):
         def put_cb(value):
+            #a python2 safety as unicode objects crash the CAS
+            if (str is not unicode) and isinstance(value, unicode):
+                value = str(value)
             self.setParam(channel, value)
             self.updatePVs()
         return put_cb
 
     def _put_cb_generator_deferred(self, channel):
         def put_cb(value):
+            #a python2 safety as unicode objects crash the CAS
+            if (str is not unicode) and isinstance(value, unicode):
+                value = str(value)
             self.setParam(channel, value)
-            self.updatePVs()
+            pass
         return put_cb
 
     def _put_elem_cb_generator(self, channel, elem):
@@ -52,18 +58,22 @@ class CADriverServer(pcaspy.Driver):
             rv = db_entry['rv']
             entry_use = {}
 
+            #provide a callback key so that we can avoid the callback during the write method
             if db_entry.get('immediate', True):
                 rv.register(
-                    callback = self._put_cb_generator_immediate(channel)
+                    callback = self._put_cb_generator_immediate(channel),
+                    key = self,
                 )
             else:
                 if deferred_write_period is not None and deferred_write_period > 0:
                     rv.register(
-                        callback = self._put_cb_generator_deferred(channel)
+                        callback = self._put_cb_generator_deferred(channel),
+                        key = self,
                     )
                 else:
                     rv.register(
-                        callback = self._put_cb_generator_immediate(channel)
+                        callback = self._put_cb_generator_immediate(channel),
+                        key = self,
                     )
 
             #setup relays for any of the channel values to be inserted
@@ -132,12 +142,18 @@ class CADriverServer(pcaspy.Driver):
         if not self.db[channel].get('writable', False):
             return False
 
+        ctype = self.db[channel]['type']
+        ctype_strlike = False
+
+        if ctype in ['string', 'char']:
+            ctype_strlike = True
+
         # reject values that don't correspond to an actual index of
         # the enum
         # FIXME: this is apparently a feature? of cas that allows for
         # setting numeric values higher than the enum?
         if (
-                self.db[channel]['type'] == 'enum'
+                ctype == 'enum'
                 and (
                     value >= len(self.db[channel]['enums'])
                     or value < 0
@@ -156,24 +172,36 @@ class CADriverServer(pcaspy.Driver):
 
         try:
             if mt_assign:
-                rv.put(value)
+                rv.put_exclude_cb(value, key = self)
             else:
                 with self.reactor.task_lock:
-                    rv.put(value)
+                    rv.put_exclude_cb(value, key = self)
         except relay_values.RelayValueCoerced as E:
+            print(value, type(value))
             value = E.preferred
+            print(value, type(value))
             if mt_assign:
-                rv.put_valid(E.preferred)
+                rv.put_valid_exclude_cb(E.preferred, key = self)
             else:
                 with self.reactor.task_lock:
-                    rv.put_valid(E.preferred)
-            self.setParam(channel, value)
+                    rv.put_valid_exclude_cb(E.preferred, key = self)
+
+            #a python2 safety as unicode objects crash the CAS
+            if ctype_strlike and str is not unicode:
+                self.setParam(channel, str(value))
+            else:
+                self.setParam(channel, value)
+
             self.updatePVs()
             return False
         except relay_values.RelayValueRejected:
             return False
         else:
-            self.setParam(channel, value)
+            #a python2 safety as unicode objects crash the CAS
+            if ctype_strlike and str is not unicode:
+                self.setParam(channel, str(value))
+            else:
+                self.setParam(channel, value)
             #self.updatePVs()
             return True
 
@@ -192,6 +220,7 @@ class CADriverServer(pcaspy.Driver):
             return False
 
         ctype = self.db[channel]['type']
+        ctype_strlike = False
         if ctype == 'float':
             ccount = self.db[channel].get('count', 1)
             if ccount == 1:
@@ -205,20 +234,25 @@ class CADriverServer(pcaspy.Driver):
             else:
                 value = np.asarray(value, dtype = int)
         elif ctype == 'enum':
-            value = int(value)
+            try:
+                value = int(value)
+            except ValueError:
+                value = self.db[channel]['enums'].index(value)
         elif ctype == 'string':
             #should be happy
             value = str(value)
+            ctype_strlike = True
         elif ctype == 'char':
             #also should be happy as a str
             value = str(value)
+            ctype_strlike = True
 
         # reject values that don't correspond to an actual index of
         # the enum
         # FIXME: this is apparently a feature? of cas that allows for
         # setting numeric values higher than the enum?
         if (
-                self.db[channel]['type'] == 'enum'
+                ctype == 'enum'
                 and (
                     value >= len(self.db[channel]['enums'])
                     or value < 0
@@ -234,18 +268,28 @@ class CADriverServer(pcaspy.Driver):
                 self.saver.urgentsave_notify(channel, urgentsave)
 
         try:
-            rv.put(value)
+            rv.put_exclude_cb(value, key = self)
         except relay_values.RelayValueCoerced as E:
             print("COERCED")
             value = E.preferred
-            rv.put_valid(E.preferred)
-            self.setParam(channel, value)
+            rv.put_valid_exclude_cb(E.preferred, key = self,)
+
+            #a python2 safety as unicode objects crash the CAS
+            if ctype_strlike and str is not unicode:
+                self.setParam(channel, str(value))
+            else:
+                self.setParam(channel, value)
+
             self.updatePVs()
             return False
         except relay_values.RelayValueRejected:
             return False
         else:
-            self.setParam(channel, value)
+            #a python2 safety as unicode objects crash the CAS
+            if ctype_strlike and str is not unicode:
+                self.setParam(channel, str(value))
+            else:
+                self.setParam(channel, value)
             #self.updatePVs()
             return True
 

@@ -119,6 +119,10 @@ class AutoSaveBase(cas9core.CASUser):
             if val == '':
                 val = '\0'
 
+            #prevent it writing "True" and "False" for bools
+            if isinstance(val, bool):
+                val = int(val)
+
             if not pvRO:
                 fobj.write('{0} 1 {1}\n'.format(pv, val))
             else:
