@@ -91,14 +91,14 @@ class AutoSaveBase(cas9core.CASUser):
             if pvRO:
                 val = ROPV_vals.get(pv, None)
                 if val is None:
-                    print("WARNING: RO PV missing on load (even though it is unused)")
+                    print("WARNING: RO PV missing on load: {0} (even though it is unused)".format(pv))
                 continue
 
             val = PV_vals.get(pv, None)
             if val is None:
                 val = ROPV_vals.get(pv, None)
                 if val is None:
-                    print("WARNING: PV missing on load")
+                    print("WARNING: PV missing on load: {0}".format(pv))
                 else:
                     print("WARNING: non-RO PV listed as RO in snapshot on load (not loading)")
                 continue

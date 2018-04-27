@@ -3,173 +3,36 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 from __future__ import division, print_function, unicode_literals
 
-import declarative
-
-from . import relay_values
-from . import instacas
+from .. import cas9core
+from .serial_base import (
+    SerialSubBlock,
+)
 
 #from . import utilities
 
 
-class SerialError(Exception):
-    pass
+class GPIBAddressed(SerialSubBlock):
 
+    @cas9core.dproperty
+    def GPIB_addr(self, val):
+        return val
 
-class SerialConnection(
-    instacas.CASUser,
-):
-    @declarative.dproperty
-    def rb_connected(self):
-        rb = relay_values.RelayBool(False)
-        self.cas_host(
-            rb,
-            name = 'CONNECT',
-            writable = False,
+    @cas9core.dproperty
+    def SB_parent(self):
+        return self.SB_addressed_block
+
+    @cas9core.dproperty
+    def SB_addressed_block(self):
+        def action_sequence(cmd):
+            cmd.writeline('++addr {0}'.format(self.GPIB_addr))
+            cmd.block_remainder()
+
+        block = self.serial.block_add(
+            action_sequence,
+            ordering = 0,
+            name = 'addressed_block',
+            prefix = self.prefix_full,
         )
-        return rb
-
-    @declarative.dproperty
-    def rb_running(self):
-        rb = relay_values.RelayBool(False)
-        self.cas_host(
-            rb,
-            name = 'RUNNING',
-            writable = False,
-        )
-        return rb
-
-    @declarative.dproperty
-    def rb_queued(self):
-        rb = relay_values.RelayBool(False)
-        self.cas_host(
-            rb,
-            name = 'QUEUED',
-            writable = False,
-        )
-        return rb
-
-    @declarative.dproperty
-    def rv_error(self):
-        rv = relay_values.RelayValueString('')
-        self.cas_host(
-            rv,
-            name = 'ERROR',
-            writable = False,
-        )
-        return rv
-
-    @declarative.dproperty
-    def _block_data(self):
-        return dict()
-
-    @declarative.dproperty
-    def _blocks_queued(self):
-        return []
-
-    def cmd_object(self):
-        b = declarative.Bunch()
-        def writeline(line):
-            print("SERIAL: ", line)
-        b.writeline = writeline
-
-        def readline():
-            return '100'
-        b.readline = readline
-        return b
-
-    def block_enqueue(self, blockfunc):
-        self._block_data[blockfunc]
-        self._blocks_queued.append(blockfunc)
-
-        self.reactor.enqueue_limited(self.run, future_s = .1, limit_s = 1)
-
-    def block_add(
-            self,
-            func,
-            ordering = None,
-            parent = None,
-            chain = [],
-            name = None,
-            prefix = None,
-    ):
-        """
-        if ordering is None then it may LAST or FIRST - NO GUARANTEE, otherwise they are sorted by ordering
-
-        returns a key-function that can be enqueued to indicate to run the serial block in its correct context. If called it enqueues itself
-        """
-        def block_func():
-            self.block_enqueue(block_func)
-        if name is not None:
-            if prefix is not None:
-                name = '_'.join(list(prefix) + [name])
-            block_func.__name__ = str(name)
-
-        self._block_data[block_func] = dict(
-            func = func,
-            ordering = ordering,
-            parent = parent,
-            chain = list(chain),
-        )
-        #can add to chain later
-        return block_func
-
-    def block_chain(self, bfunc, *chains):
-        #TODO check that the chains are also block-functions
-        self._block_data[bfunc]['chain'].extend(chains)
-
-    def run(self):
-        """
-        generates the block-chain run tree and serial command object through the block-parents and chains. Doesn't need to check for parent loop because that is prevented currently
-        through the block creation convention that parents are specified.
-        """
-        self.rb_running.assign(True)
-
-        #first to bfunc completion
-        checked = set()
-        stack = list(self._blocks_queued)
-        #clear the previous list
-        self._blocks_queued[:] = []
-
-        plists = {
-            None : []
-        }
-        while stack:
-            bfunc = stack.pop()
-            if bfunc in checked:
-                continue
-            #plists[bfunc] = []
-            checked.add(bfunc)
-            bdata = self._block_data[bfunc]
-            stack.extend(bdata['chain'])
-
-            bparent = bdata['parent']
-            plist = plists.setdefault(bparent, [])
-            plist.append(bfunc)
-            if bparent is not None:
-                stack.append(bparent)
-
-        cmd = self.cmd_object()
-        #utilities.pprint(plists)
-
-        #get first list
-        def block_call(bfunc):
-            plist = plists.get(bfunc, [])
-            plist.sort(key = lambda bfunc: self._block_data[bfunc]["ordering"])
-            for bfunc in plist:
-                was_called = [False]
-                def remainder_call():
-                    was_called[0] = True
-                    return block_call(bfunc)
-                cmd.block_remainder = remainder_call
-                self._block_data[bfunc]["func"](cmd)
-                cmd.block_remainder = None
-                if not was_called[0]:
-                    remainder_call()
-
-        #call on the root parent
-        block_call(None)
-        #the block list is a sequence of bfunc, list pairs. The bfunc serial functions are called and any associated inner blocks are in the following sequence
-        self.rb_running.assign(False)
-        self.rb_queued.assign(False)
+        return block
 
 

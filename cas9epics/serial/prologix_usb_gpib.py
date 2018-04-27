@@ -2,174 +2,184 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
-
+import warnings
+import serial
 import declarative
 
-from . import relay_values
-from . import instacas
+#for exclusive device locks
+import fcntl
+import termios
+
+from .. import cas9core
+from .serial_base import (
+    SerialConnection,
+    SerialTimeout,
+)
+from .gpib_base import GPIBAddressed
 
 #from . import utilities
 
 
-class SerialError(Exception):
-    pass
+class USBPrologixGPIB(SerialConnection):
 
+    @cas9core.dproperty_ctree(default = None)
+    def device_path(self, val):
+        """
+        path to the serial block device, usually something in /dev/serial/by-id/. Can use
+        /dev/ttyUSBx, but it is better to use the identified values as they are stable through
+        restarts and connection order.
+        """
+        if val is not None and val.startswith('/dev/ttyUSB'):
+            warnings.warn("Currently using a generic device name {0}, please use objects in /dev/serial/by-id/ for serial-number keyed usb devices".format(val))
+        return val
 
-class SerialConnection(
-    instacas.CASUser,
-):
-    @declarative.dproperty
-    def rb_connected(self):
-        rb = relay_values.RelayBool(False)
+    @cas9core.dproperty_ctree(default = 1)
+    def poll_rate_s(self, val = 1):
+        """
+        Poll rate to attempt connections to the serial device in seconds
+        """
+        val = float(val)
+        assert(val > 0)
+        return val
+
+    @cas9core.dproperty_ctree(default = True)
+    def exclusive_lock(self, val):
+        """
+        Set the device into exclusive lock mode to prevent external manipulation
+        """
+        val = bool(val)
+        return val
+
+    @cas9core.dproperty
+    def rb_communicating(self):
+        rb = cas9core.RelayBool(False)
         self.cas_host(
             rb,
-            name = 'CONNECT',
+            name = 'COMM',
             writable = False,
         )
         return rb
 
-    @declarative.dproperty
-    def rb_running(self):
-        rb = relay_values.RelayBool(False)
-        self.cas_host(
-            rb,
-            name = 'RUNNING',
-            writable = False,
+    def address_gpib_create(self, GPIB_addr, **kwargs):
+        """
+        Requires standard name/parent/prefix kwargs too since it is an instance
+        """
+        return GPIBAddressed(
+            serial = self,
+            GPIB_addr = GPIB_addr,
         )
-        return rb
 
-    @declarative.dproperty
-    def rb_queued(self):
-        rb = relay_values.RelayBool(False)
-        self.cas_host(
-            rb,
-            name = 'QUEUED',
-            writable = False,
-        )
-        return rb
+    _serial_obj = None
 
-    @declarative.dproperty
-    def rv_error(self):
-        rv = relay_values.RelayValueString('')
-        self.cas_host(
-            rv,
-            name = 'ERROR',
-            writable = False,
-        )
-        return rv
+    def _connect_task(self):
+        assert(self._serial_obj is None)
+        try:
+            print("CHECKING: ", self.device_path)
+            sdev = serial.Serial(
+                self.device_path,
+                baudrate = 9600,  # doesn't matter for this device
+                timeout = 1,
+                xonxoff = 0,
+                rtscts  = 0
+            )
 
-    @declarative.dproperty
-    def _block_data(self):
-        return dict()
+            if self.exclusive_lock:
+                #https://stackoverflow.com/questions/49636520/how-do-you-check-if-a-serial-port-is-open-in-linux
+                #put an exclusive lock on the device!
+                fcntl.ioctl(sdev.fd, termios.TIOCEXCL)
 
-    @declarative.dproperty
-    def _blocks_queued(self):
-        return []
+            sdev.write('++mode 1\n')
+            #MUST Be in controller mode or auto will freeze the device!
+            sdev.write('++auto 0\n')
+            sdev.write('++ifc\n')
+
+        except serial.SerialException as E:
+            self.error(0, E.message)
+        else:
+            self._serial_obj = sdev
+            self.error.clear()
+            #stop this task
+            self.reactor.enqueue_looping(self._connect_task, period_s = None)
+
+            self.queue_clear()
+            self.rb_connected.assign(True)
+
+    @cas9core.dproperty
+    def _startup(self):
+        self.reactor.enqueue_looping(self._connect_task, period_s = self.poll_rate_s)
+
+    def run(self):
+        if self._serial_obj is not None:
+            try:
+                return super(USBPrologixGPIB, self).run()
+            except serial.SerialException as E:
+                self.error(0, E.message)
+                self._serial_obj = None
+                self.rb_connected.assign(False)
+                self.rb_communicating.assign(False)
+                self.reactor.enqueue_looping(self._connect_task, period_s = self.poll_rate_s)
+        else:
+            #TODO, print warning or something? can't do anything if device isn't connected
+            return
 
     def cmd_object(self):
         b = declarative.Bunch()
-        def writeline(line):
-            print("SERIAL: ", line)
-        b.writeline = writeline
-
-        def readline():
-            return '100'
-        b.readline = readline
+        b.writeline = self._device_writeline
+        b.readline  = self._device_readline
+        b.flush     = self._device_flush
+        b.reset_in  = self._device_reset_input
+        b.reset_out = self._device_reset_output
         return b
 
-    def block_enqueue(self, blockfunc):
-        self._block_data[blockfunc]
-        self._blocks_queued.append(blockfunc)
+    _debug_echo = False
+    def _device_writeline(self, line):
+        if self._debug_echo:
+            print("serialw:", line)
+        self._serial_obj.write(line + '\n')
+        return
 
-        self.reactor.enqueue_limited(self.run, future_s = .1, limit_s = 1)
+    def _device_readline(self, timeout_s = None):
+        if timeout_s is not None:
+            timeout_prev = self._serial_obj.timeout
 
-    def block_add(
-            self,
-            func,
-            ordering = None,
-            parent = None,
-            chain = [],
-            name = None,
-            prefix = None,
-    ):
-        """
-        if ordering is None then it may LAST or FIRST - NO GUARANTEE, otherwise they are sorted by ordering
+        try:
+            #gpib devices have a read mode which must be activated at start
+            self._serial_obj.write('++read eoi\n')
+            line = self._serial_obj.readline()
+            if line == '':
+                #can only happen if timeout occured
+                raise SerialTimeout("Timeout")
+        except Exception as E:
+            if self._debug_echo:
+                print("serialr:", E)
+            raise
+        else:
+            if self._debug_echo:
+                print("serialr:", line.strip())
+        finally:
+            if timeout_s is not None:
+                self._serial_obj.timeout = timeout_prev
 
-        returns a key-function that can be enqueued to indicate to run the serial block in its correct context. If called it enqueues itself
-        """
-        def block_func():
-            self.block_enqueue(block_func)
-        if name is not None:
-            if prefix is not None:
-                name = '_'.join(list(prefix) + [name])
-            block_func.__name__ = str(name)
+        return line.strip()
 
-        self._block_data[block_func] = dict(
-            func = func,
-            ordering = ordering,
-            parent = parent,
-            chain = list(chain),
-        )
-        #can add to chain later
-        return block_func
+    def _device_flush(self):
+        if self._debug_echo:
+            print("serial flush")
+        self._serial_obj.flush()
+        return
 
-    def block_chain(self, bfunc, *chains):
-        #TODO check that the chains are also block-functions
-        self._block_data[bfunc]['chain'].extend(chains)
+    def _device_reset_input(self):
+        if self._debug_echo:
+            print("serial reset input")
+        self._serial_obj.reset_input_buffer()
+        return
 
-    def run(self):
-        """
-        generates the block-chain run tree and serial command object through the block-parents and chains. Doesn't need to check for parent loop because that is prevented currently
-        through the block creation convention that parents are specified.
-        """
-        self.rb_running.assign(True)
+    def _device_reset_output(self):
+        if self._debug_echo:
+            print("serial reset output")
+        self._serial_obj.reset_output_buffer()
+        return
 
-        #first to bfunc completion
-        checked = set()
-        stack = list(self._blocks_queued)
-        #clear the previous list
-        self._blocks_queued[:] = []
 
-        plists = {
-            None : []
-        }
-        while stack:
-            bfunc = stack.pop()
-            if bfunc in checked:
-                continue
-            #plists[bfunc] = []
-            checked.add(bfunc)
-            bdata = self._block_data[bfunc]
-            stack.extend(bdata['chain'])
-
-            bparent = bdata['parent']
-            plist = plists.setdefault(bparent, [])
-            plist.append(bfunc)
-            if bparent is not None:
-                stack.append(bparent)
-
-        cmd = self.cmd_object()
-        #utilities.pprint(plists)
-
-        #get first list
-        def block_call(bfunc):
-            plist = plists.get(bfunc, [])
-            plist.sort(key = lambda bfunc: self._block_data[bfunc]["ordering"])
-            for bfunc in plist:
-                was_called = [False]
-                def remainder_call():
-                    was_called[0] = True
-                    return block_call(bfunc)
-                cmd.block_remainder = remainder_call
-                self._block_data[bfunc]["func"](cmd)
-                cmd.block_remainder = None
-                if not was_called[0]:
-                    remainder_call()
-
-        #call on the root parent
-        block_call(None)
-        #the block list is a sequence of bfunc, list pairs. The bfunc serial functions are called and any associated inner blocks are in the following sequence
-        self.rb_running.assign(False)
-        self.rb_queued.assign(False)
 
 

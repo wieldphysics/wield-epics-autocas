@@ -26,6 +26,7 @@ from .pcaspy_backend import (
 
 from .relay_values import (
     RelayValueFloat,
+    RelayValueFloatLowHighMod,
     RelayValueInt,
     RelayValueString,
     RelayValueLongString,
@@ -33,6 +34,8 @@ from .relay_values import (
     RelayValueCoerced,
     RelayValueRejected,
     RelayBool,
+    RelayBoolOnOff,
+    RelayBoolTF,
     RelayBoolNot,
     RelayBoolAll,
     RelayBoolAny,

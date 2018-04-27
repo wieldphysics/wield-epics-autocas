@@ -47,12 +47,12 @@ class AutoSave(autosave_base.AutoSaveBase):
         """
         return val
 
-    @cas9core.dproperty_ctree(default = 'bzip')
-    def zip_rollover_program(self, val):
-        """
-        Use this program to zip files as they rollover to take less space. If null, then the files will not be zipped. Good values are ['gzip', 'bzip']
-        """
-        return val
+    #@cas9core.dproperty_ctree(default = 'bzip')
+    #def zip_rollover_program(self, val):
+    #    """
+    #    Use this program to zip files as they rollover to take less space. If null, then the files will not be zipped. Good values are ['gzip', 'bzip']
+    #    """
+    #    return val
 
     @cas9core.dproperty_ctree(default = lambda self : path.abspath('./burt/'))
     def save_folder(self, val):

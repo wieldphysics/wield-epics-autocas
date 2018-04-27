@@ -412,7 +412,7 @@ class Reactor(object):
                 qdat_current.has_run = True
                 #set it to None so the later block can return the correct value
                 qdat_current = None
-            if mtime < qdat_current.mtime:
+            elif mtime < qdat_current.mtime:
                 #push up the run time and reinject the task
                 qdat_current.mtime = mtime
                 #have to specify because the closure of inner_task needs it

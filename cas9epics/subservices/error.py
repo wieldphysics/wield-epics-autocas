@@ -5,7 +5,7 @@ from __future__ import division, print_function, unicode_literals
 import declarative
 import contextlib
 
-from . import cas9core
+from .. import cas9core
 
 
 class RVError(cas9core.CASUser):
@@ -23,7 +23,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_level(self):
-        rv = cas9core.RelayValueInt(0)
+        rv = cas9core.RelayValueInt(10000)
         self.cas_host(
             rv, 'LEVEL',
             unit  = 'level',
@@ -37,9 +37,40 @@ class RVError(cas9core.CASUser):
         self.cas_host(
             rv, 'THR',
             unit  = 'level',
-            writable = False,
+            writable = True,
         )
         return rv
+
+    @declarative.dproperty
+    def rb_triggered(self):
+        rb = cas9core.RelayBool(False)
+        self.cas_host(
+            rb, 'TRG',
+            writable = False,
+        )
+        return rb
+
+    @declarative.dproperty
+    def rb_clear(self):
+        rb = cas9core.RelayBool(False)
+        self.cas_host(
+            rb, 'CLR',
+            writable = True,
+            burt = False,
+        )
+
+        def _clear_clear():
+            rb.value = False
+
+        def _clear_action(value):
+            if value:
+                self.rb_triggered.value = False
+                self.reactor.send_task(_clear_clear)
+
+        rb.register(
+            callback = _clear_action
+        )
+        return rb
 
     _holding    = False
     _level_temp = None
@@ -54,11 +85,21 @@ class RVError(cas9core.CASUser):
         else:
             if level < self.rv_level.value:
                 self.rv_level.value = level
-                self.rv_str.value   = msg
+                try:
+                    self.rv_str.value   = msg
+                except cas9core.RelayValueCoerced as E:
+                    self.rv_str.put_valid(E.preferred)
+                self.rb_triggered.value = True
+            elif level == self.rv_level.value:
+                try:
+                    self.rv_str.value   = msg
+                except cas9core.RelayValueCoerced as E:
+                    self.rv_str.put_valid(E.preferred)
 
     def clear(self):
         self.rv_str.value = ''
         self.rv_level.value = self.rv_thresh.value
+        self.rb_triggered.value = False
         return
 
     @contextlib.contextmanager
@@ -70,10 +111,19 @@ class RVError(cas9core.CASUser):
             self._level_temp = None
             self._str_temp = None
             yield
-            if self._level_temp is None or self._level_temp >= self.rv_thresh.value:
+            if self._level_temp is None or self._level_temp > self.rv_thresh.value:
                 self.rv_str.value = ''
                 self.rv_level.value = self.rv_thresh.value
+            elif self._level_temp == self.rv_thresh.value:
+                try:
+                    self.rv_str.value   = self._str_temp
+                except cas9core.RelayValueCoerced as E:
+                    self.rv_str.put_valid(E.preferred)
             else:
-                self.rv_str.value = self._str_temp
+                try:
+                    self.rv_str.value   = self._str_temp
+                except cas9core.RelayValueCoerced as E:
+                    self.rv_str.put_valid(E.preferred)
                 self.rv_level.value = self._level_temp
+                self.rb_triggered.value = True
             del self._holding

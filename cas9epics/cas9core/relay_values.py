@@ -24,15 +24,27 @@ class CASRelay(object):
             'burt' : True,
         }
 
-class CASRelayBool(CASRelay):
+class CASRelayBoolTF(CASRelay):
     """
     Mixin class to indicate that defaults exist for the CAS DB registration
     """
     def db_defaults(self):
         return {
-            'type' :'enum',
+            'type' : 'enum',
             'rv'   : self,
             "enums": ['False', 'True'],
+            'burt' : True,
+        }
+
+class CASRelayBoolOnOff(CASRelay):
+    """
+    Mixin class to indicate that defaults exist for the CAS DB registration
+    """
+    def db_defaults(self):
+        return {
+            'type' : 'enum',
+            'rv'   : self,
+            "enums": ['Off', 'On'],
             'burt' : True,
         }
 
@@ -66,6 +78,54 @@ class RelayValueFloat(CASRelay, RelayValueDecl):
             'type': 'float',
             'rv' :  self,
             'burt' : True,
+        }
+
+
+class RelayValueFloatLowHighMod(RelayValueFloat):
+    def validator(self, value):
+        try:
+            new_val = float(value)
+        except ValueError:
+            raise RelayValueRejected()
+
+        if self.modulo is not None:
+            new_val = new_val - new_val % self.modulo
+
+        if self.high_limit is not None and (new_val > self.high_limit):
+            raise RelayValueRejected()
+
+        if self.low_limit is not None and (new_val < self.low_limit):
+            raise RelayValueRejected()
+
+        if not np.isfinite(new_val):
+            raise RelayValueRejected()
+        if new_val != value:
+            raise RelayValueCoerced(new_val)
+        return new_val
+
+    def __init__(
+            self,
+            initial_value,
+            low    = None,
+            high   = None,
+            modulo = None,
+    ):
+        self.low_limit = low
+        self.high_limit = high
+        self.modulo = modulo
+        super(RelayValueFloatLowHighMod, self).__init__(initial_value)
+
+    def db_defaults(self):
+        return {
+            'type': 'float',
+            'rv' :  self,
+            'burt' : True,
+            'lolim' : self.low_limit,
+            'hilim' : self.high_limit,
+            'low'   : self.low_limit,
+            'high'  : self.high_limit,
+            'lolo'  : self.low_limit,
+            'hihi'  : self.high_limit,
         }
 
 
@@ -219,7 +279,13 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
         }
 
 
-class RelayBool(CASRelayBool, declarative.RelayBool):
+class RelayBool(CASRelayBoolOnOff, declarative.RelayBool):
+    pass
+
+class RelayBoolOnOff(CASRelayBoolOnOff, declarative.RelayBool):
+    pass
+
+class RelayBoolTF(CASRelayBoolTF, declarative.RelayBool):
     pass
 
 class RelayBoolNot(CASRelayBoolRO, declarative.RelayBoolNot):

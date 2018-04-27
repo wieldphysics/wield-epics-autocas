@@ -1,14 +1,14 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/test_serial.adl"
+	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/LOELF_IFR2023.adl"
 	version=030109
 }
 display {
 	object {
-		x=3841
-		y=162
-		width=575
-		height=933
+		x=4703
+		y=464
+		width=565
+		height=591
 	}
 	clr=14
 	bclr=4
@@ -97,18 +97,18 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="ALF"
+	textix="LO/ELF"
 	align="horiz. centered"
 }
 composite {
 	object {
-		x=98
-		y=774
+		x=77
+		y=433
 		width=400
 		height=125
 	}
 	"composite name"=""
-	"composite file"="COMMAND_RESPONSE.adl;CHN_PRFX=M1:SQZ-CMD2026_"
+	"composite file"="COMMAND_RESPONSE.adl;CHN_PRFX=M1:SQZ-CMD2023_"
 }
 "choice button" {
 	object {
@@ -118,7 +118,7 @@ composite {
 		height=20
 	}
 	control {
-		chan="M1:SQZ-SG2026_AUTOSET"
+		chan="M1:SQZ-SG2023_AUTOSET"
 		clr=14
 		bclr=4
 	}
@@ -153,35 +153,12 @@ text {
 composite {
 	object {
 		x=12
-		y=427
-		width=550
-		height=305
-	}
-	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_CLF2_"
-}
-composite {
-	object {
-		x=12
 		y=82
 		width=550
 		height=305
 	}
 	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_ALF_"
-}
-text {
-	object {
-		x=224
-		y=406
-		width=130
-		height=35
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="CLF2"
-	align="horiz. centered"
+	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2023_LOELF_"
 }
 text {
 	object {
@@ -193,7 +170,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Channel B"
+	textix="Channel A"
 	align="horiz. centered"
 }
 polyline {
@@ -211,34 +188,6 @@ polyline {
 		(138,93)
 	}
 }
-text {
-	object {
-		x=15
-		y=412
-		width=130
-		height=28
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Channel A"
-	align="horiz. centered"
-}
-polyline {
-	object {
-		x=20
-		y=436
-		width=119
-		height=0
-	}
-	"basic attribute" {
-		clr=14
-	}
-	points {
-		(20,436)
-		(139,436)
-	}
-}
 composite {
 	object {
 		x=18
@@ -247,17 +196,17 @@ composite {
 		height=24
 	}
 	"composite name"=""
-	"composite file"="SERIAL_STAT.adl;CHN_PRFX=M1:SQZ-SERIAL_"
+	"composite file"="SERIAL_STAT.adl;CHN_PRFX=M1:SQZ-GPIB_"
 }
 text {
 	object {
-		x=99
-		y=750
+		x=78
+		y=409
 		width=290
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="ALFCLF2 2026 Command Response"
+	textix="LOELF IFR2023 Command Response"
 }

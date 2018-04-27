@@ -26,6 +26,7 @@ class CADriverServer(pcaspy.Driver):
             if (str is not unicode) and isinstance(value, unicode):
                 value = str(value)
             self.setParam(channel, value)
+            self.updatePVs()
             pass
         return put_cb
 
@@ -230,7 +231,10 @@ class CADriverServer(pcaspy.Driver):
         elif ctype == 'int':
             ccount = self.db[channel].get('count', 1)
             if ccount == 1:
-                value = int(value)
+                try:
+                    value = int(value)
+                except ValueError:
+                    value = float(value)
             else:
                 value = np.asarray(value, dtype = int)
         elif ctype == 'enum':

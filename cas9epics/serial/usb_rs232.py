@@ -6,49 +6,57 @@ import warnings
 import serial
 import declarative
 
-from .. import relay_values
+#for exclusive device locks
+import fcntl
+import termios
+
 from .. import cas9core
-from . serial_base import SerialConnection
+from .serial_base import (
+    SerialConnection,
+    SerialError,
+    SerialTimeout,
+)
 
 #from . import utilities
 
 
 class USBDeviceRS232(SerialConnection):
 
-    @cas9core.dproperty
-    def device_path(self, val = None):
-        val = self.ctree.setdefault(
-            'device_path', val,
-            about = 'path to the serial block device, usually something in /dev/serial/by-id/'
-        )
-        if val.startswith('/dev/ttyUSB'):
+    @cas9core.dproperty_ctree(default = None)
+    def device_path(self, val):
+        """
+        path to the serial block device, usually something in /dev/serial/by-id/. Can use
+        /dev/ttyUSBx, but it is better to use the identified values as they are stable through
+        restarts and connection order.
+        """
+        if val is not None and val.startswith('/dev/ttyUSB'):
             warnings.warn("Currently using a generic device name {0}, please use objects in /dev/serial/by-id/ for serial-number keyed usb devices".format(val))
         return val
 
-    @cas9core.dproperty
+    @cas9core.dproperty_ctree(default = 1)
     def poll_rate_s(self, val = 1):
-        val = self.ctree.setdefault(
-            'poll_rate_s', val,
-            about = "Poll rate to attempt connections to the serial device in seconds"
-        )
+        """
+        Poll rate to attempt connections to the serial device in seconds
+        """
         val = float(val)
         assert(val > 0)
         return val
 
-    @cas9core.dproperty
-    def baud_rate(self, val = 9600):
-        val = self.ctree.setdefault(
-            'baud_rate', val,
-            about = "Baud Rate for the connection"
-        )
+    @cas9core.dproperty_ctree(default = 9600)
+    def baud_rate(self, val):
+        """
+        Baud Rate for the connection. Must match settings of device
+        """
+        val = int(val)
+        assert(val > 0)
         return val
 
-    @cas9core.dproperty
-    def parity(self, val = 'None'):
-        val = self.ctree.setdefault(
-            'parity', val,
-            about = "Parity of the connection, may be one of [N, O, E]",
-        )
+    @cas9core.dproperty_ctree(default = 'N')
+    def parity(self, val):
+        """
+        configtype : serial_parity
+        Parity of the connection, may be one of [N, O, E]. Must match settings of the device
+        """
         assert(val in ["N", "O", "E"])
         return val
 
@@ -70,9 +78,17 @@ class USBDeviceRS232(SerialConnection):
         assert(val in [7, 8])
         return val
 
+    @cas9core.dproperty_ctree(default = True)
+    def exclusive_lock(self, val):
+        """
+        Set the device into exclusive lock mode to prevent external manipulation
+        """
+        val = bool(val)
+        return val
+
     @cas9core.dproperty
     def rb_communicating(self):
-        rb = relay_values.RelayBool(False)
+        rb = cas9core.RelayBool(False)
         self.cas_host(
             rb,
             name = 'COMM',
@@ -96,6 +112,12 @@ class USBDeviceRS232(SerialConnection):
                 xonxoff = 0,
                 rtscts  = 0
             )
+
+            if self.exclusive_lock:
+                #https://stackoverflow.com/questions/49636520/how-do-you-check-if-a-serial-port-is-open-in-linux
+                #put an exclusive lock on the device!
+                fcntl.ioctl(sdev.fd, termios.TIOCEXCL)
+
         except serial.SerialException as E:
             self.error(0, E.message)
         else:
@@ -128,28 +150,56 @@ class USBDeviceRS232(SerialConnection):
     def cmd_object(self):
         b = declarative.Bunch()
         b.writeline = self._device_writeline
-        b.readline  = self._device_writeline
+        b.readline  = self._device_readline
         b.flush     = self._device_flush
         b.reset_in  = self._device_reset_input
         b.reset_out = self._device_reset_output
         return b
 
+    _debug_echo = False
     def _device_writeline(self, line):
+        if self._debug_echo:
+            print("serialw:", line)
         self._serial_obj.write(line + '\n')
         return
 
-    def _device_readline(self):
-        return self._serial_obj.readline()
+    def _device_readline(self, timeout_s = None):
+        if timeout_s is not None:
+            timeout_prev = self._serial_obj.timeout
+
+        try:
+            line = self._serial_obj.readline()
+            if line == '':
+                #can only happen if timeout occured
+                raise SerialTimeout("Timeout")
+        except Exception as E:
+            if self._debug_echo:
+                print("serialr:", E)
+            raise
+        else:
+            if self._debug_echo:
+                print("serialr:", line.strip())
+        finally:
+            if timeout_s is not None:
+                self._serial_obj.timeout = timeout_prev
+
+        return line.strip()
 
     def _device_flush(self):
+        if self._debug_echo:
+            print("serial flush")
         self._serial_obj.flush()
         return
 
     def _device_reset_input(self):
+        if self._debug_echo:
+            print("serial reset input")
         self._serial_obj.reset_input_buffer()
         return
 
     def _device_reset_output(self):
+        if self._debug_echo:
+            print("serial reset output")
         self._serial_obj.reset_output_buffer()
         return
 

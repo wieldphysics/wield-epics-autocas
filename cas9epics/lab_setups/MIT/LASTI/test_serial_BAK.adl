@@ -5,9 +5,9 @@ file {
 }
 display {
 	object {
-		x=3841
-		y=162
-		width=575
+		x=3468
+		y=228
+		width=1050
 		height=933
 	}
 	clr=14
@@ -102,8 +102,8 @@ text {
 }
 composite {
 	object {
-		x=98
-		y=774
+		x=610
+		y=174
 		width=400
 		height=125
 	}
@@ -112,8 +112,8 @@ composite {
 }
 "choice button" {
 	object {
-		x=426
-		y=33
+		x=414
+		y=16
 		width=135
 		height=20
 	}
@@ -126,8 +126,8 @@ composite {
 }
 text {
 	object {
-		x=380
-		y=29
+		x=368
+		y=12
 		width=42
 		height=12
 	}
@@ -139,8 +139,8 @@ text {
 }
 text {
 	object {
-		x=380
-		y=38
+		x=368
+		y=21
 		width=42
 		height=12
 	}
@@ -241,23 +241,11 @@ polyline {
 }
 composite {
 	object {
-		x=18
-		y=29
+		x=46
+		y=11
 		width=268
 		height=24
 	}
 	"composite name"=""
 	"composite file"="SERIAL_STAT.adl;CHN_PRFX=M1:SQZ-SERIAL_"
-}
-text {
-	object {
-		x=99
-		y=750
-		width=290
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ALFCLF2 2026 Command Response"
 }

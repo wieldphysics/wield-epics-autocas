@@ -27,7 +27,7 @@ __NOARG = declarative.utilities.unique_generator()
 NOARG = declarative.NOARG
 
 
-def dproperty_ctree(func = None, default = __NOARG):
+def dproperty_ctree(func = None, default = __NOARG, name = None):
     """
     automatically grabs the value from the ctree to pass along. The function being wrapped should do the string conversion and validation.
     The doctstring is inserted into the ctree about field. A default may be passed as well. If the default is a function, then it is assumed to
@@ -50,17 +50,21 @@ def dproperty_ctree(func = None, default = __NOARG):
 
     """
     def deferred(func):
+        if name is None:
+            usename = func.__name__
+        else:
+            usename = name
         if default is __NOARG:
             def superfunc(self, val):
                 val = self.ctree.setdefault(
-                    func.__name__, val,
+                    usename, val,
                     about = func.__doc__,
                 )
                 return func(self, val)
         elif not callable(default):
             def superfunc(self, val = default):
                 val = self.ctree.setdefault(
-                    func.__name__, val,
+                    usename, val,
                     about = func.__doc__,
                 )
                 return func(self, val)
@@ -69,7 +73,7 @@ def dproperty_ctree(func = None, default = __NOARG):
                 if val is __NOARG:
                     val = default(self)
                 val = self.ctree.setdefault(
-                    func.__name__, val,
+                    usename, val,
                     about = func.__doc__,
                 )
                 return func(self, val)

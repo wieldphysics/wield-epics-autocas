@@ -5,30 +5,44 @@ from __future__ import division, print_function, unicode_literals
 
 import cas9epics
 from cas9epics import serial
+from cas9epics.devices.IFR2023 import IFR2023
 
 
-class IFR2026Controller(cas9epics.CAS9Module):
-    def serial(val):
-        return serial.SerialConnection(
-            name = 'SERIAL',
+class IFR2023Controller(cas9epics.CAS9Module):
+    @cas9epics.dproperty
+    def gpib(self):
+        return serial.USBPrologixGPIB(
+            name = 'GPIB',
+            parent = self,
+            _debug_echo = True,
+        )
+
+    @cas9epics.dproperty
+    def gpibLOELF(self):
+        return self.gpib.address_gpib_create(
+            GPIB_addr = '0',
+            parent = self,
+            name = 'GPIB_LOELF'
+        )
+
+    @cas9epics.dproperty
+    def siggen2023(self):
+        return IFR2023(
+            serial = self.gpibLOELF,
+            name   = 'sg2023',
             parent = self,
         )
 
-    def siggen2026(val):
-        return serial.SerialConnection(
-            serial = self.serial,
-            name   = 'sg2026',
+    @cas9epics.dproperty
+    def cmd2023(self):
+        return serial.SerialCommandResponse(
+            serial = self.gpibLOELF,
+            name   = 'cmd2023',
             parent = self,
         )
+
 
 if __name__ == "__main__":
-    root = instacas.InstaCAS()
-    print(myserial.prefix_full)
-    print(my2026.chnB.prefix_full)
-
-    #print(root.rv_names)
-    #print(root.rv_db)
-    #print(root.cas_db_generate())
-    for pv_name, db in root.cas_db_generate().items():
-        print("PV: ", pv_name)
-    root.run()
+    IFR2023Controller.cmdline(
+        module_name_base = 'LOELF',
+    )
