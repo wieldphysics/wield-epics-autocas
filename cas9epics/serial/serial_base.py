@@ -178,11 +178,11 @@ class SerialSubBlock(
 
     @declarative.dproperty
     def serial(self, val):
-        return
+        return val
 
     @declarative.dproperty
     def rb_connected(self):
-        rb = self.serial.rb_connected
+        rb = cas9core.RelayBoolAll([self.serial.rb_connected])
         self.cas_host(
             rb,
             name = 'CONNECT',
@@ -192,7 +192,7 @@ class SerialSubBlock(
 
     @declarative.dproperty
     def rb_running(self):
-        rb = self.serial.rb_running
+        rb = cas9core.RelayBoolAll([self.serial.rb_running])
         self.cas_host(
             rb,
             name = 'RUNNING',
@@ -213,10 +213,10 @@ class SerialSubBlock(
         raise NotImplementedError("Subclasses must override!")
 
     def cmd_object(self):
-        self.serial.cmd_object()
+        return self.serial.cmd_object()
 
     def block_enqueue(self, blockfunc):
-        self.serial.block_enqueue(blockfunc)
+        return self.serial.block_enqueue(blockfunc)
 
     def queue_clear(self):
         self.serial.queue_clear()
@@ -237,7 +237,8 @@ class SerialSubBlock(
         if parent is None:
             parent = self.SB_parent
 
-        self.serial.block_add(
+        return self.serial.block_add(
+            func,
             ordering = ordering,
             parent   = parent,
             chain    = chain,
@@ -246,12 +247,12 @@ class SerialSubBlock(
         )
 
     def block_chain(self, bfunc, *chains):
-        self.serial.block_chain(bfunc, *chains)
+        return self.serial.block_chain(bfunc, *chains)
 
     def run(self):
         """
         """
         #TODO could make a queue separator and do runs that way...
-        self.serial.run()
+        return self.serial.run()
 
 

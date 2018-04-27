@@ -67,6 +67,7 @@ class USBPrologixGPIB(SerialConnection):
         return GPIBAddressed(
             serial = self,
             GPIB_addr = GPIB_addr,
+            **kwargs
         )
 
     _serial_obj = None

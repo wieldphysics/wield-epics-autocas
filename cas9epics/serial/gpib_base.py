@@ -22,6 +22,21 @@ class GPIBAddressed(SerialSubBlock):
         return self.SB_addressed_block
 
     @cas9core.dproperty
+    def rb_communicating(self):
+        rb = cas9core.RelayBool(False)
+        self.cas_host(
+            rb,
+            name = 'COMM',
+            writable = False,
+        )
+
+        def pass_up(value):
+            self.serial.rb_communicating.put(value)
+
+        rb.register(callback = pass_up)
+        return rb
+
+    @cas9core.dproperty
     def SB_addressed_block(self):
         def action_sequence(cmd):
             cmd.writeline('++addr {0}'.format(self.GPIB_addr))

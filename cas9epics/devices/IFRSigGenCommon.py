@@ -116,7 +116,7 @@ class IFRSigGenChannel(
     def SB_freq_RB(self):
         #two groups 0: the frequency in Hz 1: The increment in Hz
         #the last group allows parsing 2026 and 2023 return values
-        re_FREQVALUE = re.compile('^:CFRQ:VALUE ({0});INC ({0})$(?:|;MODE FIXED)'.format(float_re))
+        re_FREQVALUE = re.compile('^:CFRQ:VALUE ({0});INC ({0})(?:|;MODE FIXED)$'.format(float_re))
 
         def action_sequence(cmd):
             cmd.writeline('CFRQ?')
@@ -506,12 +506,12 @@ class IFRSigGenChannelFM(
     @cas9core.dproperty
     def SB_FM_RB(self):
         #two groups 0: the frequency devn in Hz, 1: the coupling mode; 2: the local on/off; 3: the increment value
-        re_FREQVALUE = re.compile('^:FM:DEVN ({0});(INT|EXTAC|EXTALC|EXTDC);(ON|OFF);INC ({0})$'.format(float_re))
+        re_DEVNVALUE = re.compile('^:FM:DEVN ({0});(INT|EXTAC|EXTALC|EXTDC)\s*;(ON|OFF)\s*;INC ({0})$'.format(float_re))
 
         def action_sequence(cmd):
             cmd.writeline('FM?')
             response = cmd.readline()
-            match = re_FREQVALUE.match(response)
+            match = re_DEVNVALUE.match(response)
             if not match:
                 raise SerialError("FM Query: {0}".format(response))
 

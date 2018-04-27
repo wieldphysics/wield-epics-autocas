@@ -22,7 +22,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
         return self.gpib.address_gpib_create(
             GPIB_addr = '0',
             parent = self,
-            name = 'GPIB_LOELF'
+            name = 'GPIB_LOELF',
         )
 
     @cas9epics.dproperty

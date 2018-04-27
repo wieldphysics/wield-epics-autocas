@@ -69,6 +69,7 @@ class IFR2023(
                     cmd.block_remainder()
                 except SerialError as E:
                     self.serial.error(1, E.message)
+                    print(self, "ERROR", E.message)
                 else:
                     self.serial.rb_communicating.put(True)
 

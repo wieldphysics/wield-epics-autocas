@@ -377,7 +377,11 @@ class CASCollector(declarative.OverridableObject):
 
         if cdb is not None:
             prefix = cdb.setdefault('prefix', prefix, about = "Prefix to construct the PV channel name")
-        self.rv_names[rv] = list(prefix) + [name]
+
+        chn_name = list(prefix) + [name]
+        if self.rv_names.get(rv, None) is not None:
+            raise RuntimeError("Can't host the same RV with different names (yet) hosting {0} and {1}".format(self.rv_names.get(rv), chn_name))
+        self.rv_names[rv] = chn_name
 
         if isinstance(rv, relay_values.CASRelay):
             db = rv.db_defaults()
