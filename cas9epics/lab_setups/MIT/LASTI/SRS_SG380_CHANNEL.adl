@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/SG_CHANNEL.adl"
+	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/SRS_SG380_CHANNEL.adl"
 	version=030109
 }
 display {
@@ -122,7 +122,7 @@ rectangle {
 }
 "text entry" {
 	object {
-		x=358
+		x=309
 		y=28
 		width=200
 		height=28
@@ -140,7 +140,7 @@ rectangle {
 	object {
 		x=20
 		y=31
-		width=203
+		width=150
 		height=22
 	}
 	monitor {
@@ -155,9 +155,9 @@ rectangle {
 }
 "text entry" {
 	object {
-		x=358
+		x=309
 		y=63
-		width=200
+		width=120
 		height=28
 	}
 	control {
@@ -170,7 +170,7 @@ rectangle {
 }
 text {
 	object {
-		x=226
+		x=177
 		y=69
 		width=130
 		height=15
@@ -185,7 +185,7 @@ text {
 	object {
 		x=19
 		y=66
-		width=203
+		width=150
 		height=22
 	}
 	monitor {
@@ -199,7 +199,7 @@ text {
 }
 text {
 	object {
-		x=226
+		x=177
 		y=35
 		width=130
 		height=15
@@ -212,7 +212,7 @@ text {
 }
 "text update" {
 	object {
-		x=90
+		x=36
 		y=99
 		width=130
 		height=28
@@ -229,7 +229,7 @@ text {
 }
 text {
 	object {
-		x=223
+		x=174
 		y=107
 		width=130
 		height=15
@@ -242,7 +242,7 @@ text {
 }
 "choice button" {
 	object {
-		x=357
+		x=308
 		y=98
 		width=135
 		height=28
@@ -267,7 +267,7 @@ rectangle {
 }
 "text update" {
 	object {
-		x=90
+		x=36
 		y=136
 		width=130
 		height=28
@@ -284,7 +284,7 @@ rectangle {
 }
 text {
 	object {
-		x=223
+		x=174
 		y=144
 		width=130
 		height=15
@@ -297,7 +297,7 @@ text {
 }
 "choice button" {
 	object {
-		x=357
+		x=308
 		y=135
 		width=135
 		height=28
@@ -322,7 +322,7 @@ rectangle {
 }
 text {
 	object {
-		x=226
+		x=177
 		y=179
 		width=130
 		height=15
@@ -337,11 +337,11 @@ text {
 	object {
 		x=19
 		y=176
-		width=203
+		width=150
 		height=22
 	}
 	monitor {
-		chan="$(CHN_PRFX)MODMODE_RB"
+		chan="$(CHN_PRFX)MOD_TYPE_RB"
 		clr=14
 		bclr=4
 	}
@@ -353,18 +353,7 @@ text {
 rectangle {
 	object {
 		x=12
-		y=243
-		width=550
-		height=33
-	}
-	"basic attribute" {
-		clr=3
-	}
-}
-rectangle {
-	object {
-		x=12
-		y=206
+		y=279
 		width=550
 		height=33
 	}
@@ -374,8 +363,8 @@ rectangle {
 }
 "text entry" {
 	object {
-		x=358
-		y=209
+		x=309
+		y=282
 		width=200
 		height=28
 	}
@@ -390,8 +379,8 @@ rectangle {
 }
 text {
 	object {
-		x=226
-		y=215
+		x=177
+		y=288
 		width=130
 		height=15
 	}
@@ -404,8 +393,8 @@ text {
 "text update" {
 	object {
 		x=19
-		y=212
-		width=203
+		y=285
+		width=150
 		height=22
 	}
 	monitor {
@@ -418,54 +407,10 @@ text {
 	limits {
 	}
 }
-"text update" {
-	object {
-		x=93
-		y=246
-		width=130
-		height=28
-	}
-	monitor {
-		chan="$(CHN_PRFX)FM_MODSTAT_RB"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="engr. notation"
-	limits {
-	}
-}
-text {
-	object {
-		x=226
-		y=254
-		width=130
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FM MOD On/Off"
-	align="horiz. centered"
-}
-"choice button" {
-	object {
-		x=360
-		y=245
-		width=135
-		height=28
-	}
-	control {
-		chan="$(CHN_PRFX)FM_MODSTAT"
-		clr=14
-		bclr=4
-	}
-	stacking="column"
-}
 rectangle {
 	object {
 		x=12
-		y=281
+		y=316
 		width=550
 		height=33
 	}
@@ -475,8 +420,8 @@ rectangle {
 }
 "text update" {
 	object {
-		x=93
-		y=284
+		x=39
+		y=319
 		width=130
 		height=28
 	}
@@ -492,8 +437,8 @@ rectangle {
 }
 text {
 	object {
-		x=226
-		y=292
+		x=177
+		y=327
 		width=130
 		height=15
 	}
@@ -527,4 +472,158 @@ text {
 		clr=14
 	}
 	textix="Set"
+}
+rectangle {
+	object {
+		x=12
+		y=206
+		width=550
+		height=33
+	}
+	"basic attribute" {
+		clr=3
+	}
+}
+"text entry" {
+	object {
+		x=309
+		y=209
+		width=200
+		height=28
+	}
+	control {
+		chan="$(CHN_PRFX)FM_FDEV"
+		clr=14
+		bclr=4
+	}
+	format="engr. notation"
+	limits {
+	}
+}
+text {
+	object {
+		x=177
+		y=215
+		width=130
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FM FDEV [Hz]"
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=19
+		y=212
+		width=150
+		height=22
+	}
+	monitor {
+		chan="$(CHN_PRFX)FM_FDEV_RB"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="engr. notation"
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=12
+		y=242
+		width=550
+		height=33
+	}
+	"basic attribute" {
+		clr=3
+	}
+}
+text {
+	object {
+		x=177
+		y=251
+		width=130
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mod Func"
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=19
+		y=248
+		width=150
+		height=22
+	}
+	monitor {
+		chan="$(CHN_PRFX)FM_MOD_FUNC_RB"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="engr. notation"
+	limits {
+	}
+}
+"choice button" {
+	object {
+		x=310
+		y=318
+		width=135
+		height=28
+	}
+	control {
+		chan="$(CHN_PRFX)FM_CPLG"
+		clr=14
+		bclr=4
+	}
+	stacking="column"
+}
+menu {
+	object {
+		x=309
+		y=174
+		width=100
+		height=26
+	}
+	control {
+		chan="$(CHN_PRFX)MOD_TYPE"
+		clr=39
+		bclr=5
+	}
+}
+menu {
+	object {
+		x=309
+		y=246
+		width=100
+		height=26
+	}
+	control {
+		chan="$(CHN_PRFX)FM_MOD_FUNC"
+		clr=39
+		bclr=5
+	}
+}
+indicator {
+	object {
+		x=433
+		y=64
+		width=120
+		height=26
+	}
+	monitor {
+		chan="$(CHN_PRFX)LEVEL_SET"
+		clr=14
+		bclr=4
+	}
+	label="outline"
+	limits {
+	}
 }

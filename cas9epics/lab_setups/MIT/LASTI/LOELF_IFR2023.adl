@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=4703
-		y=464
+		x=4869
+		y=320
 		width=565
 		height=591
 	}
@@ -158,7 +158,7 @@ composite {
 		height=305
 	}
 	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2023_LOELF_"
+	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_LOELF_"
 }
 text {
 	object {
@@ -191,7 +191,7 @@ polyline {
 composite {
 	object {
 		x=18
-		y=29
+		y=9
 		width=268
 		height=24
 	}
@@ -209,4 +209,14 @@ text {
 		clr=14
 	}
 	textix="LOELF IFR2023 Command Response"
+}
+composite {
+	object {
+		x=18
+		y=34
+		width=268
+		height=24
+	}
+	"composite name"=""
+	"composite file"="SERIAL_STAT.adl;CHN_PRFX=M1:SQZ-GPIB_LOELF_"
 }

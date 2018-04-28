@@ -309,7 +309,7 @@ class IFRSigGenChannel(
             action_sequence,
             ordering = 0,
             parent   = self.SB_parent,
-            name = 'modmode_RB',
+            name = 'modmode_RP',
             prefix = self.prefix_full,
         )
         self.SBlist_readbacks.append(block)
@@ -382,7 +382,7 @@ class IFRSigGenChannel(
             action_sequence,
             ordering = 10,
             parent   = self.SB_parent,
-            name = 'mod_status_RB',
+            name = 'level_RB',
             prefix = self.prefix_full,
         )
         self.SBlist_readbacks.append(block)

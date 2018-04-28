@@ -96,7 +96,7 @@ byte {
 	}
 	monitor {
 		chan="$(CHN_PRFX)CONNECT"
-		clr=17
+		clr=15
 		bclr=23
 	}
 	sbit=0
@@ -110,7 +110,7 @@ byte {
 	}
 	monitor {
 		chan="$(CHN_PRFX)COMM"
-		clr=17
+		clr=15
 		bclr=23
 	}
 	sbit=0
@@ -125,7 +125,7 @@ byte {
 	monitor {
 		chan="$(CHN_PRFX)ERR_TRG"
 		clr=20
-		bclr=17
+		bclr=18
 	}
 	sbit=0
 }

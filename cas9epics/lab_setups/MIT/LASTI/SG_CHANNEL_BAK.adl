@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/SG_CHANNEL.adl"
+	name="SG_CHANNEL.adl"
 	version=030109
 }
 display {
@@ -165,6 +165,7 @@ rectangle {
 		clr=14
 		bclr=4
 	}
+	format="engr. notation"
 	limits {
 	}
 }
@@ -194,6 +195,7 @@ text {
 		bclr=4
 	}
 	align="horiz. right"
+	format="engr. notation"
 	limits {
 	}
 }

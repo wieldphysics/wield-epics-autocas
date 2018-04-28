@@ -90,10 +90,17 @@ class SerialConnection(
         """
         if ordering is None then it may LAST or FIRST - NO GUARANTEE, otherwise they are sorted by ordering
 
-        returns a key-function that can be enqueued to indicate to run the serial block in its correct context. If called it enqueues itself
+        returns a key-function that enqueues itself to indicate to run the serial block in its correct context.
+        If called it enqueues itself and enqueues the run operation in the reactor
         """
-        def block_func():
+        def block_func(*args, **kwargs):
+            """
+            Takes arguments but does not use them so that it can be called/triggered from callbacks
+
+            This object is used as a bfunc-key for ordering purposes. It may be called to enqueue itself
+            """
             self.block_enqueue(block_func)
+            self.reactor.enqueue(self.run, future_s = .5)
         if name is not None:
             if prefix is not None:
                 name = '_'.join(list(prefix) + [name])
