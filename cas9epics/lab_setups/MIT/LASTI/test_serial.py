@@ -46,7 +46,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
     @cas9epics.dproperty
     def gpibCLF2ALF(self):
         return self.gpib.address_gpib_create(
-            GPIB_addr = '1',
+            GPIB_addr = '30',
             parent = self,
             name = 'GPIB_CLF2ALF',
         )
