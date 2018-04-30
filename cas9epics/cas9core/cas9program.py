@@ -12,7 +12,7 @@ import socket
 
 from . import cas9core
 
-from .program.config import pytoml
+from ..config import pytoml
 
 def config_dumps(dddict):
     return pytoml.dumps(dddict)

@@ -150,10 +150,19 @@ class _Source:
         self.backtrack_stack.append((self.s, self._pos))
 
     def __exit__(self, type, value, traceback):
+        """
+        Allows the parser to handle non-matches within the with statement. It is generally
+        used in a function that speculatively tries to parse a statment one way (see _p_key),
+        if successful, the function returns from within the "with" statement, this function pushes
+        the backtracker with the pop statment. If unsuccessful, some internal consume/expect function
+        will throw an error, this will see it and then backtrack. It reraises only if the throw is actually
+        an error type.
+        """
         if type is None:
             self.backtrack_stack.pop()
         else:
             self.s, self._pos = self.backtrack_stack.pop()
+        #suppresses the exception for TomlError, which should really be called something other than an error
         return type == TomlError
 
     def commit(self):
@@ -204,6 +213,7 @@ def _p_basicstr_content(s, content=_basicstr_re):
 
 _key_re = re.compile(r'[0-9a-zA-Z-_]+')
 def _p_key(s):
+    #speculative parse using backtracking context manager
     with s:
         s.expect('"')
         r = _p_basicstr_content(s, _basicstr_re)
@@ -280,6 +290,7 @@ def _p_value(s):
 
     if s.consume('['):
         items = []
+        #speculative parse using backtracking context manager
         with s:
             while True:
                 _p_ews(s)
@@ -317,7 +328,7 @@ def _p_value(s):
 
 def _p_stmt(s):
     pos = s.pos()
-    if s.consume(   '['):
+    if s.consume('['):
         is_array = s.consume('[')
         _p_ws(s)
         keys = [_p_key(s)]
@@ -340,8 +351,12 @@ def _p_stmt(s):
 
 _stmtsep_re = re.compile(r'(?:[ \t]*(?:#[^\n]*)?\n)+[ \t]*')
 def _p_toml(s):
+    """
+    TODO: Make this a generator so as to not parse the whole thing at once
+    """
     stmts = []
     _p_ews(s)
+    #speculative parse using backtracking context manager
     with s:
         stmts.append(_p_stmt(s))
         while True:
@@ -349,6 +364,8 @@ def _p_toml(s):
             s.expect_re(_stmtsep_re)
             stmts.append(_p_stmt(s))
     _p_ews(s)
+    #will have weird errors since the only true unsuccessful parse is that it hits EOF
+    #due to other unsuccessful parse...
     s.expect_eof()
     return stmts
 
