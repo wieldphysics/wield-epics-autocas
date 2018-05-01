@@ -5,23 +5,10 @@ from __future__ import division, print_function, unicode_literals
 import sys
 from .. import cas9core
 from ..serial import SerialError
+from .serial_device import SerialDevice, SerialUser
 
 
-class SRS_SG380(
-    cas9core.CASUser,
-):
-    @cas9core.dproperty
-    def serial(self, val):
-        return val
-
-    @cas9core.dproperty
-    def SBlist_readbacks(self):
-        return []
-
-    @cas9core.dproperty
-    def SBlist_setters(self):
-        return []
-
+class SRS_SG380(SerialDevice):
     @cas9core.dproperty
     def rb_autoset(self):
         rb = cas9core.RelayBool(False)
@@ -115,29 +102,8 @@ class SRS_SG380(
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-class SRS_SG380_Chn(
-    cas9core.CASUser,
-):
+class SRS_SG380_Chn(SerialUser):
     "Must be hosted by a IFR2026"
-
-    @cas9core.dproperty
-    def serial(self):
-        return self.parent.serial
-
-    @cas9core.dproperty
-    def SBlist_readbacks(self):
-        return []
-
-    @cas9core.dproperty
-    def SBlist_setters(self):
-        return []
-
-    @cas9core.dproperty
-    def SB_parent(self, val = None):
-        """
-        Parent serial-block
-        """
-        return val
 
     @cas9core.dproperty
     def FM(self):
@@ -515,32 +481,10 @@ class SRS_SG380_Chn(
         return block
 
 
-class SRS_SG380_FM(
-    cas9core.CASUser,
-):
+class SRS_SG380_FM(SerialUser):
     """
     Must be hosted by a SRS_SG380Channel
     """
-
-    @cas9core.dproperty
-    def serial(self):
-        return self.parent.serial
-
-    @cas9core.dproperty
-    def SB_parent(self, val):
-        """
-        Parent serial-block used for FM control
-        """
-        return val
-
-    @cas9core.dproperty
-    def SBlist_readbacks(self):
-        return []
-
-    @cas9core.dproperty
-    def SBlist_setters(self):
-        return []
-
     @cas9core.dproperty_ctree(default = 1)
     def FM_fdev_limit_low(self, val):
         assert(val > 0)

@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/SERIAL_STAT.adl"
+	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/SERIAL_STAT.adl"
 	version=030109
 }
 display {
@@ -160,7 +160,7 @@ text {
 }
 "text entry" {
 	object {
-		x=220
+		x=310
 		y=21
 		width=20
 		height=12
@@ -175,7 +175,7 @@ text {
 }
 "text update" {
 	object {
-		x=200
+		x=239
 		y=23
 		width=20
 		height=11
@@ -193,7 +193,7 @@ text {
 	object {
 		x=81
 		y=32
-		width=203
+		width=250
 		height=10
 	}
 	monitor {
@@ -207,7 +207,7 @@ text {
 }
 composite {
 	object {
-		x=240
+		x=264
 		y=21
 		width=44
 		height=13
@@ -216,7 +216,7 @@ composite {
 	children {
 		"message button" {
 			object {
-				x=242
+				x=266
 				y=21
 				width=40
 				height=13
@@ -231,7 +231,7 @@ composite {
 		}
 		rectangle {
 			object {
-				x=240
+				x=264
 				y=21
 				width=44
 				height=12

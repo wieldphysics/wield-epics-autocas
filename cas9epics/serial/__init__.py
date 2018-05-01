@@ -20,6 +20,10 @@ from .command_response import (
     SerialCommandResponse,
 )
 
+from .VXI11 import (
+    VXI11Connection,
+)
+
 
 
 

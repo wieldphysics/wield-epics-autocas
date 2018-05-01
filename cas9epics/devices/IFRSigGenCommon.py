@@ -5,34 +5,14 @@ from __future__ import division, print_function, unicode_literals
 from .. import cas9core
 from ..serial import SerialError
 import re
+from .serial_device import SerialUser
 
 
 float_re = r'[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?'
 
 
-class IFRSigGenChannel(
-    cas9core.CASUser,
-):
-    "Must be hosted by a IFR2026"
-
-    @cas9core.dproperty
-    def serial(self):
-        return self.parent.serial
-
-    @cas9core.dproperty
-    def SBlist_readbacks(self):
-        return []
-
-    @cas9core.dproperty
-    def SBlist_setters(self):
-        return []
-
-    @cas9core.dproperty
-    def SB_parent(self, val):
-        """
-        Parent serial-block
-        """
-        return val
+class IFRSigGenChannel(SerialUser):
+    "Must be hosted by a IFR2026 or IFR 2023"
 
     @cas9core.dproperty
     def FM(self):
@@ -389,32 +369,10 @@ class IFRSigGenChannel(
         return block
 
 
-class IFRSigGenChannelFM(
-    cas9core.CASUser,
-):
+class IFRSigGenChannelFM(SerialUser):
     """
     Must be hosted by a IFRSigGenChannel
     """
-
-    @cas9core.dproperty
-    def serial(self):
-        return self.parent.serial
-
-    @cas9core.dproperty
-    def SB_parent(self, val):
-        """
-        Parent serial-block used for FM control
-        """
-        return val
-
-    @cas9core.dproperty
-    def SBlist_readbacks(self):
-        return []
-
-    @cas9core.dproperty
-    def SBlist_setters(self):
-        return []
-
     @cas9core.dproperty_ctree(default = 1)
     def FM_devn_limit_low(self, val):
         assert(val > 0)

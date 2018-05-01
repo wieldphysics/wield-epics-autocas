@@ -6,7 +6,7 @@ from __future__ import division, print_function, unicode_literals
 import cas9epics
 from cas9epics import serial
 from cas9epics.devices.IFR2023 import IFR2023
-from cas9epics.devices.IFR2026 import IFR2026
+#from cas9epics.devices.IFR2026 import IFR2026
 from cas9epics.devices.SRS_SG380 import SRS_SG380
 
 
@@ -43,29 +43,30 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent = self,
         )
 
-    @cas9epics.dproperty
-    def gpibCLF2ALF(self):
-        return self.gpib.address_gpib_create(
-            GPIB_addr = '30',
-            parent = self,
-            name = 'GPIB_CLF2ALF',
-        )
+    ##Not functioning well over GPIB, so running separately over RS232
+    #@cas9epics.dproperty
+    #def gpibCLF2ALF(self):
+    #    return self.gpib.address_gpib_create(
+    #        GPIB_addr = '30',
+    #        parent = self,
+    #        name = 'GPIB_CLF2ALF',
+    #    )
+    #
+    #@cas9epics.dproperty
+    #def CLF2ALF_IFR2026(self):
+    #    return IFR2026(
+    #        serial = self.gpibCLF2ALF,
+    #        name   = 'CLF2ALF',
+    #        parent = self,
+    #    )
 
-    @cas9epics.dproperty
-    def CLF2ALF_IFR2026(self):
-        return IFR2026(
-            serial = self.gpibCLF2ALF,
-            name   = 'CLF2ALF',
-            parent = self,
-        )
-
-    @cas9epics.dproperty
-    def CLF2ALF_cmd(self):
-        return serial.SerialCommandResponse(
-            serial = self.gpibCLF2ALF,
-            name   = 'CLF2ALF_CMD',
-            parent = self,
-        )
+    #@cas9epics.dproperty
+    #def CLF2ALF_cmd(self):
+    #    return serial.SerialCommandResponse(
+    #        serial = self.gpibCLF2ALF,
+    #        name   = 'CLF2ALF_CMD',
+    #        parent = self,
+    #    )
 
     @cas9epics.dproperty
     def gpibFCG(self):

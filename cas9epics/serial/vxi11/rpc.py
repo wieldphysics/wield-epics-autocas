@@ -260,7 +260,7 @@ def recvrecord(sock):
 
 class RawTCPClient(Client):
     def __init__(self, host, prog, vers, port, timeout_s = None):
-        super(RawTCPClient, self).__init__(self, host, prog, vers, port)
+        super(RawTCPClient, self).__init__(host, prog, vers, port)
         self.connect(timeout_s = timeout_s)
 
     def connect(self, timeout_s = None):
@@ -532,14 +532,14 @@ class BroadcastUDPPortMapperClient(PartialPortMapperClient, RawBroadcastUDPClien
 
 class TCPClient(RawTCPClient):
 
-    def __init__(self, host, prog, vers, port=0):
+    def __init__(self, host, prog, vers, port=0, timeout_s = None):
         if port == 0:
             pmap = TCPPortMapperClient(host)
             port = pmap.get_port((prog, vers, IPPROTO_TCP, 0))
             pmap.close()
         if port == 0:
             raise RPCError('program not registered')
-        super(TCPClient, self).__init__(host, prog, vers, port)
+        super(TCPClient, self).__init__(host, prog, vers, port, timeout_s = timeout_s)
 
 
 class UDPClient(RawUDPClient):

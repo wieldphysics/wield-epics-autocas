@@ -3,8 +3,9 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 from __future__ import division, print_function, unicode_literals
 import declarative
-import VXI11
+import vxi11
 import socket
+import errno
 
 from .. import cas9core
 from .serial_base import (
@@ -16,7 +17,7 @@ from .serial_base import (
 #from . import utilities
 
 
-class USBDeviceRS232(SerialConnection):
+class VXI11Connection(SerialConnection):
 
     @cas9core.dproperty_ctree(default = '192.168.1.253')
     def device_address(self, val):
@@ -60,8 +61,8 @@ class USBDeviceRS232(SerialConnection):
     def _connect_task(self):
         assert(self._serial_obj is None)
         try:
-            print("CHECKING: ", self.device_path)
-            sdev = VXI11.Instrument(
+            print("CHECKING: ", self.device_address)
+            sdev = vxi11.Instrument(
                 self.device_address,
             )
             sdev.timeout = self.timeout_s
@@ -69,6 +70,11 @@ class USBDeviceRS232(SerialConnection):
 
         except socket.timeout as E:
             self.error(0, E.message)
+        except socket.error as E:
+            #E.errno == errno.EHOSTUNREACH
+            self.error(0, E)
+        except vxi11.rpc.RPCError as E:
+            self.error(0, 'VXI11/RPC Err: connect to wrong device?')
         else:
             self._serial_obj = sdev
             self.error.clear()
@@ -85,7 +91,8 @@ class USBDeviceRS232(SerialConnection):
     def run(self):
         if self._serial_obj is not None:
             try:
-                return super(USBDeviceRS232, self).run()
+                return super(VXI11Connection, self).run()
+            #TODO must also check RPCError in case it connects a socket to the wrong device!
             except SerialError as E:
                 self.error(0, E.message)
                 self._serial_obj = None
@@ -107,7 +114,7 @@ class USBDeviceRS232(SerialConnection):
         if self._debug_echo:
             print("serialw:", line)
         try:
-            self._serial_obj.write(line + '\n')
+            self._serial_obj.write(line)
         except socket.timeout as E:
             raise SerialTimeout(E.message)
         return
@@ -117,7 +124,7 @@ class USBDeviceRS232(SerialConnection):
             timeout_prev = self._serial_obj.timeout
 
         try:
-            line = self._serial_obj.readline()
+            line = self._serial_obj.read()
             if line == '':
                 #can only happen if timeout occured
                 raise SerialTimeout("Timeout")
