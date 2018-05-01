@@ -85,6 +85,12 @@ class SerialDevice(SerialUser):
                 except SerialError as E:
                     self.serial.error(1, E.message)
                     print(self, "ERROR", E.message)
+                    self.serial.rb_communicating.put(False)
+                except Exception as E:
+                    self.serial.error(0, E.message)
+                    print(self, "ERROR", E.message)
+                    self.serial.rb_communicating.put(False)
+                    raise
                 else:
                     self.serial.rb_communicating.put(True)
 
