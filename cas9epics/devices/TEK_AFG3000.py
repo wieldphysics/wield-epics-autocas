@@ -270,7 +270,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent = self.SB_parent,
            name = 'level_set',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_level_RB)
        self.SBlist_setters.append(block)
@@ -303,7 +303,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 10,
            parent   = self.SB_parent,
            name = 'level_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block
@@ -340,7 +340,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent = self.SB_parent,
            name = 'output_set',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_output_RB)
        self.SBlist_setters.append(block)
@@ -371,7 +371,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 10,
            parent   = self.SB_parent,
            name = 'output_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block
@@ -405,7 +405,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent   = self.SB_parent,
            name = 'mod_type_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_mod_type_RB)
        self.SBlist_setters.append(block)
@@ -440,7 +440,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent   = self.SB_parent,
            name = 'mod_type_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block
@@ -469,7 +469,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent = self.SB_parent,
            name = 'mod_source_set',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_mod_source_RB)
        self.SBlist_setters.append(block)
@@ -502,7 +502,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 10,
            parent   = self.SB_parent,
            name = 'mod_source_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block
@@ -532,7 +532,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent   = self.SB_parent,
            name = 'mod_func_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_mod_func_RB)
        self.SBlist_setters.append(block)
@@ -564,7 +564,7 @@ class TEK_AFG3000_Chn(SerialUser):
            ordering = 0,
            parent   = self.SB_parent,
            name = 'mod_func_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block
@@ -619,7 +619,7 @@ class TEK_AFG3000_FM(SerialUser):
            ordering = 0,
            parent = self.SB_parent,
            name = 'fdev_set',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.serial.block_chain(block, self.SB_fdev_RB)
        self.SBlist_setters.append(block)
@@ -651,7 +651,7 @@ class TEK_AFG3000_FM(SerialUser):
            ordering = 10,
            parent   = self.SB_parent,
            name = 'fdev_RB',
-           prefix = self.prefix_full,
+           prefix = self.prefix,
        )
        self.SBlist_readbacks.append(block)
        return block

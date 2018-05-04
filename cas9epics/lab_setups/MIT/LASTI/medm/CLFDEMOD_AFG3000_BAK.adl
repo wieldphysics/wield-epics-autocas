@@ -1,14 +1,14 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/CLFDEMOD_AFG3000.adl"
+	name="/opt/pythonM1-dev/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/CLFDEMOD_AFG3000.adl"
 	version=030109
 }
 display {
 	object {
-		x=2816
-		y=211
-		width=1148
-		height=621
+		x=547
+		y=229
+		width=1130
+		height=456
 	}
 	clr=14
 	bclr=4
@@ -89,10 +89,10 @@ display {
 }
 text {
 	object {
-		x=224
-		y=179
-		width=130
-		height=35
+		x=225
+		y=154
+		width=103
+		height=33
 	}
 	"basic attribute" {
 		clr=14
@@ -102,8 +102,8 @@ text {
 }
 composite {
 	object {
-		x=595
-		y=25
+		x=476
+		y=23
 		width=400
 		height=125
 	}
@@ -112,13 +112,13 @@ composite {
 }
 "choice button" {
 	object {
-		x=426
-		y=33
-		width=135
-		height=20
+		x=345
+		y=13
+		width=108
+		height=18
 	}
 	control {
-		chan="M1:SQZ-SG2023_AUTOSET"
+		chan="M1:SQZ-SIGGEN_CLFDEMOD_AUTOSET"
 		clr=14
 		bclr=4
 	}
@@ -126,10 +126,10 @@ composite {
 }
 text {
 	object {
-		x=380
-		y=29
-		width=42
-		height=12
+		x=308
+		y=9
+		width=34
+		height=10
 	}
 	"basic attribute" {
 		clr=14
@@ -139,10 +139,10 @@ text {
 }
 text {
 	object {
-		x=380
-		y=38
-		width=42
-		height=12
+		x=308
+		y=18
+		width=34
+		height=10
 	}
 	"basic attribute" {
 		clr=14
@@ -152,20 +152,20 @@ text {
 }
 composite {
 	object {
-		x=12
-		y=195
+		x=10
+		y=184
 		width=550
-		height=374
+		height=262
 	}
 	"composite name"=""
 	"composite file"="TEK_AFG3000_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_CLFDEMOD_CLF1F_"
 }
 text {
 	object {
-		x=14
-		y=182
-		width=130
-		height=28
+		x=13
+		y=173
+		width=103
+		height=26
 	}
 	"basic attribute" {
 		clr=14
@@ -175,23 +175,23 @@ text {
 }
 polyline {
 	object {
-		x=19
-		y=206
-		width=119
+		x=14
+		y=195
+		width=95
 		height=0
 	}
 	"basic attribute" {
 		clr=14
 	}
 	points {
-		(19,206)
-		(138,206)
+		(14,195)
+		(109,195)
 	}
 }
 composite {
 	object {
-		x=18
-		y=9
+		x=15
+		y=8
 		width=315
 		height=24
 	}
@@ -200,10 +200,10 @@ composite {
 }
 text {
 	object {
-		x=599
+		x=478
 		y=6
-		width=290
-		height=20
+		width=231
+		height=18
 	}
 	"basic attribute" {
 		clr=14
@@ -212,10 +212,10 @@ text {
 }
 text {
 	object {
-		x=783
-		y=183
-		width=130
-		height=35
+		x=801
+		y=154
+		width=103
+		height=33
 	}
 	"basic attribute" {
 		clr=14
@@ -225,20 +225,20 @@ text {
 }
 composite {
 	object {
-		x=571
-		y=199
+		x=568
+		y=184
 		width=550
-		height=375
+		height=262
 	}
 	"composite name"=""
-	"composite file"="TEK_AFG3000_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_CLFDEMOD_CLF1F_"
+	"composite file"="TEK_AFG3000_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_CLFDEMOD_CLF2F_"
 }
 text {
 	object {
 		x=573
-		y=186
-		width=130
-		height=28
+		y=177
+		width=103
+		height=26
 	}
 	"basic attribute" {
 		clr=14
@@ -248,16 +248,16 @@ text {
 }
 polyline {
 	object {
-		x=578
-		y=210
-		width=119
+		x=574
+		y=199
+		width=95
 		height=0
 	}
 	"basic attribute" {
 		clr=14
 	}
 	points {
-		(578,210)
-		(697,210)
+		(574,199)
+		(669,199)
 	}
 }
