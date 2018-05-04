@@ -46,7 +46,7 @@ class InstaCAS(
         return val
 
     @cas9declarative.dproperty
-    def prefix_full(self):
+    def prefix(self):
         if self.prefix_subsystem is None:
             val = ()
         else:
@@ -96,6 +96,17 @@ class InstaCAS(
             self._cas_generated = None
 
     @cas9declarative.dproperty
+    def config_files(self, val = None):
+        """
+        additional list of configurations for the system to be aware of
+        """
+        if val is None:
+            val = []
+        else:
+            val = list(val)
+        return val
+
+    @cas9declarative.dproperty
     def root(self):
         return self
 
@@ -136,27 +147,33 @@ class CASUser(declarative.OverridableObject):
         return val
 
     @cas9declarative.dproperty
-    def prefix(self, val = cas9declarative.NOARG):
+    def subprefix(self, val = cas9declarative.NOARG):
         if val is cas9declarative.NOARG:
             val = self.name
         return val
 
     @cas9declarative.dproperty
-    def prefix_full(self):
-        if self.prefix is None:
-            default = tuple(self.parent.prefix_full)
-        else:
-            default = tuple(self.parent.prefix_full) + (self.prefix,)
-        val = self.ctree.useidx('names').setdefault(
-            'prefix',
-            default,
-            about = ("""
-                configtype : nested_prefix
-                List of strings which chain to construct channel names of child objects.
-                If parent prefixes are changed, then child prefixes will change unless
-                they are also specified in the configuration
-            """)
-        )
+    def prefix(self, val = cas9declarative.NOARG):
+        if val is cas9declarative.NOARG:
+            if self.subprefix is None:
+                default = tuple(self.parent.prefix)
+            else:
+                default = tuple(self.parent.prefix) + (self.subprefix,)
+            val = self.ctree.useidx('names').setdefault(
+                'prefix',
+                default,
+                about = ("""
+                    configtype : nested_prefix
+                    List of strings which chain to construct channel names of child objects.
+                    If parent prefixes are changed, then child prefixes will change unless
+                    they are also specified in the configuration
+                """)
+            )
+        assert(isinstance(val, (list, tuple)))
+        for p in val:
+            assert(isinstance(p, (str, unicode)))
+            assert('.' not in p)
+        val = tuple(val)
         return val
 
     @cas9declarative.dproperty
@@ -175,7 +192,7 @@ class CASUser(declarative.OverridableObject):
         return self.root.cas_host(
             rv     = rv,
             name   = name,
-            prefix = self.prefix_full,
+            prefix = self.prefix,
             ctree  = self.ctree['PVs'].useidx('epics'),
             **kwargs
         )

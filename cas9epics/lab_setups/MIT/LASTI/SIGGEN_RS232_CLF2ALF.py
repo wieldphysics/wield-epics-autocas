@@ -18,23 +18,23 @@ class IFR2026Controller(cas9epics.CAS9Module):
         )
 
     @cas9epics.dproperty
-    def siggen2026(self):
+    def CLF2ALF(self):
         return IFR2026(
             serial = self.serial,
-            name   = 'sg2026',
+            name   = 'CLF2ALF',
             parent = self,
         )
 
     @cas9epics.dproperty
-    def cmd2026(self):
+    def CLF2ALF_CMD(self):
         return serial.SerialCommandResponse(
             serial = self.serial,
-            name   = 'cmd2026',
+            name   = 'CLF2ALF_CMD',
             parent = self,
         )
 
 
 if __name__ == "__main__":
     IFR2026Controller.cmdline(
-        module_name_base = 'CLFALF',
+        module_name_base = 'CLF2ALF',
     )

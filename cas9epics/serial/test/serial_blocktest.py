@@ -45,7 +45,7 @@ class IFR2026(
             action_sequence,
             ordering = 0,
             name = 'id_check',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -98,7 +98,7 @@ class IFR2026Channel(
             ordering = 0,
             parent = self.parent.SN_id_check,
             name = 'set_chn',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -136,7 +136,7 @@ class IFR2026Channel(
             ordering = 0,
             parent = self.serial_set_chn,
             name = 'freq_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.serial_freq_RB)
         return block
@@ -167,6 +167,6 @@ class IFR2026Channel(
             ordering = 10,
             parent   = self.serial_set_chn,
             name = 'freq_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block

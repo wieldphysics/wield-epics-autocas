@@ -69,7 +69,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'freq_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_freq_RB)
         self.SBlist_setters.append(block)
@@ -109,7 +109,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'freq_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -168,7 +168,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'level_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_level_RB)
         self.SBlist_setters.append(block)
@@ -210,7 +210,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'level_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -246,7 +246,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'output_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_level_RB)
         self.SBlist_setters.append(block)
@@ -290,7 +290,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'modmode_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -326,7 +326,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'mod_status_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_mod_status_RB)
         self.SBlist_setters.append(block)
@@ -363,7 +363,7 @@ class IFRSigGenChannel(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'mod_status_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -417,7 +417,7 @@ class IFRSigGenChannelFM(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'devn_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_FM_RB)
         self.SBlist_setters.append(block)
@@ -467,7 +467,7 @@ class IFRSigGenChannelFM(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'FM_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -503,7 +503,7 @@ class IFRSigGenChannelFM(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'mod_status_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_FM_RB)
         self.SBlist_setters.append(block)

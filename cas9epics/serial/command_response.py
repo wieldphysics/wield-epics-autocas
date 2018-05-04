@@ -171,7 +171,7 @@ class SerialCommandResponse(cas9core.CASUser):
             action_sequence,
             ordering = 10,
             name = 'command_response',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
