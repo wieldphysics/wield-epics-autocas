@@ -461,7 +461,8 @@ class TEK_AFG3000_Chn(SerialUser):
     @cas9core.dproperty
     def SB_mod_source_set(self):
        def action_sequence(cmd):
-           cmd.writeline('SOURCE{0}:{1}:SOURCE {2}'.format(self.device_channel_name, self.rv_mod_type_set.value_str, self.rv_mod_source_set.value_str))
+           if self.rv_mod_type_set.value_str != 'OFF':
+               cmd.writeline('SOURCE{0}:{1}:SOURCE {2}'.format(self.device_channel_name, self.rv_mod_type_set.value_str, self.rv_mod_source_set.value_str))
            return
 
        block = self.serial.block_add(
