@@ -96,7 +96,7 @@ class TEK_AFG3000_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'freq_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_freq_RB)
         self.SBlist_setters.append(block)
@@ -129,7 +129,7 @@ class TEK_AFG3000_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'freq_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -177,7 +177,7 @@ class TEK_AFG3000_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'phase_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_phase_RB)
         self.SBlist_setters.append(block)
@@ -210,7 +210,7 @@ class TEK_AFG3000_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'phase_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -218,6 +218,7 @@ class TEK_AFG3000_Chn(SerialUser):
     ##############################
     ## RF LEVEL
     ##############################
+
     @cas9core.dproperty_ctree(default = -35)
     def level_dbm_limit_low(self, val):
        """
@@ -307,10 +308,10 @@ class TEK_AFG3000_Chn(SerialUser):
        self.SBlist_readbacks.append(block)
        return block
 
-
     ######################################
     ##  RF Output ON/OFF
     ######################################
+
     @cas9core.dproperty
     def rb_output_set(self):
        default = self.ctree.setdefault('output_set', False, about = 'default for activating RF output')
@@ -443,7 +444,6 @@ class TEK_AFG3000_Chn(SerialUser):
        )
        self.SBlist_readbacks.append(block)
        return block
-
 
     ######################################
     ##  MODULATION SOURCE (internal/external)
@@ -625,6 +625,7 @@ class TEK_AFG3000_FM(SerialUser):
        self.SBlist_setters.append(block)
        self.rv_FM_fdev_set.register(callback = block)
        return block
+
 
     @cas9core.dproperty
     def rv_FM_fdev_RB(self):

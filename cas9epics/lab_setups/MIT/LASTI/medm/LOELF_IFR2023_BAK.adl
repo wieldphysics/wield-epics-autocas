@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/LOELF_IFR2023.adl"
+	name="/home/mcculler/local/home_sync/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/LOELF_IFR2023.adl"
 	version=030109
 }
 display {
@@ -108,7 +108,7 @@ composite {
 		height=125
 	}
 	"composite name"=""
-	"composite file"="COMMAND_RESPONSE.adl;CHN_PRFX=M1:SQZ-CMD2023_"
+	"composite file"="COMMAND_RESPONSE.adl;CHN_PRFX=M1:SQZ-SIGGEN_LOELF_CMD_"
 }
 "choice button" {
 	object {

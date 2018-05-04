@@ -46,7 +46,7 @@ class GPIBAddressed(SerialSubBlock):
             action_sequence,
             ordering = 0,
             name = 'addressed_block',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 

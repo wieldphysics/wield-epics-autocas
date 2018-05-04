@@ -158,7 +158,7 @@ composite {
 		height=305
 	}
 	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_LOELF_"
+	"composite file"="IFR_202X_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_LOELF_"
 }
 text {
 	object {
@@ -192,7 +192,7 @@ composite {
 	object {
 		x=18
 		y=9
-		width=268
+		width=315
 		height=24
 	}
 	"composite name"=""
@@ -214,7 +214,7 @@ composite {
 	object {
 		x=18
 		y=34
-		width=268
+		width=315
 		height=24
 	}
 	"composite name"=""
