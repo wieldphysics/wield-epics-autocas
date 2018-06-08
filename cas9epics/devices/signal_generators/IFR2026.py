@@ -54,7 +54,7 @@ class IFR2026(SerialDevice):
     #        ordering = -1,
     #        parent = self.SB_SN_id_check,
     #        name = 'lockout_soft',
-    #        prefix = self.prefix_full,
+    #        prefix = self.prefix,
     #    )
     #    return block
 
@@ -109,7 +109,7 @@ class IFR2026Channel(
             ordering = 0,
             parent = self.SB_parent,
             name = 'set_chn',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -119,5 +119,5 @@ class IFR2026Channel(
             parent = self,
             SB_parent = self.SB_set_chn,
             name = 'channel',
-            prefix = None,
+            subprefix = None,
         )

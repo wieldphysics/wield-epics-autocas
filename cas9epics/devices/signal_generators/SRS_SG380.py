@@ -62,7 +62,7 @@ class SRS_SG380(SerialDevice):
             action_sequence,
             ordering = 0,
             name = 'root',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -87,7 +87,7 @@ class SRS_SG380(SerialDevice):
             ordering = 0,
             parent = self.block_root,
             name = 'id_check',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -160,7 +160,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'freq_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_freq_RB)
         self.SBlist_setters.append(block)
@@ -193,7 +193,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'freq_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -252,7 +252,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'level_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_level_RB)
         self.SBlist_setters.append(block)
@@ -284,7 +284,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'level_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -320,7 +320,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'output_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_output_RB)
         self.SBlist_setters.append(block)
@@ -351,7 +351,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'output_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -380,7 +380,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'mod_type_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_mod_type_RB)
         self.SBlist_setters.append(block)
@@ -409,7 +409,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'mod_type_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -445,7 +445,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'mod_status_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_mod_status_RB)
         self.SBlist_setters.append(block)
@@ -475,7 +475,7 @@ class SRS_SG380_Chn(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'mod_status_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -529,7 +529,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'fdev_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_fdev_RB)
         self.SBlist_setters.append(block)
@@ -560,7 +560,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'fdev_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -610,7 +610,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 0,
             parent = self.SB_parent,
             name = 'devn_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_devn_RB)
         self.SBlist_setters.append(block)
@@ -641,7 +641,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'devn_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -667,7 +667,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'coupling_set',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_coupling_RB)
         self.SBlist_setters.append(block)
@@ -696,7 +696,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 10,
             parent   = self.SB_parent,
             name = 'coupling_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block
@@ -725,7 +725,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'mod_func_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.serial.block_chain(block, self.SB_mod_func_RB)
         self.SBlist_setters.append(block)
@@ -754,7 +754,7 @@ class SRS_SG380_FM(SerialUser):
             ordering = 0,
             parent   = self.SB_parent,
             name = 'mod_func_RB',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         self.SBlist_readbacks.append(block)
         return block

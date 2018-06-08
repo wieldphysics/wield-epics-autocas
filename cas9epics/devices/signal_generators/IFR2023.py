@@ -38,7 +38,7 @@ class IFR2023(SerialDevice):
     #        ordering = -1,
     #        parent = self.SB_SN_id_check,
     #        name = 'lockout_soft',
-    #        prefix = self.prefix_full,
+    #        prefix = self.prefix,
     #    )
     #    return block
 

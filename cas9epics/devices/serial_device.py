@@ -98,7 +98,7 @@ class SerialDevice(SerialUser):
             action_sequence,
             ordering = 0,
             name = 'root',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 
@@ -123,7 +123,7 @@ class SerialDevice(SerialUser):
             ordering = 0,
             parent = self.block_root,
             name = 'id_check',
-            prefix = self.prefix_full,
+            prefix = self.prefix,
         )
         return block
 

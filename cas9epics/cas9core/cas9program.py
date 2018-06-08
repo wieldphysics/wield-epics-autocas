@@ -14,8 +14,10 @@ from . import cas9core
 
 from ..config import pytoml
 
+
 def config_dumps(dddict):
     return pytoml.dumps(dddict)
+
 
 class CAS9MetaProgram(
     declarative.OverridableObject
@@ -42,6 +44,7 @@ class CAS9MetaProgram(
             prefix_subsystem = self.cmd.subsystem,
             module_name     = self.cmd.module_name,
             ctree            = self.cmd.ctree,
+            config_files     = [self.cmd.config_file],
             _ctree_pulling   = self.ctree_pull,
         )
         return root
@@ -60,9 +63,9 @@ class CAS9MetaProgram(
     @declarative.dproperty
     def task(self):
         return self.cmd.t_task(
-            name = 'task',
-            prefix = None,
-            parent = self.root,
+            name      = 'task',
+            subprefix = None,
+            parent    = self.root,
         )
 
 
@@ -107,7 +110,7 @@ class CAS9CmdLine(
         """
         Instrument site. Uses $SITE if not specified
         """
-        config_val = self.ctree.get('site', None)
+        config_val = self.ctree.get('SITE', None)
         if val is None:
             if config_val is None:
                 val = os.getenv('SITE')

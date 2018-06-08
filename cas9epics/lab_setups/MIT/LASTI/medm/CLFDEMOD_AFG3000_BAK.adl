@@ -8,7 +8,7 @@ display {
 		x=547
 		y=229
 		width=1130
-		height=492
+		height=456
 	}
 	clr=14
 	bclr=4
@@ -155,7 +155,7 @@ composite {
 		x=10
 		y=184
 		width=550
-		height=300
+		height=262
 	}
 	"composite name"=""
 	"composite file"="TEK_AFG3000_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_CLFDEMOD_CLF1F_"
@@ -228,7 +228,7 @@ composite {
 		x=568
 		y=184
 		width=550
-		height=300
+		height=262
 	}
 	"composite name"=""
 	"composite file"="TEK_AFG3000_CHANNEL.adl;CHN_PRFX=M1:SQZ-SIGGEN_CLFDEMOD_CLF2F_"

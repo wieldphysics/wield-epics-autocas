@@ -102,7 +102,7 @@ class AutoSave(autosave_base.AutoSaveBase):
     def folders_make_ready(self):
         if self.save_folder is not None and self.save_fname_template is not None:
             try:
-                os.mkdir(self.save_folder)
+                os.makedirs(self.save_folder)
             except OSError as E:
                 if E.errno != errno.EEXIST:
                     raise

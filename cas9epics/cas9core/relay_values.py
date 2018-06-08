@@ -261,7 +261,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
 
     @property
     def value_str(self):
-        return self.int2state(self._value)
+        return self.int2state[self._value]
 
     def db_defaults(self):
         states = []

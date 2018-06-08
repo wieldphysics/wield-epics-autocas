@@ -26,9 +26,15 @@ class RestartOnEdit(cas9core.CASUser):
         self.reactor.enqueue(self._startup_task, future_s = 3)
 
     def _startup_task(self):
-        modfiles = modlist()
+        modfiles = modlist(
+            ignores = self.ignore_list,
+            accepts = self.accept_list,
+        )
         inotify = inotify_simple.INotify()
         for fpath in modfiles:
+            inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
+        #also check the config files
+        for fpath in self.root.config_files:
             inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
         self._myinotify = inotify
 
@@ -46,11 +52,39 @@ class RestartOnEdit(cas9core.CASUser):
                 print("Exiting Process")
                 sys.exit(0)
 
+    @cas9core.dproperty_ctree(default = lambda self : default_ignores())
+    def ignore_list(self, lval):
+        """
+        List of substrings that will cause the inotify system to ignore python packages
+        """
+        assert(isinstance(lval, (list, tuple)))
+        for val in lval:
+            assert(isinstance(val, (str, unicode)))
+        return lval
 
-def modlist(include_pyc = True):
+    @cas9core.dproperty_ctree(default = lambda self : [])
+    def accept_list(self, lval):
+        """
+        List of substrings that will cause the inotify system to accept python packages even if they match the ignore list.
+        """
+        assert(isinstance(lval, (list, tuple)))
+        for val in lval:
+            assert(isinstance(val, (str, unicode)))
+        return lval
+
+
+
+def default_ignores():
     pyname = 'python{v.major}.{v.minor}'.format(v = sys.version_info)
+    return [pyname, 'site-packages']
+
+
+def modlist(include_pyc = True, ignores = None, accepts = []):
+    if ignores is None:
+        ignores = default_ignores()
+
     mods = []
-    for modname, mod in sys.modules.items():
+    for _modname, mod in sys.modules.items():
         if mod is not None:
             try:
                 fname = mod.__file__
@@ -62,9 +96,21 @@ def modlist(include_pyc = True):
                     fnamepy = pbase + '.py'
                     fnamepyc = pbase + '.py'
 
-                    if fname.find(pyname) == -1 and fname.find('site-packages') == -1:
-                        if include_pyc:
-                            mods.append(fnamepyc)
-                        mods.append(fnamepy)
+                    skip = False
+                    for ignore in ignores:
+                        if ignore in fnamepy:
+                            skip = True
+                            break
+
+                    for accept in accepts:
+                        if accept in fnamepy:
+                            skip = False
+                            break
+                    if skip:
+                        continue
+
+                    mods.append(fnamepy)
+                    if include_pyc:
+                        mods.append(fnamepyc)
     return mods
 

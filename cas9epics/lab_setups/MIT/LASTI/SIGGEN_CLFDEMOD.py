@@ -15,6 +15,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             name = 'VXI11',
             parent = self,
             _debug_echo = True,
+            timeout_s = 1,
         )
 
     @cas9epics.dproperty

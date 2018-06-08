@@ -550,7 +550,7 @@ rectangle {
 		height=28
 	}
 	monitor {
-		chan="$(CHN_PRFX)MOD_SOURCE_RB"
+		chan="$(CHN_PRFX)SOURCE_RB"
 		clr=14
 		bclr=4
 	}
@@ -580,7 +580,7 @@ text {
 		height=28
 	}
 	control {
-		chan="$(CHN_PRFX)MOD_SOURCE"
+		chan="$(CHN_PRFX)SOURCE"
 		clr=14
 		bclr=4
 	}
