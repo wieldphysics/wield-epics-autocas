@@ -1,0 +1,539 @@
+
+file {
+	name="/home/mcculler/local/home_sync/projects/ligoutils/YALL/controls/peripherals/photodiodes/medm/FIBERS.adl"
+	version=030109
+}
+display {
+	object {
+		x=1194
+		y=116
+		width=1379
+		height=776
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+composite {
+	object {
+		x=9
+		y=11
+		width=1000
+		height=512
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=9
+				y=14
+				width=1000
+				height=509
+			}
+			"basic attribute" {
+				clr=4
+			}
+		}
+		text {
+			object {
+				x=112
+				y=224
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Total Out Pwr [mW]:"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=113
+				y=252
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Fraction Mon/In [%]:"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=20
+				y=11
+				width=100
+				height=32
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix=":TITLE:"
+		}
+		composite {
+			object {
+				x=21
+				y=55
+				width=230
+				height=50
+			}
+			"composite name"=""
+			"composite file"="PD_CAL_VIEW_BIG.adl;PREFIX=M1:SQZ-FIBERS_MONIN,TITLE=FBR-InPwr"
+			"dynamic attribute" {
+				chan="REPLACED"
+				chanB="INMON"
+			}
+		}
+		composite {
+			object {
+				x=23
+				y=109
+				width=230
+				height=50
+			}
+			"composite name"=""
+			"composite file"="PD_CAL_VIEW_BIG.adl;PREFIX=M1:SQZ-FIBERS_MONTRP,TITLE=FBR-TrP"
+			"dynamic attribute" {
+				chan="REPLACED"
+				chanB="OUTP"
+			}
+		}
+		composite {
+			object {
+				x=24
+				y=166
+				width=230
+				height=50
+			}
+			"composite name"=""
+			"composite file"="PD_CAL_VIEW_BIG.adl;PREFIX=M1:SQZ-FIBERS_MONTRS,TITLE=FBR-TrS"
+			"dynamic attribute" {
+				chan="REPLACED"
+				chanB="OUTS"
+			}
+		}
+		"strip chart" {
+			object {
+				x=697
+				y=97
+				width=300
+				height=200
+			}
+			plotcom {
+				clr=5
+				bclr=13
+			}
+			period=30.000000
+			pen[0] {
+				chan="OUTP_PERCREF"
+				clr=50
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=150
+				}
+			}
+			pen[1] {
+				chan="OUTS_PERCREF"
+				clr=21
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=150
+				}
+			}
+		}
+		text {
+			object {
+				x=743
+				y=45
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Mon P/Ref [%]:"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=742
+				y=69
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Mon S/Ref [%]:"
+			align="horiz. right"
+		}
+		"strip chart" {
+			object {
+				x=697
+				y=298
+				width=300
+				height=200
+			}
+			plotcom {
+				clr=5
+				bclr=13
+			}
+			period=10.000000
+			pen[0] {
+				chan="OUTP_PERCREF"
+				clr=50
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+				}
+			}
+			pen[1] {
+				chan="OUTS_PERCREF"
+				clr=21
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+				}
+			}
+		}
+		"strip chart" {
+			object {
+				x=348
+				y=98
+				width=300
+				height=200
+			}
+			plotcom {
+				clr=5
+				bclr=13
+			}
+			period=30.000000
+			pen[0] {
+				chan="OUTP_PERCTOT"
+				clr=50
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=150
+				}
+			}
+			pen[1] {
+				chan="OUTS_PERCTOT"
+				clr=21
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=150
+				}
+			}
+		}
+		text {
+			object {
+				x=394
+				y=46
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Mon P/Total [%]:"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=392
+				y=70
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Mon S/Total [%]:"
+			align="horiz. right"
+		}
+		"strip chart" {
+			object {
+				x=348
+				y=299
+				width=300
+				height=200
+			}
+			plotcom {
+				clr=5
+				bclr=13
+			}
+			period=10.000000
+			pen[0] {
+				chan="OUTP_PERCTOT"
+				clr=50
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+				}
+			}
+			pen[1] {
+				chan="OUTS_PERCTOT"
+				clr=21
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+				}
+			}
+		}
+		"strip chart" {
+			object {
+				x=17
+				y=300
+				width=300
+				height=200
+			}
+			plotcom {
+				clr=5
+				bclr=13
+			}
+			period=30.000000
+			pen[0] {
+				chan="OUTTPERC"
+				clr=30
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=110
+				}
+			}
+			pen[1] {
+				chan="OUTTPERC_BEST"
+				clr=34
+				limits {
+					loprSrc="default"
+					hoprSrc="default"
+					hoprDefault=110
+				}
+			}
+		}
+		"text entry" {
+			object {
+				x=173
+				y=276
+				width=141
+				height=21
+			}
+			control {
+				chan="OUTTPERC_BEST"
+				clr=14
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=112
+				y=275
+				width=60
+				height=16
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Best Fraction [%]:"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=175
+				y=247
+				width=155
+				height=32
+			}
+			monitor {
+				chan="OUTTPERC"
+				clr=14
+				bclr=4
+			}
+			align="horiz. right"
+			format="engr. notation"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=174
+				y=218
+				width=155
+				height=32
+			}
+			monitor {
+				chan="OUTT"
+				clr=14
+				bclr=4
+			}
+			align="horiz. right"
+			format="engr. notation"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=456
+				y=65
+				width=159
+				height=32
+			}
+			monitor {
+				chan="OUTS_PERCTOT"
+				clr=14
+				bclr=4
+			}
+			align="horiz. right"
+			format="engr. notation"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=456
+				y=39
+				width=159
+				height=32
+			}
+			monitor {
+				chan="OUTP_PERCTOT"
+				clr=14
+				bclr=4
+			}
+			align="horiz. right"
+			format="engr. notation"
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=806
+				y=38
+				width=160
+				height=58
+			}
+			"composite name"=""
+			children {
+				"text update" {
+					object {
+						x=806
+						y=38
+						width=160
+						height=32
+					}
+					monitor {
+						chan="OUTP_PERCREF"
+						clr=14
+						bclr=4
+					}
+					align="horiz. right"
+					format="engr. notation"
+					limits {
+						precSrc="default"
+						precDefault=2
+					}
+				}
+				"text update" {
+					object {
+						x=806
+						y=64
+						width=160
+						height=32
+					}
+					monitor {
+						chan="OUTS_PERCREF"
+						clr=14
+						bclr=4
+					}
+					align="horiz. right"
+					format="engr. notation"
+					limits {
+						precSrc="default"
+						precDefault=2
+					}
+				}
+			}
+		}
+	}
+}

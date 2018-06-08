@@ -1,0 +1,1 @@
+python plotFFT.py -V -i gpib9.mit.edu -b 100000Hz -n 801 --showplot -v 30

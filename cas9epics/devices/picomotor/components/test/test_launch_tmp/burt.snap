@@ -1,0 +1,126 @@
+--- Start BURT header
+Time:     Tue Oct  8 11:35:15 2013
+Login ID: mcculler ()
+Eff  UID: 1000
+Group ID: 1000
+Keywords: 
+Comments: 
+Type:     Absolute
+Directory /home/mcculler/projects/foundations/python/libholo/fpga_bridge/picomotor/test
+Req File: ./test_launch_tmp/epics/burt.req
+--- End BURT header
+RO local_picomotor_connection_CONNECTION_STATUS.VAL 1 2.000000000000000e+00
+RO local_picomotor_connection_CONNECTION_STATUS.HOPR 1 0.000000000000000e+00
+RO local_picomotor_connection_CONNECTION_STATUS.LOPR 1 0.000000000000000e+00
+RO local_picomotor_connection_CONNECTION_STR.VAL 1 >
+RO local_picomotor_PRM_CONTROL_T.VAL 1 0.000000000000000e+00
+RO local_picomotor_PRM_CONTROL_T.HOPR 1 0.000000000000000e+00
+RO local_picomotor_PRM_CONTROL_T.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_0_DESC.VAL 1 "Power recycled"
+local_picomotor_PRM_PARK_1_DESC.VAL 1 "Power recycled"
+local_picomotor_PRM_PARK_1_X.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_1_X.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_1_X.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_1_Y.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_1_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_1_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_2_DESC.VAL 1 "michelson park"
+local_picomotor_PRM_PARK_2_X.VAL 1 1.000000000000000e+02
+local_picomotor_PRM_PARK_2_X.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_2_X.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_2_Y.VAL 1 1.000000000000000e+03
+local_picomotor_PRM_PARK_2_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_2_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_DESC.VAL 1 \0
+local_picomotor_PRM_PARK_3_X.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_X.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_X.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_Y.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_PARK_3_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_X_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_X_CONTROL.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_X_CONTROL.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_X_OFFSET.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_X_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_X_OFFSET.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_Y_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_Y_CONTROL.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_Y_CONTROL.LOPR 1 0.000000000000000e+00
+local_picomotor_PRM_Y_OFFSET.VAL 1 0.000000000000000e+00
+local_picomotor_PRM_Y_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_PRM_Y_OFFSET.LOPR 1 0.000000000000000e+00
+RO local_picomotor_BS_CONTROL_T.VAL 1 0.000000000000000e+00
+RO local_picomotor_BS_CONTROL_T.HOPR 1 0.000000000000000e+00
+RO local_picomotor_BS_CONTROL_T.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_0_DESC.VAL 1 \0
+local_picomotor_BS_PARK_1_DESC.VAL 1 \0
+local_picomotor_BS_PARK_1_X.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_1_X.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_1_X.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_1_Y.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_1_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_1_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_DESC.VAL 1 \0
+local_picomotor_BS_PARK_2_X.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_X.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_X.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_Y.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_2_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_DESC.VAL 1 \0
+local_picomotor_BS_PARK_3_X.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_X.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_X.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_Y.VAL 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_PARK_3_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_X_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_BS_X_CONTROL.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_X_CONTROL.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_X_OFFSET.VAL 1 2.000000000000000e+00
+local_picomotor_BS_X_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_X_OFFSET.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_Y_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_BS_Y_CONTROL.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_Y_CONTROL.LOPR 1 0.000000000000000e+00
+local_picomotor_BS_Y_OFFSET.VAL 1 1.000000000000000e+00
+local_picomotor_BS_Y_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_BS_Y_OFFSET.LOPR 1 0.000000000000000e+00
+RO local_picomotor_periscope_CONTROL_T.VAL 1 0.000000000000000e+00
+RO local_picomotor_periscope_CONTROL_T.HOPR 1 0.000000000000000e+00
+RO local_picomotor_periscope_CONTROL_T.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_0_DESC.VAL 1 Test2
+local_picomotor_periscope_PARK_1_DESC.VAL 1 Test
+local_picomotor_periscope_PARK_1_X.VAL 1 1.000000000000000e+02
+local_picomotor_periscope_PARK_1_X.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_1_X.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_1_Y.VAL 1 -1.500000000000000e+02
+local_picomotor_periscope_PARK_1_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_1_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_2_DESC.VAL 1 Test2
+local_picomotor_periscope_PARK_2_X.VAL 1 1.000000000000000e+03
+local_picomotor_periscope_PARK_2_X.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_2_X.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_2_Y.VAL 1 -2.000000000000000e+03
+local_picomotor_periscope_PARK_2_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_2_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_DESC.VAL 1 \0
+local_picomotor_periscope_PARK_3_X.VAL 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_X.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_X.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_Y.VAL 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_Y.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_PARK_3_Y.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_X_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_periscope_X_CONTROL.HOPR 1 1.000000000000000e+02
+local_picomotor_periscope_X_CONTROL.LOPR 1 -1.000000000000000e+02
+local_picomotor_periscope_X_OFFSET.VAL 1 1.000000000000000e+03
+local_picomotor_periscope_X_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_X_OFFSET.LOPR 1 0.000000000000000e+00
+local_picomotor_periscope_Y_CONTROL.VAL 1 0.000000000000000e+00
+local_picomotor_periscope_Y_CONTROL.HOPR 1 1.000000000000000e+02
+local_picomotor_periscope_Y_CONTROL.LOPR 1 -1.000000000000000e+02
+local_picomotor_periscope_Y_OFFSET.VAL 1 0.000000000000000e+00
+local_picomotor_periscope_Y_OFFSET.HOPR 1 0.000000000000000e+00
+local_picomotor_periscope_Y_OFFSET.LOPR 1 0.000000000000000e+00

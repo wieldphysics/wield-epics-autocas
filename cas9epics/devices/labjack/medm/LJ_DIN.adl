@@ -1,0 +1,242 @@
+
+file {
+	name="/home/mcculler/local/home_sync/projects/ligoutils/YALL/controls/peripherals/labjack/medm/LJ_DIN.adl"
+	version=030109
+}
+display {
+	object {
+		x=519
+		y=1573
+		width=519
+		height=105
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=75
+		y=8
+		width=220
+		height=46
+	}
+	"basic attribute" {
+		clr=56
+	}
+}
+text {
+	object {
+		x=188
+		y=32
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=24
+	}
+	textix=":PREFIX:_DIN"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=255
+		y=14
+		width=30
+		height=30
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=256
+				y=16
+				width=29
+				height=28
+			}
+			"basic attribute" {
+				clr=8
+				width=4
+			}
+		}
+		rectangle {
+			object {
+				x=255
+				y=15
+				width=29
+				height=29
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+				width=3
+			}
+		}
+		polyline {
+			object {
+				x=255
+				y=14
+				width=31
+				height=32
+			}
+			"basic attribute" {
+				clr=15
+				fill="outline"
+				width=6
+			}
+			"dynamic attribute" {
+				vis="calc"
+				calc=":ENABLE_CALC_A:"
+				chan="ENABLE_PV_VIEW"
+			}
+			points {
+				(258,32)
+				(262,32)
+				(273,43)
+				(283,17)
+			}
+		}
+		composite {
+			object {
+				x=256
+				y=16
+				width=29
+				height=28
+			}
+			"composite name"=""
+			children {
+				polyline {
+					object {
+						x=256
+						y=16
+						width=31
+						height=30
+					}
+					"basic attribute" {
+						clr=23
+						fill="outline"
+						width=6
+					}
+					points {
+						(259,19)
+						(284,43)
+					}
+				}
+				polyline {
+					object {
+						x=256
+						y=16
+						width=31
+						height=30
+					}
+					"basic attribute" {
+						clr=23
+						fill="outline"
+						width=6
+					}
+					points {
+						(284,19)
+						(259,43)
+					}
+				}
+			}
+			"dynamic attribute" {
+				vis="calc"
+				calc="!:ENABLE_CALC_A:"
+				chan="ENABLE_PV_VIEW"
+			}
+		}
+	}
+	"dynamic attribute" {
+		chan="ENABLE>DIN"
+	}
+}
+"text entry" {
+	object {
+		x=77
+		y=11
+		width=140
+		height=18
+	}
+	control {
+		chan="LABEL"
+		clr=39
+		bclr=57
+	}
+	format="string"
+	limits {
+	}
+}

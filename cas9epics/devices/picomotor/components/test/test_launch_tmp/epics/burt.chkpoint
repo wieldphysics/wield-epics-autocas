@@ -1,0 +1,38 @@
+RO local_picomotor1_CONTROL_T.VAL
+RO local_picomotor1_CONTROL_T.HOPR
+RO local_picomotor1_CONTROL_T.LOPR
+local_picomotor1_PARK_0_DESC.VAL
+local_picomotor1_PARK_1_DESC.VAL
+local_picomotor1_PARK_1_X.VAL
+local_picomotor1_PARK_1_X.HOPR
+local_picomotor1_PARK_1_X.LOPR
+local_picomotor1_PARK_1_Y.VAL
+local_picomotor1_PARK_1_Y.HOPR
+local_picomotor1_PARK_1_Y.LOPR
+local_picomotor1_PARK_2_DESC.VAL
+local_picomotor1_PARK_2_X.VAL
+local_picomotor1_PARK_2_X.HOPR
+local_picomotor1_PARK_2_X.LOPR
+local_picomotor1_PARK_2_Y.VAL
+local_picomotor1_PARK_2_Y.HOPR
+local_picomotor1_PARK_2_Y.LOPR
+local_picomotor1_PARK_3_DESC.VAL
+local_picomotor1_PARK_3_X.VAL
+local_picomotor1_PARK_3_X.HOPR
+local_picomotor1_PARK_3_X.LOPR
+local_picomotor1_PARK_3_Y.VAL
+local_picomotor1_PARK_3_Y.HOPR
+local_picomotor1_PARK_3_Y.LOPR
+RO local_picomotor1_X_CONTROL.VAL
+RO local_picomotor1_X_CONTROL.HOPR
+RO local_picomotor1_X_CONTROL.LOPR
+local_picomotor1_X_OFFSET.VAL
+local_picomotor1_X_OFFSET.HOPR
+local_picomotor1_X_OFFSET.LOPR
+RO local_picomotor1_Y_CONTROL.VAL
+RO local_picomotor1_Y_CONTROL.HOPR
+RO local_picomotor1_Y_CONTROL.LOPR
+local_picomotor1_Y_OFFSET.VAL
+local_picomotor1_Y_OFFSET.HOPR
+local_picomotor1_Y_OFFSET.LOPR
+

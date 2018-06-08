@@ -1,14 +1,14 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/ALFCLF2_IFR2026.adl"
+	name="/home/mcculler/local/home_sync/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/ALFCLF2_IFR2026.adl"
 	version=030109
 }
 display {
 	object {
-		x=3841
-		y=162
-		width=575
-		height=933
+		x=334
+		y=205
+		width=1180
+		height=501
 	}
 	clr=14
 	bclr=4
@@ -90,7 +90,7 @@ display {
 text {
 	object {
 		x=224
-		y=66
+		y=164
 		width=130
 		height=35
 	}
@@ -102,8 +102,8 @@ text {
 }
 composite {
 	object {
-		x=98
-		y=774
+		x=610
+		y=35
 		width=400
 		height=125
 	}
@@ -112,8 +112,8 @@ composite {
 }
 "choice button" {
 	object {
-		x=426
-		y=33
+		x=436
+		y=19
 		width=135
 		height=20
 	}
@@ -126,8 +126,8 @@ composite {
 }
 text {
 	object {
-		x=380
-		y=29
+		x=390
+		y=15
 		width=42
 		height=12
 	}
@@ -139,8 +139,8 @@ text {
 }
 text {
 	object {
-		x=380
-		y=38
+		x=390
+		y=24
 		width=42
 		height=12
 	}
@@ -152,28 +152,28 @@ text {
 }
 composite {
 	object {
-		x=12
-		y=427
+		x=574
+		y=182
 		width=550
 		height=305
 	}
 	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_CLF2_"
+	"composite file"="IFR_202X_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_CLF2_"
 }
 composite {
 	object {
 		x=12
-		y=82
+		y=180
 		width=550
 		height=305
 	}
 	"composite name"=""
-	"composite file"="SG_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_ALF_"
+	"composite file"="IFR_202X_CHANNEL.adl;CHN_PRFX=M1:SQZ-SG2026_ALF_"
 }
 text {
 	object {
-		x=224
-		y=406
+		x=786
+		y=161
 		width=130
 		height=35
 	}
@@ -186,7 +186,7 @@ text {
 text {
 	object {
 		x=14
-		y=69
+		y=167
 		width=130
 		height=28
 	}
@@ -199,7 +199,7 @@ text {
 polyline {
 	object {
 		x=19
-		y=93
+		y=191
 		width=119
 		height=0
 	}
@@ -207,14 +207,14 @@ polyline {
 		clr=14
 	}
 	points {
-		(19,93)
-		(138,93)
+		(19,191)
+		(138,191)
 	}
 }
 text {
 	object {
-		x=15
-		y=412
+		x=577
+		y=167
 		width=130
 		height=28
 	}
@@ -226,8 +226,8 @@ text {
 }
 polyline {
 	object {
-		x=20
-		y=436
+		x=582
+		y=191
 		width=119
 		height=0
 	}
@@ -235,15 +235,15 @@ polyline {
 		clr=14
 	}
 	points {
-		(20,436)
-		(139,436)
+		(582,191)
+		(701,191)
 	}
 }
 composite {
 	object {
-		x=18
-		y=29
-		width=268
+		x=28
+		y=15
+		width=315
 		height=24
 	}
 	"composite name"=""
@@ -251,8 +251,8 @@ composite {
 }
 text {
 	object {
-		x=99
-		y=750
+		x=611
+		y=11
 		width=290
 		height=20
 	}

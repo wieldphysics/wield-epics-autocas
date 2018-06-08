@@ -114,6 +114,7 @@ class RVError(cas9core.CASUser):
             if self._level_temp is None or self._level_temp > self.rv_thresh.value:
                 self.rv_str.value = ''
                 self.rv_level.value = self.rv_thresh.value
+                self.rb_triggered.value = False
             elif self._level_temp == self.rv_thresh.value:
                 try:
                     self.rv_str.value   = self._str_temp

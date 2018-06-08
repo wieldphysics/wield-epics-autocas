@@ -1,0 +1,74 @@
+grecord(waveform,"T1:TST-785_FREQ"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(waveform,"T1:TST-785_MAG"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(waveform,"T1:TST-785_MAG_DN"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(waveform,"T1:TST-785_MAG_UP"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(waveform,"T1:TST-785_PHASE"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(waveform,"T1:TST-785_SNR"){	field(FTVL, "DOUBLE")	field(DTYP, "Soft Channel")	field(PREC,"3")	field(NELM,"1000")	}
+grecord(ai      ,"T1:TST-785_TRIG"){	field(PREC,"3")	}
+
+grecord(stringin,"T1:TST-meta_BE_B"){}
+grecord(ai      ,"T1:TST-meta_BE_V0"){}
+
+grecord(ai      ,"T1:TST-meta_ALRT_COMM_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_COMM_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_0_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_0_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_1_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_1_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_2_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_2_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_3_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_3_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_4_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_4_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_5_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_5_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_6_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_6_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_7_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_7_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_8_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_8_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_9_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_9_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_10_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_10_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_11_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_11_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_12_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_12_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_13_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_13_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_14_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_14_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_15_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_15_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_16_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_16_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_17_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_17_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_18_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_18_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+
+grecord(ai      ,"T1:TST-meta_ALRT_19_LEVEL"){	field(PREC,"0")	}
+grecord(waveform,"T1:TST-meta_ALRT_19_MESSAGE"){	field(FTVL, "CHAR")	field(DTYP, "Soft Channel")	field(NELM,"100")	}
+

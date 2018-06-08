@@ -1,0 +1,51 @@
+grecord(ai      ,"local_picomotor_connection_CONNECTION_STATUS"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_connection_CONNECTION_STR"){}
+
+grecord(ai      ,"local_picomotor_PRM_CONTROL_T"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_PRM_PARK_0_DESC"){}
+grecord(stringin,"local_picomotor_PRM_PARK_1_DESC"){}
+grecord(ai      ,"local_picomotor_PRM_PARK_1_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_PARK_1_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_PRM_PARK_2_DESC"){}
+grecord(ai      ,"local_picomotor_PRM_PARK_2_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_PARK_2_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_PRM_PARK_3_DESC"){}
+grecord(ai      ,"local_picomotor_PRM_PARK_3_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_PARK_3_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_X_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_X_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_Y_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_PRM_Y_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+
+grecord(ai      ,"local_picomotor_BS_CONTROL_T"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_BS_PARK_0_DESC"){}
+grecord(stringin,"local_picomotor_BS_PARK_1_DESC"){}
+grecord(ai      ,"local_picomotor_BS_PARK_1_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_PARK_1_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_BS_PARK_2_DESC"){}
+grecord(ai      ,"local_picomotor_BS_PARK_2_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_PARK_2_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_BS_PARK_3_DESC"){}
+grecord(ai      ,"local_picomotor_BS_PARK_3_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_PARK_3_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_X_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_X_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_Y_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_BS_Y_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+
+grecord(ai      ,"local_picomotor_periscope_CONTROL_T"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_periscope_PARK_0_DESC"){}
+grecord(stringin,"local_picomotor_periscope_PARK_1_DESC"){}
+grecord(ai      ,"local_picomotor_periscope_PARK_1_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_PARK_1_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_periscope_PARK_2_DESC"){}
+grecord(ai      ,"local_picomotor_periscope_PARK_2_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_PARK_2_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(stringin,"local_picomotor_periscope_PARK_3_DESC"){}
+grecord(ai      ,"local_picomotor_periscope_PARK_3_X"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_PARK_3_Y"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_X_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_X_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_Y_CONTROL"){	field(PREC,"0")	field(VAL,"0")	}
+grecord(ai      ,"local_picomotor_periscope_Y_OFFSET"){	field(PREC,"0")	field(VAL,"0")	}
+
