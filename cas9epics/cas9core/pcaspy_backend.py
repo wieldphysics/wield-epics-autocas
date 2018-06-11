@@ -56,6 +56,11 @@ class CADriverServer(pcaspy.Driver):
         db_cas_raw = {}
 
         for channel, db_entry in self.db.items():
+            #ignore the external entries
+            if db_entry.get('external', False):
+                print('EXTERNAL')
+                print(channel, db_entry)
+                continue
             rv = db_entry['rv']
             entry_use = {}
 
@@ -112,8 +117,9 @@ class CADriverServer(pcaspy.Driver):
 
             #writable = db_entry['writable']
         self.db_cas_raw = db_cas_raw
+        print("INT: ", self.db_cas_raw)
         #have to setup createPV before starting the driver
-        self.cas.createPV('', db)
+        self.cas.createPV('', self.db_cas_raw)
         super(CADriverServer, self).__init__()
 
         #pre-set all values, since this is apparently not done for you
@@ -311,173 +317,3 @@ class CADriverServer(pcaspy.Driver):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
-
-class CASCollector(declarative.OverridableObject):
-    @declarative.dproperty
-    def rv_names(self):
-        return {}
-
-    @declarative.dproperty
-    def rv_db(self):
-        return {}
-
-    def cas_db_generate(self):
-        db_gen = dict()
-        for rv, db_entry in self.rv_db.items():
-            name = self.rv_names.get(rv, None)
-            if name is None:
-                print("MISSING NAME: ", rv)
-            elif isinstance(name, (list, tuple)):
-                name = self.prefix2channel(name)
-            dcopy = dict(db_entry)
-            dcopy['rv'] = rv
-            db_gen[name] = dcopy
-        return db_gen
-
-    def prefix2channel(self, prefix):
-        raise NotImplementedError()
-
-    def cas_host(
-            self,
-            rv,
-            name       = None,
-            prefix     = None,
-            conf_name  = None,
-            writable   = None,
-            EDCU       = None,
-            burt       = None,
-            type       = None,
-            count      = None,
-            enum       = None,
-            states     = None,
-            prec       = None,
-            unit       = None,
-            lolim      = None,
-            hilim      = None,
-            low        = None,
-            high       = None,
-            lolo       = None,
-            hihi       = None,
-            adel       = None,
-            mdel       = None,
-            mt_assign  = None,
-            ctree      = None,
-            urgentsave = None,
-    ):
-        if conf_name is None:
-            conf_name = name
-
-        if conf_name is None:
-            raise RuntimeError("Must specify either conf_name or name")
-
-        if ctree is not None:
-            cdb = ctree[conf_name]
-        else:
-            cdb = None
-
-        if cdb is not None:
-            prefix = cdb.setdefault('prefix', prefix, about = "Prefix to construct the PV channel name")
-
-        chn_name = list(prefix) + [name]
-        if self.rv_names.get(rv, None) is not None:
-            raise RuntimeError("Can't host the same RV with different names (yet) hosting {0} and {1}".format(self.rv_names.get(rv), chn_name))
-        self.rv_names[rv] = chn_name
-
-        if isinstance(rv, relay_values.CASRelay):
-            db = rv.db_defaults()
-        else:
-            db = dict()
-
-        # a convenient way to inject all of the settings
-        db_inj = dict(
-            writable   = writable,
-            EDCU       = EDCU,
-            type       = type,
-            count      = count,
-            enum       = enum,
-            states     = states,
-            prec       = prec,
-            unit       = unit,
-            lolim      = lolim,
-            hilim      = hilim,
-            low        = low,
-            high       = high,
-            lolo       = lolo,
-            hihi       = hihi,
-            adel       = adel,
-            mdel       = mdel,
-            burt       = burt,
-            urgentsave = urgentsave,
-        )
-        for k, v in db_inj.items():
-            if v is not None:
-                db[k] = v
-
-        def ctree_check(pname, tfunc):
-            cval = db.get(pname, None)
-            #can't configure ones that are live
-            if isinstance(cval, relay_values.RelayValueDecl):
-                return
-            cval2 = cdb.setdefault(pname, cval)
-
-            #actually insert the parameter value
-            if cval2 is not None and cval2 != cval:
-                db[pname] = tfunc(cval2)
-            return
-
-        if cdb is not None:
-            dtype = db['type']
-            if dtype in ['float', 'int']:
-                if db.get('count', None) is None:
-                    ctree_check('EDCU', bool)
-                    ctree_check('prec', int)
-                    ctree_check('unit', str)
-                    ctree_check('lolim', float)
-                    ctree_check('hilim', float)
-                    ctree_check('low', float)
-                    ctree_check('high', float)
-                    ctree_check('lolo', float)
-                    ctree_check('hihi', float)
-                    ctree_check('burt', bool)
-                else:
-                    #nothing for waveforms
-                    pass
-            elif dtype in ['enum']:
-                ctree_check('EDCU', bool)
-                ctree_check('burt', burt)
-            elif dtype in ['char', 'string']:
-                ctree_check('EDCU', bool)
-                ctree_check('burt', burt)
-
-        #special case for urgentsave to only check the config if it is relevant
-        def urgentsave_float_bool_none(val):
-            if val is None:
-                return val
-            if isinstance(val, bool):
-                return val
-            return float(val)
-        if db.get('writable', False) and db.get('burt', False):
-            ctree_check('urgentsave', urgentsave_float_bool_none)
-
-        #if 'states' in db:
-        #    states = db['states']
-        #    #must convert away from unicode to keep pcaspy happy
-        #    states = [unicode(s).encode('ascii', 'replace') for s in states]
-        #    db['states'] = states
-
-        type = db['type']
-        if type == 'float':
-            pass
-        elif type == 'int':
-            pass
-        elif type == 'string':
-            pass
-        elif type == 'char':
-            pass
-        elif type == 'enum':
-            #check that this exists
-            db['enums']
-        else:
-            raise RuntimeError("Type Not Recognized")
-        self.rv_db[rv] = db
-        return

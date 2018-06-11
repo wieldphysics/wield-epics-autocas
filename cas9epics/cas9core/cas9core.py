@@ -7,6 +7,7 @@ from declarative import bunch
 
 from . import reactor
 from . import pcaspy_backend
+from . import pyepics_backend
 from . import cas9declarative
 
 
@@ -62,16 +63,21 @@ class InstaCAS(
         if self._db_generated is None:
             self._db_generated = self.cas_db_generate()
             self._cas_generated = pcaspy_backend.CADriverServer(
-                self._db_generated,
-                self.reactor,
+                self._db_generated, self.reactor,
+                saver = self.autosave,
+            )
+            self._cas_external = pyepics_backend.CAEpicsClient(
+                self._db_generated, self.reactor,
                 saver = self.autosave,
             )
             self._cas_generated.start()
+            self._cas_external.start()
             return True
         return False
 
     _db_generated = None
     _cas_generated = None
+    _cas_external  = None
     def run(self, for_s = None, modulo_s = None, mtime_to = None):
         #TODO decide if arguments should change how stopping is done on errors
         self.start()
@@ -92,6 +98,7 @@ class InstaCAS(
     def stop(self):
         if self._db_generated is not None:
             self._cas_generated.stop()
+            self._cas_external.stop()
             self._db_generated = None
             self._cas_generated = None
 
@@ -190,10 +197,10 @@ class CASUser(declarative.OverridableObject):
 
     def cas_host(self, rv, name = None, **kwargs):
         return self.root.cas_host(
-            rv     = rv,
-            name   = name,
-            prefix = self.prefix,
-            ctree  = self.ctree['PVs'].useidx('epics'),
+            rv          = rv,
+            name        = name,
+            self_prefix = self.prefix,
+            ctree       = self.ctree['PVs'].useidx('epics'),
             **kwargs
         )
 

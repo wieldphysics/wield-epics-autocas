@@ -281,7 +281,7 @@ class Reactor(object):
     ):
         return self._enqueue(
             command,
-            key           = None,
+            key           = key,
             future_s      = future_s,
             limit_s       = limit_s,
             mtime_at      = mtime_at,
