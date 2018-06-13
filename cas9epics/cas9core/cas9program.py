@@ -285,16 +285,19 @@ class CAS9CmdLine(
         program = self.meta_program_generate()
 
         db = declarative.DeepBunch()
-        if not (args.epics_include or args.check_unused):
-            db.update_recursive(program.root.ctree.extractidx('config'))
+        db.update_recursive(program.root.ctree_root.value_retrieve_recursive())
 
-        if args.epics_include or args.check_unused:
-            db.update_recursive(program.root.ctree.extractidx('epics'))
+        #TODO make these work via classifications
+        #if not (args.epics_include or args.check_unused):
+        #    db.update_recursive(program.root.ctree_root.value_retrieve_recursive())
 
-        if args.prefix_include or args.check_unused:
-            db.update_recursive(program.root.ctree.extractidx('names'))
+        #if args.epics_include or args.check_unused:
+        #    db.update_recursive(program.root.ctree.extractidx('epics'))
 
-        db.update_recursive(program.root.ctree.extractidx('current'))
+        #if args.prefix_include or args.check_unused:
+        #    db.update_recursive(program.root.ctree.extractidx('names'))
+        #db.update_recursive(program.root.ctree.extractidx('current'))
+
         db = remap_recursive(db.mydict)
 
         if args.about:
