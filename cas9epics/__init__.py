@@ -30,3 +30,8 @@ from .cas9core import (
     mproperty,
 )
 
+
+from .version import (
+    version,
+    __version__,
+)

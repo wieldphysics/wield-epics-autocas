@@ -8,11 +8,13 @@ from declarative import bunch
 from . import reactor
 from . import pcaspy_backend
 from . import pyepics_backend
+from . import base_backend
 from . import cas9declarative
+from . import ctree
 
 
 class InstaCAS(
-    pcaspy_backend.CASCollector,
+    base_backend.CASCollector,
     declarative.OverridableObject
 ):
 
@@ -117,25 +119,17 @@ class InstaCAS(
     def root(self):
         return self
 
+    @cas9declarative.dproperty
+    def ctree_root(self, arg = cas9declarative.NOARG):
+        #the configtree may be specified externally but it should be
+        #a ConfigTreeRoot or compatible type
+        if arg is cas9declarative.NOARG:
+            arg = ctree.ConfigTreeRoot()
+        return arg
+
     @cas9declarative.mproperty
     def ctree(self, arg = cas9declarative.NOARG):
-        about   = bunch.DeepBunchSingleAssign()
-        current = bunch.DeepBunchSingleAssign()
-        names   = bunch.DeepBunchSingleAssign()
-        epics   = bunch.DeepBunchSingleAssign()
-        dicts = [current, names, epics]
-
-        #add in the configuration argument one as the last (it is never assigned into)
-        if arg is not cas9declarative.NOARG:
-            dicts.append(arg)
-
-        if not self._ctree_pulling:
-            return cas9declarative.ShadowBunchN(dicts, abdict = about)
-        else:
-            return cas9declarative.ShadowBunchNPull(dicts, abdict = about)
-
-    #indicate that the configs should also be pulled. Useful for some ctree inspections
-    _ctree_pulling = False
+        return self.ctree_root.ctree
 
 
 class CASUser(declarative.OverridableObject):
@@ -166,16 +160,17 @@ class CASUser(declarative.OverridableObject):
                 default = tuple(self.parent.prefix)
             else:
                 default = tuple(self.parent.prefix) + (self.subprefix,)
-            val = self.ctree.useidx('names').setdefault(
+
+            val = self.ctree.get_configured(
                 'prefix',
-                default,
-                about = ("""
-                    configtype : nested_prefix
-                    List of strings which chain to construct channel names of child objects.
-                    If parent prefixes are changed, then child prefixes will change unless
-                    they are also specified in the configuration
-                """)
+                default = default,
+                about = (
+                    "List of strings which chain to construct channel names of child objects."
+                    " If parent prefixes are changed, then child prefixes will change unless"
+                    " they are also specified in the configuration."),
+                classification = 'prefix',
             )
+
         assert(isinstance(val, (list, tuple)))
         for p in val:
             assert(isinstance(p, (str, unicode)))
@@ -200,7 +195,7 @@ class CASUser(declarative.OverridableObject):
             rv          = rv,
             name        = name,
             self_prefix = self.prefix,
-            ctree       = self.ctree['PVs'].useidx('epics'),
+            ctree       = self.ctree['PVs'],
             **kwargs
         )
 

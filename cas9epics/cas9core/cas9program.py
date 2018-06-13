@@ -11,6 +11,7 @@ import collections
 import socket
 
 from . import cas9core
+from . import ctree
 
 from ..config import pytoml
 
@@ -31,21 +32,15 @@ class CAS9MetaProgram(
         return val
 
     @declarative.dproperty
-    def ctree_pull(self, val = False):
-        """
-        Specify as True to cause some copying in ctree to determine exactly all of the config values pulled from the configuration
-        """
-        return val
-
-    @declarative.dproperty
     def root(self):
         root = cas9core.InstaCAS(
             prefix_base      = self.cmd.ifo,
             prefix_subsystem = self.cmd.subsystem,
-            module_name     = self.cmd.module_name,
-            ctree            = self.cmd.ctree,
-            config_files     = [self.cmd.config_file],
-            _ctree_pulling   = self.ctree_pull,
+            module_name      = self.cmd.module_name,
+            ctree_root       = self.cmd.ctree_root,
+            config_files     = [
+                self.cmd.config_file,
+            ],
         )
         return root
 
@@ -88,21 +83,17 @@ class CAS9CmdLine(
         return val
 
     @declarative.dproperty
-    def ctree(self):
+    def ctree_root(self):
+        ctree_root = ctree.ConfigTreeRoot()
         if self.config_file is not None:
             with open(self.config_file, 'r') as F:
                 conf_dict = pytoml.load(F)
-            return declarative.bunch.DeepBunchSingleAssign(conf_dict)
-        else:
-            return declarative.bunch.DeepBunchSingleAssign()
+            ctree_root.config_load_recursive(conf_dict)
+        return ctree_root
 
     @declarative.dproperty
-    def _ctree_about(self):
-        """
-        Additional dictionary to store configuration docstrings for this "pre-root" command line setup. The config commands to display these documentation will merge this with the
-        about dict in the root.ctree.
-        """
-        return declarative.bunch.DeepBunchSingleAssign()
+    def ctree(self):
+        return self.ctree_root.ctree
 
     @declarg.argument(['-S, --site'])
     @declarative.dproperty
@@ -110,20 +101,19 @@ class CAS9CmdLine(
         """
         Instrument site. Uses $SITE if not specified
         """
-        config_val = self.ctree.get('SITE', None)
-        if val is None:
-            if config_val is None:
-                val = os.getenv('SITE')
-                self.ctree['SITE'] = val
-            else:
-                val = config_val
+
+        default = os.getenv('SITE')
+        val = self.ctree.get_configured(
+            'SITE',
+            default = default,
+            about = (
+                "Instrument site. Uses the command line --site parameter"
+                " or defaults to $SITE if not specified. Precedence of configurations"
+                " is 1. --site, 2. configfile.SITE 3. $SITE."
+            )
+        )
         if val is None:
             raise RuntimeError("SITE environment variable not set and not specified in config or on command line")
-        self._ctree_about['SITE'] = (
-            "Instrument site. Uses the command line --site parameter"
-            " or defaults to $SITE if not specified. Precedence of configurations"
-            " is 1. --site, 2. configfile.SITE 3. $SITE."
-        )
         return val.lower()
 
     @declarg.argument(['-i, --ifo'])
@@ -132,20 +122,18 @@ class CAS9CmdLine(
         """
         Interferometer Prefix. Uses $IFO if not specified
         """
-        config_val = self.ctree.get('IFO', val)
-        if val is None:
-            if config_val is None:
-                val = os.getenv('IFO')
-                self.ctree['IFO'] = val
-            else:
-                val = config_val
+        default = os.getenv('IFO')
+        val = self.ctree.get_configured(
+            'IFO',
+            default = default,
+            about = (
+                "Instrument (interferometer) prefix name. Uses the command line --ifo parameter"
+                " or defaults to $IFO if not specified. Precedence of configurations"
+                " is 1. --ifo, 2. configfile.IFO 3. $IFO."
+            )
+        )
         if val is None:
             raise RuntimeError("IFO environment variable not set and not specified in config or on command line")
-        self._ctree_about['IFO'] = (
-            "Instrument (interferometer) prefix name. Uses the command line --ifo parameter"
-            " or defaults to $IFO if not specified. Precedence of configurations"
-            " is 1. --ifo, 2. configfile.IFO 3. $IFO."
-        )
         return val.lower()
 
     #can also override this in subclasses
@@ -157,16 +145,17 @@ class CAS9CmdLine(
         X1:PREFIX-XXX_YYY_ZZZ
         """
         if val is None:
-            config_val = 'test'
+            default = 'test'
         else:
-            config_val = val
-        config_val = self.ctree.setdefault('subsystem_prefix', config_val)
-        if val is None:
-            val = config_val
-        self._ctree_about['IFO'] = (
-            "Subsystem prefix name. Used for naming channels with the (default pattern) X1:PREFIX-XXX_YYY_ZZZ."
-            " Uses the command line --subsystem parameter"
-            " Precedence of configurations is 1. --subsystem, 2. configfile.subsystem_prefix"
+            default = val
+        val = self.ctree.get_configured(
+            'subsystem_prefix',
+            default = default,
+            about = (
+                "Subsystem prefix name. Used for naming channels with the (default pattern) X1:PREFIX-XXX_YYY_ZZZ."
+                " Uses the command line --subsystem parameter"
+                " Precedence of configurations is 1. --subsystem, 2. configfile.subsystem_prefix"
+            )
         )
         return val
 
@@ -195,10 +184,13 @@ class CAS9CmdLine(
         """
         if val is None:
             val = self.t_task.__name__.lower()
-        val = self.ctree.setdefault('module_name_base', val)
-        self._ctree_about['module_name_base'] = (
-            "base name to create the program name from using module_name_template. One can alternately"
-            " directly specify the program name if it does not depend on site, ifo, or other variables."
+        val = self.ctree.get_configured(
+            'module_name_base',
+            default = val,
+            about = (
+                "base name to create the program name from using module_name_template. One can alternately"
+                " directly specify the program name if it does not depend on site, ifo, or other variables."
+            ),
         )
         return val
 
@@ -206,11 +198,14 @@ class CAS9CmdLine(
     def module_name_template(self, val = None):
         if val is None:
             val = '{ifo}{subsys}{base}'
-        val = self.ctree.setdefault('module_name_template', val)
-        self._ctree_about['module_name_base'] = (
-            "Template to use to create the program name from"
-            " directly specify the program name if it does not depend on site, ifo, or other variables."
-            " May use variables {ifo}, {site}, {subsys}, {base}, {host} in the template."
+        val = self.ctree.get_configured(
+            'module_name_template',
+            val,
+            about = (
+                "Template to use to create the program name from"
+                " directly specify the program name if it does not depend on site, ifo, or other variables."
+                " May use variables {ifo}, {site}, {subsys}, {base}, {host} in the template."
+            )
         )
         return val
 
@@ -278,16 +273,16 @@ class CAS9CmdLine(
         Print the used configuration (takes subcommand arguments)
         """
         args = ConfigPrintArgs.__cls_argparse__(argv, no_commands = True)
-        if args.about:
-            ctree_pull = False
-        elif args.check_unused or args.check_remaining:
-            ctree_pull = True
-        else:
-            ctree_pull = False
 
-        program = self.meta_program_generate(
-            ctree_pull = ctree_pull,
-        )
+        #TODO add these back in
+        #if args.about:
+        #    ctree_pull = False
+        #elif args.check_unused or args.check_remaining:
+        #    ctree_pull = True
+        #else:
+        #    ctree_pull = False
+
+        program = self.meta_program_generate()
 
         db = declarative.DeepBunch()
         if not (args.epics_include or args.check_unused):

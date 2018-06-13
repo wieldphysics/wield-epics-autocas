@@ -16,7 +16,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'VAL',
             unit  = 'seconds',
-            writable = True,
+            interaction = 'internal',
             prec  = 4,
             lolo  = -1,
             low   = 0,

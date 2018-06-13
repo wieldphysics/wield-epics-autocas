@@ -20,6 +20,7 @@ class CASRelay(object):
     """
     def db_defaults(self):
         return {
+            'value' : self.value,
             'rv' :   self,
             'burt' : True,
         }
@@ -30,6 +31,7 @@ class CASRelayBoolTF(CASRelay):
     """
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type' : 'enum',
             'rv'   : self,
             "enums": ['False', 'True'],
@@ -42,6 +44,7 @@ class CASRelayBoolOnOff(CASRelay):
     """
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type' : 'enum',
             'rv'   : self,
             "enums": ['Off', 'On'],
@@ -54,6 +57,7 @@ class CASRelayBoolRO(CASRelay):
     """
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type':      'enum',
             'rv' :       self,
             "enums":     ['False', 'True'],
@@ -75,6 +79,7 @@ class RelayValueFloat(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type': 'float',
             'rv' :  self,
             'burt' : True,
@@ -117,6 +122,7 @@ class RelayValueFloatLowHighMod(RelayValueFloat):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type': 'float',
             'rv' :  self,
             'burt' : True,
@@ -141,6 +147,7 @@ class RelayValueInt(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type': 'int',
             'rv' :  self,
             'burt' : True,
@@ -159,6 +166,7 @@ class RelayValueString(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type': 'string',
             'rv' :  self,
             'burt' : True,
@@ -177,6 +185,7 @@ class RelayValueLongString(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type':   'char',
             'rv' :    self,
             'count' : self.max_length,
@@ -200,6 +209,7 @@ class RelayValueWaveform(CASRelay, RelayValueDecl):
 
     def db_defaults(self):
         return {
+            'value' : self.value,
             'type':   'float',
             'rv' :    self,
             'count' : self.max_length,
@@ -272,6 +282,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
         except KeyError:
             raise RuntimeError("Enum must be sequential to use with EPICS CAS")
         return {
+            'value' : self.value,
             'type':  'enum',
             'rv' :   self,
             "enums": states,

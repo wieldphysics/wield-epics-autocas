@@ -5,8 +5,6 @@ from __future__ import division, print_function, unicode_literals
 import sys
 import cas9epics
 import declarative
-from cas9epics.utilities import pprint
-from cas9epics.subservices.restart_on_edit import RestartOnEdit
 
 
 class RVExternals(cas9epics.CASUser):

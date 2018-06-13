@@ -55,6 +55,8 @@ class CASCollector(declarative.OverridableObject):
 
             #must be one of ['report', 'external', 'internal', 'setting']
             interaction = None,
+            #defaults to True, warns if externally hosted PV's are changed. Also warns if setting RV's are changed
+            warnings    = None,
 
             type        = None,
             count       = None,
@@ -95,7 +97,11 @@ class CASCollector(declarative.OverridableObject):
             prefix = list(self_prefix) + [name]
 
         if cdb is not None:
-            prefix = cdb.setdefault('prefix', prefix, about = "Prefix to construct the PV channel name")
+            prefix = cdb.get_configured(
+                'prefix',
+                default = prefix,
+                about = "Prefix to construct the PV channel name",
+            )
 
         #TODO allow direct setting channel name from ctree
 
@@ -108,9 +114,18 @@ class CASCollector(declarative.OverridableObject):
         else:
             db = dict()
 
+        interaction_types = ['report', 'external', 'internal', 'setting']
+        if interaction is None:
+            raise RuntimeError("Must Specify the interaction type for all PV's")
+        if interaction not in interaction_types:
+            raise RuntimeError("Unknown interaction type: must be one of {0}".format(interaction_types))
+
+        #----------------- SETUP DEFAULTS
+        # use the values already specified to setup and generate defaults
+
+
         # a convenient way to inject all of the settings
         db_inj = dict(
-            writable   = writable,
             EDCU       = EDCU,
             type       = type,
             count      = count,
@@ -142,7 +157,7 @@ class CASCollector(declarative.OverridableObject):
             #can't configure ones that are live
             if isinstance(cval, relay_values.RelayValueDecl):
                 return
-            cval2 = cdb.setdefault(pname, cval)
+            cval2 = cdb.get_configured(pname, default = cval)
 
             #actually insert the parameter value
             if cval2 is not None and cval2 != cval:
@@ -167,6 +182,8 @@ class CASCollector(declarative.OverridableObject):
                     ctree_check('burt', bool)
                 else:
                     #nothing for waveforms
+                    #TODO, allow waveforms
+                    #
                     pass
             elif dtype in ['enum']:
                 ctree_check('EDCU', bool)
@@ -178,11 +195,12 @@ class CASCollector(declarative.OverridableObject):
         #special case for urgentsave type to only check the config if it is relevant
         def urgentsave_float_bool_none(val):
             if val is None:
-                return val
+                return False
             if isinstance(val, bool):
                 return val
             return float(val)
-        if db.get('writable', False) and db.get('burt', False):
+
+        if db.get('burt'):
             ctree_check('urgentsave', urgentsave_float_bool_none)
 
         type = db['type']
