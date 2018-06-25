@@ -56,9 +56,9 @@ class CADriverServer(pcaspy.Driver):
         db_cas_raw = {}
 
         for channel, db_entry in self.db.items():
-            #ignore the external entries
-            if db_entry.get('external', False):
-                print('EXTERNAL')
+            #ignore the remote entries
+            if db_entry.get('remote', False):
+                print('REMOTE')
                 print(channel, db_entry)
                 continue
             rv = db_entry['rv']
@@ -110,6 +110,18 @@ class CADriverServer(pcaspy.Driver):
                         elem_val.register(
                             callback = self._put_elem_cb_generator(channel, elem)
                         )
+                    else:
+                        entry_use[elem] = elem_val
+            for elem in [
+                    "type" 	,  # 'float' PV data type. enum, string, char, float or int
+                    "scan",   # 0 	Scan period in second. 0 means passive
+                    "asyn",   # False 	Process finishes asynchronously if True
+                    "asg",    # '' 	Access security group name
+                    "value",  # 0 or '' 	Data initial value
+            ]:
+                if elem in db_entry:
+                    elem_val = db_entry[elem]
+                    entry_use[elem] = elem_val
 
             if 'value' not in entry_use:
                 entry_use['value'] = rv.value

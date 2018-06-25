@@ -17,7 +17,7 @@ class RVError(cas9core.CASUser):
         self.cas_host(
             rv, 'STR',
             unit  = 'message',
-            writable = False,
+            interaction = 'report',
         )
         return rv
 
@@ -27,7 +27,7 @@ class RVError(cas9core.CASUser):
         self.cas_host(
             rv, 'LEVEL',
             unit  = 'level',
-            writable = False,
+            interaction = 'report',
         )
         return rv
 
@@ -37,7 +37,7 @@ class RVError(cas9core.CASUser):
         self.cas_host(
             rv, 'THR',
             unit  = 'level',
-            writable = True,
+            interaction = 'setting',
         )
         return rv
 
@@ -46,7 +46,7 @@ class RVError(cas9core.CASUser):
         rb = cas9core.RelayBool(False)
         self.cas_host(
             rb, 'TRG',
-            writable = False,
+            interaction = 'report',
         )
         return rb
 
@@ -55,8 +55,7 @@ class RVError(cas9core.CASUser):
         rb = cas9core.RelayBool(False)
         self.cas_host(
             rb, 'CLR',
-            writable = True,
-            burt = False,
+            interaction = 'command',
         )
 
         def _clear_clear():

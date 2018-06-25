@@ -95,11 +95,13 @@ class Reactor(object):
 
     @callbackmethod
     def canary_died(self):
+        #TODO, log better
         print("Reactor canary died!")
         return
 
     @callbackmethod
     def canary_revived(self):
+        #TODO, log better
         print("Reactor canary revived!")
         return
 
@@ -451,10 +453,6 @@ class Reactor(object):
 
     def release(self):
         self._queue_lock.release()
-
-    def bootup_from_poly(self):
-        if self._task_queue is not None:
-            return
 
     def assert_living_in_reactor(self):
         if self._current_reactor_thread is None:

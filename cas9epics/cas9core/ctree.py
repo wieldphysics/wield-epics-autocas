@@ -14,11 +14,12 @@ class ConfigTree(object):
     dictionary/mapping interface.
     """
     __slots__ = ('_dict',)
-    VALUE_KEY          = CTreeKey('ctree', 'value')
-    CONFIG_KEY         = CTreeKey('ctree', 'config')
-    DEFAULT_KEY        = CTreeKey('ctree', 'default')
-    ABOUT_KEY          = CTreeKey('ctree', 'about')
-    CLASSIFICATION_KEY = CTreeKey('ctree', 'classification')
+    VALUE_KEY                = CTreeKey('ctree', 'value')
+    CONFIG_KEY               = CTreeKey('ctree', 'config')
+    DEFAULT_KEY              = CTreeKey('ctree', 'default')
+    ABOUT_KEY                = CTreeKey('ctree', 'about')
+    CLASSIFICATION_KEY       = CTreeKey('ctree', 'classification')
+    CLASSIFICATION_PRIME_KEY = CTreeKey('ctree', 'classification_prime')
 
     def __init__(self, _subdict):
         self._dict = _subdict
@@ -72,6 +73,15 @@ class ConfigTree(object):
             validator = None,
             **kwargs
     ):
+        """
+        Gets the configured setting, using the default if not set in configuration file. Takes some arguments to annotate
+        the configuration. These are stored by default, though the ctree system used through a subclass may not store these annotations
+
+        about: a string describing the setting
+        classification: a list of classification strings, the first in the list is the primary classification
+        validator: a function to validate/cast both the default setting and the configured setting
+        to ensure correct typing. It may generate warnings
+        """
         cdict = self._dict[key]
 
         if self._check_type(cdict) in ['bad', 'tree']:
@@ -86,11 +96,18 @@ class ConfigTree(object):
         except KeyError:
             pass
 
+        #normalize the classification if it is a single string
+        if isinstance(classification, (str, unicode)):
+            classification = [classification]
+
         #add in annotation information if the keys are set
         if self.ABOUT_KEY is not None and about is not None:
             cdict[self.ABOUT_KEY] = about
         if self.CLASSIFICATION_KEY is not None and classification is not None:
-            cdict[self.CLASSIFICATION_KEY] = classification
+            #convert to a set for easier search later
+            cdict[self.CLASSIFICATION_KEY] = set(classification)
+        if self.CLASSIFICATION_PRIME_KEY is not None and classification is not None:
+            cdict[self.CLASSIFICATION_PRIME_KEY] = classification[0]
         for k, v in kwargs.items():
             cdict[self._keygen(k)] = v
 
@@ -107,20 +124,19 @@ class ConfigTree(object):
         #now check if it is already configured
         try:
             config = cdict.get(self.CONFIG_KEY)
-            if validator is not None:
-                use_conf = validator(config)
-                if use_conf != config:
-                    logging.warning((
-                        "Configuration validator coerced value "
-                        "for key {0} from {1} to {2}"
-                    ).format(key, config, use_conf))
-            else:
-                use_conf = config
-
-            use_value = use_conf
         except KeyError:
             #no configuration, so use default
-            use_value = default
+            config = default
+
+        if validator is not None:
+            use_value = validator(config)
+            if use_value != config:
+                logging.warning((
+                    "Configuration validator coerced value "
+                    "for key {0} from {1} to {2}"
+                ).format(key, config, use_value))
+        else:
+            use_value = config
 
         cdict[self.VALUE_KEY] = use_value
         return use_value
@@ -244,8 +260,9 @@ class ConfigTreeRoot(object):
     def classification_retrieve_recursive(self):
         return self._key_retrieve_recursive(ConfigTree.CLASSIFICATION_KEY)
 
+    def classification_prime_retrieve_recursive(self):
+        return self._key_retrieve_recursive(ConfigTree.CLASSIFICATION_PRIME_KEY)
+
     def extra_retrieve_recursive(self, key):
         return self._key_retrieve_recursive(self._dict._keygen(key))
-
-
 

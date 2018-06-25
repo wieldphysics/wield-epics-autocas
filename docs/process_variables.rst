@@ -50,10 +50,17 @@ other programs should interact. The values are:
 
   setting:
 
-    This value is purely a setting for the program to read from. It externally
+    This value is purely a setting for the program to read from. If externally
     hosted, the program value will be updated by the external value upon
     connection. If the program modifies the relay-value connected to this
     variable, a warning will be raised.
+
+  command:
+
+   This is a command type, which will be interpreted and then reset to a nominal
+   value. These can trigger RPC calls, reset errors and things like that. Should
+   almost never be BURT'ed unless there should be a trigger on burt effect. In this
+   case burt and EDCU settings default to False.
 
 
 Most settings should try to be `report` or `setting` types as they are the cleanest interfaces. The internal and external types are also available for PV's which are both read and (explicitly) written to by the program.

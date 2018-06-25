@@ -13,9 +13,9 @@ class RVExternals(cas9epics.CASUser):
         rv = cas9epics.RelayValueFloat(0)
         self.cas_host(
             rv, 'INT',
-            external = False,
-            writable = True,
+            remote = False,
             urgentsave = 0.1,
+            interaction = 'internal',
         )
 
         def cb(value):
@@ -30,8 +30,8 @@ class RVExternals(cas9epics.CASUser):
         self.cas_host(
             rv, 'EXT',
             prefix = ['ISC', 'ADC28', 'GAIN'],
-            external = True,
-            writable = True,
+            remote = True,
+            interaction = 'internal',
             urgentsave = 0.1,
         )
 

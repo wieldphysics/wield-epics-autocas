@@ -17,7 +17,6 @@ class InstaCAS(
     base_backend.CASCollector,
     declarative.OverridableObject
 ):
-
     @cas9declarative.dproperty
     def reactor(self):
         return reactor.Reactor()
@@ -28,6 +27,22 @@ class InstaCAS(
         return autosave.AutoSave(
             parent = self,
             name = 'burt',
+        )
+
+    @cas9declarative.dproperty
+    def settings(self):
+        from ..subservices import program_status
+        return program_status.ProgramSettings(
+            parent = self,
+            name = 'settings',
+        )
+
+    @cas9declarative.dproperty
+    def status(self):
+        from ..subservices import program_status
+        return program_status.ProgramStatus(
+            parent = self,
+            name = 'status',
         )
 
     @cas9declarative.dproperty
@@ -68,18 +83,18 @@ class InstaCAS(
                 self._db_generated, self.reactor,
                 saver = self.autosave,
             )
-            self._cas_external = pyepics_backend.CAEpicsClient(
+            self._cas_remote = pyepics_backend.CAEpicsClient(
                 self._db_generated, self.reactor,
                 saver = self.autosave,
             )
             self._cas_generated.start()
-            self._cas_external.start()
+            self._cas_remote.start()
             return True
         return False
 
     _db_generated = None
     _cas_generated = None
-    _cas_external  = None
+    _cas_remote  = None
     def run(self, for_s = None, modulo_s = None, mtime_to = None):
         #TODO decide if arguments should change how stopping is done on errors
         self.start()
@@ -100,7 +115,7 @@ class InstaCAS(
     def stop(self):
         if self._db_generated is not None:
             self._cas_generated.stop()
-            self._cas_external.stop()
+            self._cas_remote.stop()
             self._db_generated = None
             self._cas_generated = None
 

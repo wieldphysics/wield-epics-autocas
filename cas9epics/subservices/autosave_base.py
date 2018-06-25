@@ -103,9 +103,9 @@ class AutoSaveBase(cas9core.CASUser):
                     print("WARNING: non-RO PV listed as RO in snapshot on load (not loading)")
                 continue
 
-            #TODO, make the internal/external save decision better
-            external = self._my_pvdb[pv].get('external', False)
-            if not external:
+            #TODO, make the internal/remote save decision better
+            remote = self._my_pvdb[pv].get('remote', False)
+            if not remote:
                 did_write = self._my_casdriver.write_sync(pv, val)
                 if not did_write:
                     print("WARNING, write failed loading non-RO PV: \"{0}\" with value {1}".format(pv, val) )
@@ -117,9 +117,9 @@ class AutoSaveBase(cas9core.CASUser):
         fobj.write(header)
         fobj.write('\n')
         for pv, pvRO in self._my_chnlist:
-            #TODO, make the internal/external save decision better
-            external = self._my_pvdb[pv].get('external', False)
-            if external:
+            #TODO, make the internal/remote save decision better
+            remote = self._my_pvdb[pv].get('remote', False)
+            if remote:
                 continue
             val = self._my_casdriver.read(pv)
 

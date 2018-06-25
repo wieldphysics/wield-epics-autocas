@@ -73,8 +73,8 @@ class CAEpicsClient(declarative.OverridableObject):
         db_cas_raw = {}
 
         for channel, db_entry in self.db.items():
-            #use only the external entries
-            if not db_entry.get('external', False):
+            #use only the remote entries
+            if not db_entry.get('remote', False):
                 continue
 
             rv = db_entry['rv']
@@ -146,7 +146,7 @@ class CAEpicsClient(declarative.OverridableObject):
                 period_s = deferred_write_period,
             )
 
-        print("CAS RAW", self.db, self.db_cas_raw)
+        #print("CAS RAW", self.db, self.db_cas_raw)
 
         return  # ~__init__
 

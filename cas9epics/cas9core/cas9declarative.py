@@ -23,6 +23,9 @@ def dproperty_ctree(
     take "self" as an argument. This allows defaults computed from other attributes. Typically these will be small lambda functions but they don't
     need to be.
 
+    uses the same arguments as get_configured, including
+    about, validator, classification
+
     decorator conventions:
 
     @dproperty_ctree

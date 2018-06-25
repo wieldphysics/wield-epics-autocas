@@ -78,7 +78,7 @@ class CASCollector(declarative.OverridableObject):
             burt        = None,
             urgentsave  = None,
 
-            external    = None,
+            remote = False,
             #**kwargs
     ):
         #TODO, need some way to check that multiple PV's of the same name are not registered
@@ -114,15 +114,23 @@ class CASCollector(declarative.OverridableObject):
         else:
             db = dict()
 
-        interaction_types = ['report', 'external', 'internal', 'setting']
+        #check interaction types and set some defaults based on interaction on the given type
+        interaction_types = ['report', 'external', 'internal', 'setting', 'command']
         if interaction is None:
             raise RuntimeError("Must Specify the interaction type for all PV's")
         if interaction not in interaction_types:
             raise RuntimeError("Unknown interaction type: must be one of {0}".format(interaction_types))
+        elif interaction_types == 'command':
+            if burt is None:
+                burt = False
+            if EDCU is None:
+                EDCU = False
+        elif interaction_types == 'setting':
+            if burt is None:
+                burt = True
 
         #----------------- SETUP DEFAULTS
         # use the values already specified to setup and generate defaults
-
 
         # a convenient way to inject all of the settings
         db_inj = dict(
@@ -142,7 +150,7 @@ class CASCollector(declarative.OverridableObject):
             mdel       = mdel,
             burt       = burt,
             urgentsave = urgentsave,
-            external   = external,
+            remote     = remote,
         )
         for k, v in db_inj.items():
             if v is not None:
@@ -166,7 +174,7 @@ class CASCollector(declarative.OverridableObject):
 
         if cdb is not None:
             dtype = db['type']
-            ctree_check('external', bool)
+            ctree_check('remote', bool)
 
             if dtype in ['float', 'int']:
                 if db.get('count', None) is None:
