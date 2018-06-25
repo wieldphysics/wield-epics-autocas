@@ -84,7 +84,6 @@ class CADriverServer(pcaspy.Driver):
 
             #setup relays for any of the channel values to be inserted
             for elem in [
-                    #"type" 	,  # 'float' PV data type. enum, string, char, float or int
                     "count" 	,  # 1 	Number of elements
                     "enums" 	,  # [] 	String representations of the enumerate states
                     "states" 	,  # [] 	Severity values of the enumerate states.
@@ -98,10 +97,6 @@ class CADriverServer(pcaspy.Driver):
                     "hihi",     # 0 	Data high high limit for alarm
                     "adel",     # 0 	Archive deadband
                     "mdel",     # 0 	Monitor,                    value change deadband
-                    #"scan", #  0 	Scan period in second. 0 means passive
-                    #"asyn", #  False 	Process finishes asynchronously if True
-                    #"asg",     #  '' 	Access security group name
-                    #"value",  # 0 or '' 	Data initial value
             ]:
                 if elem in db_entry:
                     elem_val = db_entry[elem]
@@ -113,7 +108,7 @@ class CADriverServer(pcaspy.Driver):
                     else:
                         entry_use[elem] = elem_val
             for elem in [
-                    "type" 	,  # 'float' PV data type. enum, string, char, float or int
+                    "type",   # 'float' PV data type. enum, string, char, float or int
                     "scan",   # 0 	Scan period in second. 0 means passive
                     "asyn",   # False 	Process finishes asynchronously if True
                     "asg",    # '' 	Access security group name
@@ -292,7 +287,7 @@ class CADriverServer(pcaspy.Driver):
         try:
             rv.put_exclude_cb(value, key = self)
         except relay_values.RelayValueCoerced as E:
-            print("COERCED")
+            #print("COERCED")
             value = E.preferred
             rv.put_valid_exclude_cb(E.preferred, key = self,)
 

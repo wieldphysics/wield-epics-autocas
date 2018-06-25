@@ -25,11 +25,11 @@ class ListArgs(
         pvs = list(cas_db.keys())
         pvs.sort()
         for pv in pvs:
-            if not cas_db[pv]['external']:
+            if not cas_db[pv]['remote']:
                 print(pv)
 
     @declarg.command()
-    def externalPVs(self, argv):
+    def remotePVs(self, argv):
         """
         List the external PVs connected by this task
         """
@@ -39,7 +39,7 @@ class ListArgs(
         pvs = list(cas_db.keys())
         pvs.sort()
         for pv in pvs:
-            if cas_db[pv]['external']:
+            if cas_db[pv]['remote']:
                 print(pv)
 
 

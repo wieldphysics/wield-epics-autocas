@@ -102,7 +102,6 @@ class CAEpicsClient(declarative.OverridableObject):
 
             #setup relays for any of the channel values to be inserted
             for elem in [
-                    #"type" 	,  # 'float' PV data type. enum, string, char, float or int
                     "count" 	,  # 1 	Number of elements
                     "enums" 	,  # [] 	String representations of the enumerate states
                     "states" 	,  # [] 	Severity values of the enumerate states.
@@ -116,10 +115,6 @@ class CAEpicsClient(declarative.OverridableObject):
                     "hihi",     # 0 	Data high high limit for alarm
                     "adel",     # 0 	Archive deadband
                     "mdel",     # 0 	Monitor,                    value change deadband
-                    #"scan", #  0 	Scan period in second. 0 means passive
-                    #"asyn", #  False 	Process finishes asynchronously if True
-                    #"asg",     #  '' 	Access security group name
-                    #"value",  # 0 or '' 	Data initial value
             ]:
                 if elem in db_entry:
                     elem_val = db_entry[elem]
@@ -130,6 +125,19 @@ class CAEpicsClient(declarative.OverridableObject):
                         elem_val.register(
                             callback = self._put_elem_cb_generator(channel, elem)
                         )
+                    else:
+                        entry_use[elem] = elem_val
+
+            for elem in [
+                    "type",   # 'float' PV data type. enum, string, char, float or int
+                    "scan",   # 0 	Scan period in second. 0 means passive
+                    "asyn",   # False 	Process finishes asynchronously if True
+                    "asg",    # '' 	Access security group name
+                    "value",  # 0 or '' 	Data initial value
+            ]:
+                if elem in db_entry:
+                    elem_val = db_entry[elem]
+                    entry_use[elem] = elem_val
 
             if 'value' not in entry_use:
                 entry_use['value'] = rv.value
