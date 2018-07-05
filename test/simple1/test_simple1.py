@@ -19,7 +19,7 @@ db = {
         'lolim':     1,
         'hilim':     rv_test_hi,
         'rv' :       rv_test,
-        'writable' : True,
+        'interaction' : 'internal',
     },
 }
 
