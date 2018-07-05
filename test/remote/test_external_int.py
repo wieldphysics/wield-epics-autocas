@@ -7,50 +7,65 @@ import cas9epics
 import declarative
 
 
-class RVExternals(cas9epics.CASUser):
+class RVConnects(cas9epics.CASUser):
+    remote = False
     @declarative.dproperty
-    def rv_internal(self):
+    def rv_fl(self):
         rv = cas9epics.RelayValueFloat(0)
         self.cas_host(
-            rv, 'INT',
-            remote = False,
-            interaction = 'external',
-            urgentsave = 0.1,
+            rv, 'FL',
+            remote = self.remote,
+            interaction = 'internal',
         )
 
         def cb(value):
-            print("RV_TEST({0}): ".format(self.name), value)
+            print("RV_FL({0}): ".format(self.name), value)
 
         rv.register(callback = cb)
         return rv
 
-    @declarative.dproperty
-    def rv_test(self):
-        rv = cas9epics.RelayValueFloat(0)
-        self.cas_host(
-            rv, 'EXT',
-            remote = False,
-            interaction = 'external',
-            urgentsave = 0.1,
-        )
+    #@declarative.dproperty
+    #def rv_int(self):
+    #    rv = cas9epics.RelayValueInt(0)
+    #    self.cas_host(
+    #        rv, 'INT',
+    #        remote = self.remote,
+    #        interaction = 'internal',
+    #    )
 
-        def cb(value):
-            print("RV_TEST({0}): ".format(self.name), value)
+    #    def cb(value):
+    #        print("RV_INT({0}): ".format(self.name), value)
 
-        rv.register(callback = cb)
-        return rv
+    #    rv.register(callback = cb)
+    #    return rv
+
+    #@declarative.dproperty
+    #def rv_str(self):
+    #    rv = cas9epics.RelayValueString("test")
+    #    self.cas_host(
+    #        rv, 'STR',
+    #        remote = self.remote,
+    #        interaction = 'internal',
+    #    )
+
+    #    def cb(value):
+    #        print("RV_STR({0}): ".format(self.name), value)
+
+    #    rv.register(callback = cb)
+    #    return rv
 
 
 class Testers(cas9epics.CAS9Module):
     @declarative.dproperty
     def test(self):
-        return RVExternals(
-            name = 'TEST',
+        return RVConnects(
+            name = 'connects',
+            subprefix = None,
             parent = self,
         )
 
 if __name__ == "__main__":
     Testers.cmdline(
-        module_name_base = 'RVExternalInt',
+        module_name_base = 'RVInternal',
     )
 

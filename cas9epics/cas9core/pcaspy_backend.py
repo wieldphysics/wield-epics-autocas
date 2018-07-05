@@ -8,6 +8,7 @@ import pcaspy
 import pcaspy.tools
 
 from . import relay_values
+from ..utilities.pprint import pprint
 
 
 class CADriverServer(pcaspy.Driver):
@@ -122,9 +123,10 @@ class CADriverServer(pcaspy.Driver):
                 entry_use['value'] = rv.value
             db_cas_raw[channel] = entry_use
 
-            #writable = db_entry['writable']
         self.db_cas_raw = db_cas_raw
-        print("INT: ", self.db_cas_raw)
+        print("INT:")
+        pprint(self.db_cas_raw)
+        pprint(self.db)
         #have to setup createPV before starting the driver
         self.cas.createPV('', self.db_cas_raw)
         super(CADriverServer, self).__init__()
@@ -153,7 +155,7 @@ class CADriverServer(pcaspy.Driver):
         # not the string.  setParam() expects the numeric value.
 
         # reject writes to non-writable channels
-        if not self.db[channel].get('writable', False):
+        if self.db[channel]['interaction'] == 'report':
             return False
 
         ctype = self.db[channel]['type']
@@ -230,7 +232,7 @@ class CADriverServer(pcaspy.Driver):
         # not the string.  setParam() expects the numeric value.
 
         # reject writes to non-writable channels
-        if not self.db[channel].get('writable', False):
+        if self.db[channel]['interaction'] == 'report':
             return False
 
         ctype = self.db[channel]['type']

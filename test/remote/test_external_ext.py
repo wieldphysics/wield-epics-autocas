@@ -6,48 +6,16 @@ import sys
 import cas9epics
 import declarative
 
-
-class RVExternals(cas9epics.CASUser):
-    @declarative.dproperty
-    def rv_internal(self):
-        rv = cas9epics.RelayValueFloat(0)
-        self.cas_host(
-            rv, 'INT',
-            remote = False,
-            writable = True,
-            urgentsave = 0.1,
-        )
-
-        def cb(value):
-            print("RV_TEST({0}): ".format(self.name), value)
-
-        rv.register(callback = cb)
-        return rv
-
-    @declarative.dproperty
-    def rv_test(self):
-        rv = cas9epics.RelayValueFloat(0)
-        self.cas_host(
-            rv, 'EXT',
-            prefix = ['ISC', 'ADC28', 'GAIN'],
-            remote = True,
-            writable = True,
-            urgentsave = 0.1,
-        )
-
-        def cb(value):
-            print("RV_TEST({0}): ".format(self.name), value)
-
-        rv.register(callback = cb)
-        return rv
-
+from test_external_int import RVConnects
 
 class Testers(cas9epics.CAS9Module):
     @declarative.dproperty
     def test(self):
-        return RVExternals(
+        return RVConnects(
             name = 'TEST',
+            subprefix = None,
             parent = self,
+            remote = True,
         )
 
 if __name__ == "__main__":

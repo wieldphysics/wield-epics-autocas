@@ -97,16 +97,17 @@ class CAS9CmdLine(
         Instrument site. Uses $SITE if not specified
         """
 
-        default = os.getenv('SITE')
-        val = self.ctree.get_configured(
-            'SITE',
-            default = default,
-            about = (
-                "Instrument site. Uses the command line --site parameter"
-                " or defaults to $SITE if not specified. Precedence of configurations"
-                " is 1. --site, 2. configfile.SITE 3. $SITE."
+        if val is None:
+            default = os.getenv('SITE')
+            val = self.ctree.get_configured(
+                'SITE',
+                default = default,
+                about = (
+                    "Instrument site. Uses the command line --site parameter"
+                    " or defaults to $SITE if not specified. Precedence of configurations"
+                    " is 1. --site, 2. configfile.SITE 3. $SITE."
+                )
             )
-        )
         if val is None:
             raise RuntimeError("SITE environment variable not set and not specified in config or on command line")
         return val.lower()
@@ -117,16 +118,17 @@ class CAS9CmdLine(
         """
         Interferometer Prefix. Uses $IFO if not specified
         """
-        default = os.getenv('IFO')
-        val = self.ctree.get_configured(
-            'IFO',
-            default = default,
-            about = (
-                "Instrument (interferometer) prefix name. Uses the command line --ifo parameter"
-                " or defaults to $IFO if not specified. Precedence of configurations"
-                " is 1. --ifo, 2. configfile.IFO 3. $IFO."
+        if val is None:
+            default = os.getenv('IFO')
+            val = self.ctree.get_configured(
+                'IFO',
+                default = default,
+                about = (
+                    "Instrument (interferometer) prefix name. Uses the command line --ifo parameter"
+                    " or defaults to $IFO if not specified. Precedence of configurations"
+                    " is 1. --ifo, 2. configfile.IFO 3. $IFO."
+                )
             )
-        )
         if val is None:
             raise RuntimeError("IFO environment variable not set and not specified in config or on command line")
         return val.lower()

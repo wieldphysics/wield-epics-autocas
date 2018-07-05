@@ -38,12 +38,15 @@ class InstaCAS(
         )
 
     @cas9declarative.dproperty
-    def status(self):
-        from ..subservices import program_status
-        return program_status.ProgramStatus(
-            parent = self,
-            name = 'status',
-        )
+    def status(self, val = declarative.NOARG):
+        if val is declarative.NOARG:
+            from ..subservices import program_status
+            return program_status.ProgramStatus(
+                parent = self,
+                name = 'status',
+                prefix = self.prefix + (self.module_name, 'status')
+            )
+        return val
 
     @cas9declarative.dproperty
     def prefix_base(self, val = None):
