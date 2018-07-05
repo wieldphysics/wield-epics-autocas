@@ -36,7 +36,10 @@ class CADriverServer(pcaspy.Driver):
             use_entry = self.db_cas_raw[channel]
             #TODO 'value' maybe shouldn't be in this..
             use_entry[elem] = value
-            self.setParamInfo(channel, use_entry)
+            #I "type" is included in setParamInfo, it crashes pcaspy
+            dtemp = dict(use_entry)
+            dtemp.pop('type', None)
+            self.setParamInfo(channel, dtemp)
         return put_cb
 
     def __init__(
@@ -128,13 +131,16 @@ class CADriverServer(pcaspy.Driver):
         pprint(self.db_cas_raw)
         pprint(self.db)
         #have to setup createPV before starting the driver
-        self.cas.createPV('', self.db_cas_raw)
+        self.cas.createPV('', self.db)
         super(CADriverServer, self).__init__()
 
         #pre-set all values, since this is apparently not done for you
         for channel, db_entry in self.db_cas_raw.items():
             self.setParam(channel, db_entry['value'])
-            self.setParamInfo(channel, db_entry)
+            #If "type" is included in setParamInfo, it crashes pcaspy
+            dtemp = dict(db_entry)
+            dtemp.pop('type', None)
+            self.setParamInfo(channel, dtemp)
         self.updatePVs()
 
         #the deferred writes will happen this often
