@@ -411,17 +411,22 @@ class Reactor(object):
             #task currently exists and we need to update the time
             assert(not qdat_current.has_run)
             if mtime is None:
+                #remove the task
+                #first tell the task not to run itself
                 qdat_current.has_run = True
                 #set it to None so the later block can return the correct value
                 qdat_current = None
+                self._task_map.pop(key)
             elif mtime < qdat_current.mtime:
                 #push up the run time and reinject the task
                 qdat_current.mtime = mtime
-                #have to specify because the closure of inner_task needs it
+                #have to specify qdata because the closure of inner_task needs it
                 qdata = qdat_current
                 self.send_task(inner_task, run_at = mtime)
             elif force_requeue or loop_settings is not None:
                 qdat_current.has_run = True
+                #go ahead and remove it from the map for safety
+                self._task_map.pop(key)
                 #set it to None so the later block reqeueues it
                 qdat_current = None
                 #carry over if the task was looping and it is not forcing new loop settings
