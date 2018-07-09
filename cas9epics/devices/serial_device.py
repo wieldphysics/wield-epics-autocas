@@ -45,7 +45,7 @@ class SerialDevice(SerialUser):
         self.cas_host(
             rb,
             'AUTOSET',
-            writable = True,
+            interaction = "setting",
             urgentsave = 10,
         )
         return rb

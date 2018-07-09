@@ -112,7 +112,7 @@ class TEK_AFG3000_Chn(SerialUser):
         self.cas_host(
             rv,
             'FREQ_RB',
-            writable = False,
+            interaction = "report",
             prec     = 6,
         )
         return rv
@@ -193,7 +193,7 @@ class TEK_AFG3000_Chn(SerialUser):
         self.cas_host(
             rv,
             'PHASE_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -285,7 +285,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'level_RB',
-           writable = False,
+           interaction = "report",
            prec     = 3,
        )
        return rv
@@ -354,7 +354,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'output_RB',
-           writable = False,
+           interaction = "report",
        )
        return rv
 
@@ -386,7 +386,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'MOD_TYPE',
-           writable = True,
+           interaction = "setting",
        )
        return rv
 
@@ -418,7 +418,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'MOD_TYPE_RB',
-           writable = False,
+           interaction = "report",
        )
        return rv
 
@@ -454,7 +454,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'MOD_SOURCE',
-           writable = True,
+           interaction = "setting",
        )
        return rv
    
@@ -483,7 +483,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'mod_source_RB',
-           writable = False,
+           interaction = "report",
        )
        return rv
 
@@ -518,7 +518,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'MOD_FUNC',
-           writable = True,
+           interaction = "setting",
        )
        return rv
 
@@ -546,7 +546,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'MOD_FUNC_RB',
-           writable = False,
+           interaction = "report",
        )
        return rv
 
@@ -635,7 +635,7 @@ class TEK_AFG3000_FM(SerialUser):
        self.cas_host(
            rv,
            'FDEV_RB',
-           writable = False,
+           interaction = "report",
            prec     = 3,
        )
        return rv

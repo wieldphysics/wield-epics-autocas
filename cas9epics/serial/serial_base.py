@@ -26,7 +26,7 @@ class SerialConnection(
         self.cas_host(
             rb,
             name = 'CONNECT',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
@@ -36,7 +36,7 @@ class SerialConnection(
         self.cas_host(
             rb,
             name = 'RUNNING',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
@@ -193,7 +193,7 @@ class SerialSubBlock(
         self.cas_host(
             rb,
             name = 'CONNECT',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
@@ -203,7 +203,7 @@ class SerialSubBlock(
         self.cas_host(
             rb,
             name = 'RUNNING',
-            writable = False,
+            interaction = "report",
         )
         return rb
 

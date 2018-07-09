@@ -14,7 +14,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'VAL',
             unit  = 'seconds',
-            writable = True,
+            interaction = "setting",
             urgentsave = 0.1,
         )
 
@@ -29,7 +29,7 @@ class RVTester(cas9epics.CASUser):
         rv = cas9epics.RelayValueString('hello')
         self.cas_host(
             rv, 'STR',
-            writable = True,
+            interaction = "setting",
             urgentsave = 0.1,
         )
 
@@ -44,7 +44,7 @@ class RVTester(cas9epics.CASUser):
         rv = cas9epics.RelayValueLongString('hello')
         self.cas_host(
             rv, 'STRL',
-            writable = True,
+            interaction = "setting",
             urgentsave = 0.1,
         )
 
@@ -59,7 +59,7 @@ class RVTester(cas9epics.CASUser):
         rv = cas9epics.RelayBool(False)
         self.cas_host(
             rv, 'BOOL',
-            writable = True,
+            interaction = "setting",
             urgentsave = 0.1,
         )
 
@@ -74,7 +74,7 @@ class RVTester(cas9epics.CASUser):
         rv = cas9epics.RelayValueEnum('A', ['A', 'B', 'C'])
         self.cas_host(
             rv, 'ENUM',
-            writable = True,
+            interaction = "setting",
             urgentsave = 0.1,
         )
 

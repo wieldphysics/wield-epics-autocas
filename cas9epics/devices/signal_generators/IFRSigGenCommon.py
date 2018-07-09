@@ -85,7 +85,7 @@ class IFRSigGenChannel(SerialUser):
         self.cas_host(
             rv,
             'FREQ_RB',
-            writable = False,
+            interaction = "report",
             prec     = 6,
         )
         return rv
@@ -183,7 +183,7 @@ class IFRSigGenChannel(SerialUser):
         self.cas_host(
             rv,
             'level_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -260,7 +260,7 @@ class IFRSigGenChannel(SerialUser):
         self.cas_host(
             rv,
             'output_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -274,7 +274,7 @@ class IFRSigGenChannel(SerialUser):
         self.cas_host(
             rv,
             'MODMODE_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -339,7 +339,7 @@ class IFRSigGenChannel(SerialUser):
         self.cas_host(
             rb,
             'MODSTAT_RB',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
@@ -431,7 +431,7 @@ class IFRSigGenChannelFM(SerialUser):
         self.cas_host(
             rv,
             'DEVN_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -442,7 +442,7 @@ class IFRSigGenChannelFM(SerialUser):
         self.cas_host(
             rv,
             'CPLG_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -516,6 +516,6 @@ class IFRSigGenChannelFM(SerialUser):
         self.cas_host(
             rb,
             'MODSTAT_RB',
-            writable = False,
+            interaction = "report",
         )
         return rb

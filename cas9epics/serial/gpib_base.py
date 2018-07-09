@@ -27,7 +27,7 @@ class GPIBAddressed(SerialSubBlock):
         self.cas_host(
             rb,
             name = 'COMM',
-            writable = False,
+            interaction = "report",
         )
 
         def pass_up(value):

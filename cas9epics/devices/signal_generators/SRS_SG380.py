@@ -15,7 +15,7 @@ class SRS_SG380(SerialDevice):
         self.cas_host(
             rb,
             'AUTOSET',
-            writable = True,
+            interaction = "setting",
             urgentsave = 10,
         )
         return rb
@@ -176,7 +176,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'FREQ_RB',
-            writable = False,
+            interaction = "report",
             prec     = 6,
         )
         return rv
@@ -267,7 +267,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'level_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -334,7 +334,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'output_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -366,7 +366,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'MOD_TYPE',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -393,7 +393,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'MOD_TYPE_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -458,7 +458,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rb,
             'MODSTAT_RB',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
@@ -543,7 +543,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'FDEV_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -624,7 +624,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'DEVN_RB',
-            writable = False,
+            interaction = "report",
             prec     = 3,
         )
         return rv
@@ -652,7 +652,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'CPLG',
-            writable = True,
+            interaction = "setting",
             urgentsave = 10,
         )
         return rv
@@ -680,7 +680,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'CPLG_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -711,7 +711,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'MOD_FUNC',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -738,7 +738,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'MOD_FUNC_RB',
-            writable = False,
+            interaction = "report",
         )
         return rv
 

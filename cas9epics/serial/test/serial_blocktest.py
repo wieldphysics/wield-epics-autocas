@@ -148,7 +148,7 @@ class IFR2026Channel(
         self.cas_host(
             rv,
             'freq_RB',
-            writable = False,
+            interaction = "report",
             prec     = 9,
         )
         return rv

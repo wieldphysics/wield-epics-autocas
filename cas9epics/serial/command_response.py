@@ -23,7 +23,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'CMD1',
             unit  = 'message',
-            writable = True,
+            interaction = "setting",
         )
         return rv
 
@@ -33,7 +33,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'CMD2',
             unit  = 'message',
-            writable = True,
+            interaction = "setting",
         )
         return rv
 
@@ -43,7 +43,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'CMD3',
             unit  = 'message',
-            writable = True,
+            interaction = "setting",
         )
         return rv
 
@@ -53,7 +53,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'RESLINES',
             unit  = 'responses',
-            writable = True,
+            interaction = "setting",
         )
         return rv
 
@@ -63,7 +63,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'RESP1',
             unit  = 'message',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -73,7 +73,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'RESP2',
             unit  = 'message',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -83,7 +83,7 @@ class SerialCommandResponse(cas9core.CASUser):
         self.cas_host(
             rv, 'RESP3',
             unit  = 'message',
-            writable = False,
+            interaction = "report",
         )
         return rv
 
@@ -92,7 +92,7 @@ class SerialCommandResponse(cas9core.CASUser):
         rb = cas9core.RelayBool(False)
         self.cas_host(
             rb, 'SEND',
-            writable = True,
+            interaction = "setting",
             burt = False,
         )
 

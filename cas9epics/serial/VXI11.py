@@ -52,7 +52,7 @@ class VXI11Connection(SerialConnection):
         self.cas_host(
             rb,
             name = 'COMM',
-            writable = False,
+            interaction = "report",
         )
         return rb
 
