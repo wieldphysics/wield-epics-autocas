@@ -61,7 +61,7 @@ class CADriverServer(pcaspy.Driver):
 
         for channel, db_entry in self.db.items():
             #ignore the remote entries
-            if db_entry.get('remote', False):
+            if db_entry['remote']:
                 print('REMOTE')
                 print(channel, db_entry)
                 continue
@@ -69,7 +69,8 @@ class CADriverServer(pcaspy.Driver):
             entry_use = {}
 
             #provide a callback key so that we can avoid the callback during the write method
-            if db_entry.get('immediate', True):
+            print("ENTRY", db_entry)
+            if not db_entry['deferred']:
                 rv.register(
                     callback = self._put_cb_generator_immediate(channel),
                     key = self,
@@ -129,9 +130,8 @@ class CADriverServer(pcaspy.Driver):
         self.db_cas_raw = db_cas_raw
         print("INT:")
         pprint(self.db_cas_raw)
-        pprint(self.db)
         #have to setup createPV before starting the driver
-        self.cas.createPV('', self.db)
+        self.cas.createPV('', self.db_cas_raw)
         super(CADriverServer, self).__init__()
 
         #pre-set all values, since this is apparently not done for you

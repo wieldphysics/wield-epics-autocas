@@ -77,8 +77,9 @@ class CASCollector(declarative.OverridableObject):
             EDCU        = None,
             burt        = None,
             urgentsave  = None,
+            deferred    = False,
 
-            remote = False,
+            remote      = False,
             #**kwargs
     ):
         #TODO, need some way to check that multiple PV's of the same name are not registered
@@ -151,6 +152,7 @@ class CASCollector(declarative.OverridableObject):
             burt       = burt,
             urgentsave = urgentsave,
             remote     = remote,
+            deferred   = deferred,
         )
         for k, v in db_inj.items():
             if v is not None:
@@ -175,6 +177,7 @@ class CASCollector(declarative.OverridableObject):
         if cdb is not None:
             dtype = db['type']
             ctree_check('remote', bool)
+            ctree_check('deferred', bool)
 
             if dtype in ['float', 'int']:
                 if db.get('count', None) is None:

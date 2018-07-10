@@ -7,7 +7,7 @@ import datetime
 
 from .. import cas9core
 
-class DateTime(cas9core.CASUser):
+class CASDateTime(cas9core.CASUser):
     @cas9core.dproperty
     def rv_str(self):
         rv = cas9core.RelayValueString('<TODO>')
@@ -36,7 +36,7 @@ class DateTime(cas9core.CASUser):
             import gpstime
             self.rv_float.value = gpstime.unix2gps(unix_time)
         dt = datetime.datetime.fromtimestamp(unix_time)
-        self.rv_str.value = dt.strptime('%X %x')
+        self.rv_str.value = dt.strftime('%X %x')
 
     def update_now(self):
         self.update_unix_time(time.time())

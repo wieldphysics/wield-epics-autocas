@@ -2,6 +2,7 @@
 """
 from __future__ import division, print_function, unicode_literals
 
+import declarative
 import sys
 import os
 import datetime
@@ -157,6 +158,10 @@ class AutoSave(autosave_base.AutoSaveBase):
             self.reactor.enqueue(self.save_snap_rolling, future_s = window_s)
         return
 
+    @declarative.callbackmethod
+    def save_notify(self, time_now, time_epoch):
+        return
+
     _last_linkpath = None
     def save_snap_rolling(self):
         self._future_savesnap = None
@@ -219,6 +224,8 @@ class AutoSave(autosave_base.AutoSaveBase):
                 os.symlink(fpath_save, self.load_fpath)
                 self._last_linkpath = fpath_save
                 #TODO, optionally zip the previous path
+
+        self.save_notify(ptime_now, ptime_epoch)
         return
 
     @cas9core.dproperty

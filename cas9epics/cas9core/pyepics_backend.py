@@ -17,6 +17,11 @@ from . import relay_values
 ca_element_count = epics.ca.element_count
 
 class CAEpicsClient(declarative.OverridableObject):
+    @declarative.callbackmethod
+    def connections_changed(self):
+        print("ECONN: ", self.epics_pending_connections)
+        return
+
     @declarative.dproperty
     def epics_pending_connections(self):
         """
@@ -64,8 +69,10 @@ class CAEpicsClient(declarative.OverridableObject):
             db,
             reactor,
             saver = None,
-            deferred_write_period = 1/4.
+            deferred_write_period = 1/4.,  # TODO, make this a configurable
+            **kwargs
     ):
+        super(CAEpicsClient, self).__init__(**kwargs)
         self.db      = db
         self.reactor = reactor
         self.saver   = saver
@@ -83,7 +90,7 @@ class CAEpicsClient(declarative.OverridableObject):
             }
 
             #provide a callback key so that we can avoid the callback during the write method
-            if db_entry.get('immediate', True):
+            if not db_entry["deferred"]:
                 rv.register(
                     callback = self._put_cb_generator_immediate(rv),
                     key = self,
@@ -161,7 +168,7 @@ class CAEpicsClient(declarative.OverridableObject):
     def _put_cb_generator_immediate(self, rv):
         def put_cb(value):
             #a python2 safety as unicode objects crash the CAS
-            self.write_RV_to_PV(rv)
+            self.xfer_RV_to_PV(rv)
         return put_cb
 
     def _put_cb_generator_deferred(self, rv):
@@ -177,16 +184,13 @@ class CAEpicsClient(declarative.OverridableObject):
         def first_CB_event_deferred(*value, **kwargs):
             conn = kwargs.get('conn', None)
             pv = self.RV_PV_map[rv]
-            print(pv, "connect: ", conn)
             if conn is None:
                 return
             elif conn:
                 def conn_task():
-                    print("CONN: ", pv)
                     self._setup_callbacks(rv, pv)
             else:
                 def conn_task():
-                    print("DISCONN: ", pv)
                     self._remove_callbacks(rv, pv)
             self.reactor.send_task(conn_task)
             return
@@ -200,17 +204,25 @@ class CAEpicsClient(declarative.OverridableObject):
                 connection_callback = self._conn_cb_generator_deferred(rv),
                 auto_monitor = True,
             )
-
-            def _test_cb(value, *args, **kwargs):
-                print("IMMED:", rv, value)
-            pv.add_callback(callback = _test_cb)
             #register the PV as wanting a connection
             self.epics_pending_connections.add(pv)
             self.PV_RV_map[pv] = rv
             self.RV_PV_map[rv] = pv
+        self.connections_changed()
         return
 
     def stop(self):
+        return
+        for pv, rv in self.PV_RV_map.items():
+            pv.disconnect()
+            pv.connection_callbacks[:] = []
+            pv.clear_callbacks()
+            #rv.register(key = self, remove = True)
+
+        self.PV_RV_map.clear()
+        self.RV_PV_map.clear()
+        self.epics_pending_connections.clear()
+        self.epics_bad_connections.clear()
         return
 
     def __enter__(self):
@@ -227,14 +239,18 @@ class CAEpicsClient(declarative.OverridableObject):
             warnings.warn("WARNING SHOULDNT GET CALLED")
             return
 
+
+        #TODO Check type and update the bad connections
         print(pv.type)
 
         def _test_cb(value, *args, **kwargs):
             print("SETUP CB", rv, value)
+
         print("SETUP: ", rv, pv)
-        pv.add_callback(callback = _test_cb)
+        pv.add_callback(callback = _test_cb, index = self)
 
         self.epics_pending_connections.remove(pv)
+        self.connections_changed()
         return
 
     def _remove_callbacks(self, rv, pv):
@@ -243,26 +259,25 @@ class CAEpicsClient(declarative.OverridableObject):
             #warnings.warn("WARNING SHOULDNT GET CALLED")
             return
 
-        #pv.remove_callback(index = self)
-
-        rv.register(key = self, remove = True)
+        pv.remove_callback(index = self)
         self.epics_pending_connections.add(pv)
+        self.connections_changed()
         return
 
     def write_pending(self):
         for rv in self.pending_writes:
-            self.write_RV_to_PV(rv)
+            self.xfer_RV_to_PV(rv)
         self.pending_writes.clear()
 
     def read_pending(self):
         for pv in self.pending_reads:
-            self.PV_to_RV(pv)
+            self.xfer_PV_to_RV(pv)
         self.pending_reads.clear()
 
-    def PV_to_RV(self, rv):
+    def xfer_PV_to_RV(self, pv):
         return
 
-    def RV_to_PV(self, rv):
+    def xfer_RV_to_PV(self, rv):
         return
 
     def check_pending_connections(self):

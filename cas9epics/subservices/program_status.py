@@ -47,6 +47,16 @@ class ProgramStatus(cas9core.CASUser):
         return rv
 
     @cas9core.dproperty
+    def rv_reactor_rate(self):
+        rv = cas9core.RelayValueInt(-1)
+        self.cas_host(
+            rv, 'REACTOR_RATE',
+            unit  = 'number',
+            interaction = 'report',
+        )
+        return rv
+
+    @cas9core.dproperty
     def rv_reactor_fill(self):
         rv = cas9core.RelayValueInt(-1)
         self.cas_host(
@@ -58,13 +68,11 @@ class ProgramStatus(cas9core.CASUser):
 
     @cas9core.dproperty
     def rv_reactor_canary(self):
-        rv = cas9core.RelayValueString('<TODO>')
-        self.cas_host(
-            rv, 'REACTOR_FAULT_TIME',
-            unit  = 'datetime',
-            interaction = 'report',
+        dt = cas_time.CASDateTime(
+            parent = self,
+            name = 'REACTOR_FAULT'
         )
-        return rv
+        return dt
 
     @cas9core.dproperty
     def rv_PVs_missing(self):
@@ -77,10 +85,30 @@ class ProgramStatus(cas9core.CASUser):
         return rv
 
     @cas9core.dproperty
+    def rv_PVs_bad(self):
+        rv = cas9core.RelayValueInt(0)
+        self.cas_host(
+            rv, 'PVS_BAD',
+            unit  = 'number',
+            interaction = 'report',
+        )
+        return rv
+
+    @cas9core.dproperty
     def rv_PVs_hosted(self):
         rv = cas9core.RelayValueInt(0)
         self.cas_host(
             rv, 'PVS_HOSTED',
+            unit  = 'number',
+            interaction = 'report',
+        )
+        return rv
+
+    @cas9core.dproperty
+    def rv_PVs_connected(self):
+        rv = cas9core.RelayValueInt(0)
+        self.cas_host(
+            rv, 'PVS_REMOTE',
             unit  = 'number',
             interaction = 'report',
         )
@@ -133,12 +161,35 @@ class ProgramStatus(cas9core.CASUser):
         return rv
 
     @cas9core.dproperty
-    def rv_burt_time(self):
+    def rv_about_softhash_user(self):
         rv = cas9core.RelayValueString('<TODO>')
         self.cas_host(
-            rv, 'BURT_TIME',
-            unit  = 'datetime',
-            interaction = 'report',
+            rv, 'ABOUT_SOFTHASH_USE',
+            interaction = 'setting',
         )
         return rv
+
+    @cas9core.dproperty
+    def rv_about_confhash_user(self):
+        rv = cas9core.RelayValueString('<TODO>')
+        self.cas_host(
+            rv, 'ABOUT_CONFHASH_USE',
+            interaction = 'setting',
+        )
+        return rv
+
+    @cas9core.dproperty
+    def rv_burt_time(self):
+        dt = cas_time.CASDateTime(
+            parent = self,
+            name = 'BURT_TIME'
+        )
+
+        def notify(time_now, time_epoch):
+            dt.update_unix_time(time_now)
+
+        self.root.autosave.save_notify.register(
+            callback = notify,
+        )
+        return dt
 

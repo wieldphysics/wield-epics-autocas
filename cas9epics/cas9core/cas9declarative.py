@@ -10,6 +10,7 @@ mproperty = declarative.mproperty
 __NOARG = declarative.utilities.unique_generator()
 NOARG = declarative.NOARG
 
+callbackmethod = declarative.callbackmethod
 
 def dproperty_ctree(
         func = None,

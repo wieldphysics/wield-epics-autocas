@@ -21,7 +21,12 @@ class RVConnects(cas9epics.CASUser):
         def cb(value):
             print("RV_FL({0}): ".format(self.name), value)
 
-        rv.register(callback = cb)
+        rv.register(callback = cb, key = self)
+
+        if not self.remote:
+            def update():
+                rv.value += .1
+            self.reactor.enqueue_looping(update, period_s = 2)
         return rv
 
     #@declarative.dproperty

@@ -13,6 +13,7 @@ from .cas9declarative import (
     dproperty,
     mproperty,
     dproperty_ctree,
+    callbackmethod,
 )
 
 from .cas9program import (
