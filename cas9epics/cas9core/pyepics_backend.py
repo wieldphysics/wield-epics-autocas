@@ -297,6 +297,26 @@ class CAEpicsClient(declarative.OverridableObject):
         #TODO Check type and update the bad connections
         print(pv.type)
 
+        channel = pv.pvname
+        value   = pv.value
+        db = self.db[channel]
+
+        interaction = db['interaction']
+        if interaction == 'report':
+            self.xfer_RV_to_PV(rv, pv)
+        elif interaction == 'command':
+            self.xfer_RV_to_PV(rv, pv)
+        elif interaction == 'internal':
+            self.xfer_RV_to_PV(rv, pv)
+        elif interaction == 'external':
+            self.xfer_PV_to_RV(rv, pv)
+        elif interaction == 'setting':
+            self.xfer_PV_to_RV(rv, pv)
+        else:
+            raise RuntimeError("Unknown interaction type")
+
+
+
         self.RV_connection_attached[rv] = True
         self.epics_pending_connections.remove(pv)
         self.connections_changed()

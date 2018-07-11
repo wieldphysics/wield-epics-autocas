@@ -117,16 +117,20 @@ class CASCollector(declarative.OverridableObject):
 
         #check interaction types and set some defaults based on interaction on the given type
         interaction_types = ['report', 'external', 'internal', 'setting', 'command']
-        if interaction is None:
-            raise RuntimeError("Must Specify the interaction type for all PV's")
-        if interaction not in interaction_types:
-            raise RuntimeError("Unknown interaction type: must be one of {0}".format(interaction_types))
-        elif interaction_types == 'command':
+        def check_interaction(interaction):
+            if interaction is None:
+                raise RuntimeError("Must Specify the interaction type for all PV's")
+            if interaction not in interaction_types:
+                raise RuntimeError("Unknown interaction type: must be one of {0}".format(interaction_types))
+            return interaction
+
+        interaction = check_interaction(interaction)
+        if interaction == 'command':
             if burt is None:
                 burt = False
             if EDCU is None:
                 EDCU = False
-        elif interaction_types == 'setting':
+        elif interaction == 'setting':
             if burt is None:
                 burt = True
 
@@ -180,7 +184,7 @@ class CASCollector(declarative.OverridableObject):
             dtype = db['type']
             ctree_check('remote', bool)
             ctree_check('deferred', bool)
-            ctree_check('interaction', bool)
+            ctree_check('interaction', check_interaction)
 
             if dtype in ['float', 'int']:
                 if db.get('count', None) is None:
