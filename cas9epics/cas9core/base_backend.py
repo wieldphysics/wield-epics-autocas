@@ -174,6 +174,7 @@ class CASCollector(declarative.OverridableObject):
             adel        = adel,
             mdel        = mdel,
             burt        = burt,
+            burtRO      = burtRO,
             urgentsave  = urgentsave,
             remote      = remote,
             deferred    = deferred,
@@ -218,6 +219,7 @@ class CASCollector(declarative.OverridableObject):
                     ctree_check('lolo', float)
                     ctree_check('hihi', float)
                     ctree_check('burt', bool)
+                    ctree_check('burtRO', bool)
                 else:
                     #nothing for waveforms
                     #TODO, allow waveforms
@@ -226,9 +228,11 @@ class CASCollector(declarative.OverridableObject):
             elif dtype in ['enum']:
                 ctree_check('EDCU', bool)
                 ctree_check('burt', burt)
+                ctree_check('burtRO', bool)
             elif dtype in ['char', 'string']:
                 ctree_check('EDCU', bool)
                 ctree_check('burt', burt)
+                ctree_check('burtRO', bool)
 
         #special case for urgentsave type to only check the config if it is relevant
         def urgentsave_float_bool_none(val):
