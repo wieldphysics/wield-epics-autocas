@@ -3,9 +3,9 @@
 from __future__ import division, print_function, unicode_literals
 
 import numpy as np
-from .. import cas9core
+from ... import cas9core
 #from ..serial import SerialError
-from .serial_device import SerialDevice, SerialUser
+from ..serial_device import SerialDevice, SerialUser
 
 
 class TEK_AFG3000(SerialDevice):
@@ -67,7 +67,10 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_frequency_set(self):
-        default = self.ctree.setdefault('frequency_set', 100e6)
+        default = self.ctree.get_configured(
+            'frequency_set',
+            default = 100e6,
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -79,7 +82,7 @@ class TEK_AFG3000_Chn(SerialUser):
         self.cas_host(
             rv,
             'freq_set',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 6,
         )
@@ -107,7 +110,11 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_frequency_RB(self):
-        default = self.ctree.setdefault('frequency_RB', -1, about = "frequency readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'frequency_RB',
+            default = -1,
+            about = "frequency readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
@@ -149,7 +156,10 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_phase_set(self):
-        default = self.ctree.setdefault('phase_set', 0)
+        default = self.ctree.get_configured(
+            'phase_set',
+            default = 0
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -160,7 +170,7 @@ class TEK_AFG3000_Chn(SerialUser):
         self.cas_host(
             rv,
             'phase_set',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 3,
         )
@@ -188,7 +198,11 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_phase_RB(self):
-        default = self.ctree.setdefault('phase_RB', -1, about = "phase readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'phase_RB',
+            default = -1,
+            about = "phase readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
@@ -237,7 +251,11 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_level_dbm_set(self):
-       default = self.ctree.setdefault('level_dbm_set', -120, about = 'default RF level')
+       default = self.ctree.get_configured(
+           'level_dbm_set',
+           default = -35,
+           about = 'default RF level'
+       )
 
        rv = cas9core.RelayValueFloatLowHighMod(
            default,
@@ -249,7 +267,7 @@ class TEK_AFG3000_Chn(SerialUser):
        self.cas_host(
            rv,
            'level_set',
-           writable   = True,
+           interaction = "setting",
            urgentsave = 10,
            prec       = 3,
        )
@@ -280,7 +298,11 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_level_dbm_RB(self):
-       default = self.ctree.setdefault('level_dbm_RB', -1, about = "level_dbm readback default (used when value unavailable)")
+       default = self.ctree.get_configured(
+           'level_dbm_RB',
+           default = -1,
+           about = "level_dbm readback default (used when value unavailable)"
+       )
        rv = cas9core.RelayValueInt(default)
        self.cas_host(
            rv,
@@ -314,14 +336,18 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rb_output_set(self):
-       default = self.ctree.setdefault('output_set', False, about = 'default for activating RF output')
+       default = self.ctree.get_configured(
+           'output_set',
+           default = False,
+           about = 'default for activating RF output'
+       )
 
        rv = cas9core.RelayBool(default)
 
        self.cas_host(
            rv,
            'output_set',
-           writable   = True,
+           interaction = "setting",
            urgentsave = 10,
        )
        return rv
@@ -349,7 +375,11 @@ class TEK_AFG3000_Chn(SerialUser):
 
     @cas9core.dproperty
     def rb_output_RB(self):
-       default = self.ctree.setdefault('output_RB', True, about = "output status readback default (used when value unavailable)")
+       default = self.ctree.get_configured(
+           'output_RB',
+           default = True,
+           about = "output status readback default (used when value unavailable)"
+       )
        rv = cas9core.RelayBool(default)
        self.cas_host(
            rv,
@@ -591,7 +621,10 @@ class TEK_AFG3000_FM(SerialUser):
     ##############################
     @cas9core.dproperty
     def rv_FM_fdev_set(self):
-       default = self.ctree.setdefault('FM_fdev_set', 10e3)
+       default = self.ctree.get_configured(
+           'FM_fdev_set',
+           default = 10e3
+       )
 
        rv = cas9core.RelayValueFloatLowHighMod(
            default,
@@ -603,7 +636,7 @@ class TEK_AFG3000_FM(SerialUser):
        self.cas_host(
            rv,
            'FDEV',
-           writable   = True,
+           interaction = "setting",
            urgentsave = 10,
            prec       = 3,
        )
@@ -630,7 +663,11 @@ class TEK_AFG3000_FM(SerialUser):
 
     @cas9core.dproperty
     def rv_FM_fdev_RB(self):
-       default = self.ctree.setdefault('fdev_RB', -1, about = "FM fdev readback default (used when value unavailable)")
+       default = self.ctree.get_configured(
+           'fdev_RB',
+           default = -1,
+           about = "FM fdev readback default (used when value unavailable)"
+       )
        rv = cas9core.RelayValueFloat(default)
        self.cas_host(
            rv,

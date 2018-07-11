@@ -2,9 +2,9 @@
 """
 from __future__ import division, print_function, unicode_literals
 
-from .. import cas9core
+from ... import cas9core
 from . import IFRSigGenCommon
-from .serial_device import SerialDevice
+from ..serial_device import SerialDevice
 
 
 class IFR2023(SerialDevice):

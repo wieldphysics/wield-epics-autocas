@@ -22,14 +22,14 @@ from .serial_base import (
 
 class USBDeviceRS232(SerialConnection):
 
-    @cas9core.dproperty_ctree(default = None)
+    @cas9core.dproperty_ctree(default = '/dev/serial/by-id/ttyUSB')
     def device_path(self, val):
         """
         path to the serial block device, usually something in /dev/serial/by-id/. Can use
         /dev/ttyUSBx, but it is better to use the identified values as they are stable through
         restarts and connection order.
         """
-        if val is not None and val.startswith('/dev/ttyUSB'):
+        if val.startswith('/dev/ttyUSB'):
             warnings.warn("Currently using a generic device name {0}, please use objects in /dev/serial/by-id/ for serial-number keyed usb devices".format(val))
         return val
 
@@ -112,6 +112,7 @@ class USBDeviceRS232(SerialConnection):
                 xonxoff = 0,
                 rtscts  = 0
             )
+            print(sdev)
 
             if self.exclusive_lock:
                 #https://stackoverflow.com/questions/49636520/how-do-you-check-if-a-serial-port-is-open-in-linux

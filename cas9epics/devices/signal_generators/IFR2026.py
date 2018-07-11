@@ -3,11 +3,12 @@
 from __future__ import division, print_function, unicode_literals
 
 import sys
-from .. import cas9core
-from ..serial import SerialError
 import re
+
+from ... import cas9core
+from ...serial import SerialError
+from ..serial_device import SerialDevice
 from . import IFRSigGenCommon
-from .serial_device import SerialDevice
 
 
 class IFR2026(SerialDevice):

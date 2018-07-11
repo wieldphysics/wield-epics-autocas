@@ -3,9 +3,9 @@
 from __future__ import division, print_function, unicode_literals
 
 import sys
-from .. import cas9core
-from ..serial import SerialError
-from .serial_device import SerialDevice, SerialUser
+from ... import cas9core
+from ...serial import SerialError
+from ..serial_device import SerialDevice, SerialUser
 
 
 class SRS_SG380(SerialDevice):
@@ -131,7 +131,10 @@ class SRS_SG380_Chn(SerialUser):
     #############################
     @cas9core.dproperty
     def rv_frequency_set(self):
-        default = self.ctree.setdefault('frequency_set', 100e6)
+        default = self.ctree.get_configured(
+            'frequency_set',
+            default = 100e6
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -143,7 +146,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'freq_set',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 6,
         )
@@ -171,7 +174,11 @@ class SRS_SG380_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_frequency_RB(self):
-        default = self.ctree.setdefault('frequency_RB', -1, about = "frequency readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'frequency_RB',
+            default = -1,
+            about = "frequency readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
@@ -219,7 +226,11 @@ class SRS_SG380_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_level_dbm_set(self):
-        default = self.ctree.setdefault('level_dbm_set', -120, about = 'default RF level')
+        default = self.ctree.get_configured(
+            'level_dbm_set',
+            default = -120,
+            about = 'default RF level'
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -231,7 +242,7 @@ class SRS_SG380_Chn(SerialUser):
         self.cas_host(
             rv,
             'level_set',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 3,
         )
@@ -262,7 +273,11 @@ class SRS_SG380_Chn(SerialUser):
 
     @cas9core.dproperty
     def rv_level_dbm_RB(self):
-        default = self.ctree.setdefault('level_dbm_RB', -1, about = "level_dbm readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'level_dbm_RB',
+            default = -1,
+            about = "level_dbm readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueInt(default)
         self.cas_host(
             rv,
@@ -294,14 +309,18 @@ class SRS_SG380_Chn(SerialUser):
     #####################################
     @cas9core.dproperty
     def rb_output_set(self):
-        default = self.ctree.setdefault('output_set', False, about = 'default for activating RF output')
+        default = self.ctree.get_configured(
+            'output_set',
+            default = False,
+            about = 'default for activating RF output'
+        )
 
         rv = cas9core.RelayBool(default)
 
         self.cas_host(
             rv,
             'output_set',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
         )
         return rv
@@ -329,7 +348,11 @@ class SRS_SG380_Chn(SerialUser):
 
     @cas9core.dproperty
     def rb_output_RB(self):
-        default = self.ctree.setdefault('output_RB', True, about = "output status readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'output_RB',
+            default = True,
+            about = "output status readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayBool(default)
         self.cas_host(
             rv,
@@ -419,14 +442,18 @@ class SRS_SG380_Chn(SerialUser):
     ###############################
     @cas9core.dproperty
     def rb_mod_status_set(self):
-        default = self.ctree.setdefault('modulation_status', False, about = 'default for activating modulation')
+        default = self.ctree.get_configured(
+            'modulation_status',
+            default = False,
+            about = 'default for activating modulation'
+        )
 
         rv = cas9core.RelayBool(default)
 
         self.cas_host(
             rv,
             'MODSTAT',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
         )
         return rv
@@ -500,7 +527,10 @@ class SRS_SG380_FM(SerialUser):
     #############################
     @cas9core.dproperty
     def rv_FM_fdev_set(self):
-        default = self.ctree.setdefault('FM_fdev_set', 10e3)
+        default = self.ctree.get_configured(
+            'FM_fdev_set',
+            default = 10e3
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -512,7 +542,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'FDEV',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 3,
         )
@@ -538,7 +568,11 @@ class SRS_SG380_FM(SerialUser):
 
     @cas9core.dproperty
     def rv_FM_fdev_RB(self):
-        default = self.ctree.setdefault('fdev_RB', -1, about = "FM fdev readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'fdev_RB',
+            default = -1,
+            about = "FM fdev readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
@@ -581,7 +615,10 @@ class SRS_SG380_FM(SerialUser):
 
     @cas9core.dproperty
     def rv_FM_devn_set(self):
-        default = self.ctree.setdefault('FM_devn_set', 10e3)
+        default = self.ctree.get_configured(
+            'FM_devn_set',
+            default = 10e3
+        )
 
         rv = cas9core.RelayValueFloatLowHighMod(
             default,
@@ -593,7 +630,7 @@ class SRS_SG380_FM(SerialUser):
         self.cas_host(
             rv,
             'DEVN',
-            writable   = True,
+            interaction = "setting",
             urgentsave = 10,
             prec       = 3,
         )
@@ -619,7 +656,11 @@ class SRS_SG380_FM(SerialUser):
 
     @cas9core.dproperty
     def rv_FM_devn_RB(self):
-        default = self.ctree.setdefault('devn_RB', -1, about = "FM devn readback default (used when value unavailable)")
+        default = self.ctree.get_configured(
+            'devn_RB',
+            default = -1,
+            about = "FM devn readback default (used when value unavailable)"
+        )
         rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
