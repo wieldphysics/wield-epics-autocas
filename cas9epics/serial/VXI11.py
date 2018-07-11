@@ -75,6 +75,8 @@ class VXI11Connection(SerialConnection):
             self.error(0, E)
         except vxi11.rpc.RPCError as E:
             self.error(0, 'VXI11/RPC Err: connect to wrong device?')
+        except vxi11.vxi11.Vxi11Exception as E:
+            self.error(0, E)
         else:
             self._serial_obj = sdev
             self.error.clear()

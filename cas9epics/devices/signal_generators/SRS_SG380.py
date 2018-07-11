@@ -278,7 +278,7 @@ class SRS_SG380_Chn(SerialUser):
             default = -1,
             about = "level_dbm readback default (used when value unavailable)"
         )
-        rv = cas9core.RelayValueInt(default)
+        rv = cas9core.RelayValueFloat(default)
         self.cas_host(
             rv,
             'level_RB',

@@ -7,6 +7,7 @@ import os
 from os import path
 #TODO import this later or make it failsafe
 import inotify_simple
+import datetime
 
 from .. import cas9core
 
@@ -19,6 +20,11 @@ class AutoSaveBase(cas9core.CASUser):
     _my_chnlist = None
     _my_casdriver = None
 
+    @cas9core.dproperty
+    def username(self):
+        import getpass
+        return getpass.getuser()
+
     def set_db_driver(self, db, driver):
         """
         db set by the cas system driver, which this must integrate with.
@@ -30,8 +36,7 @@ class AutoSaveBase(cas9core.CASUser):
             do_burt = db_entry['burt']
             if not do_burt:
                 continue
-            writable = db_entry['burtRO']
-            RO = not writable
+            RO = db_entry['burtRO']
             chnlist.append((pv, RO))
         chnlist.sort()
         self._my_chnlist = chnlist
@@ -79,7 +84,7 @@ class AutoSaveBase(cas9core.CASUser):
             val = line[2]
 
             #check for null strings
-            if val == '\0':
+            if val == r'\0':
                 val = ''
 
             if isRO:
@@ -113,7 +118,11 @@ class AutoSaveBase(cas9core.CASUser):
 
     def save_snap_file_raw(self, fobj):
         #TODO have it write time and other info
-        header = burt_header_template
+        dt = datetime.datetime.now()
+        header = burt_header_template.format(
+            uname = self.username,
+            time = dt.strftime('%c'),
+        )
         fobj.write(header)
         fobj.write('\n')
         for pv, pvRO in self._my_chnlist:
@@ -124,7 +133,7 @@ class AutoSaveBase(cas9core.CASUser):
             val = self._my_casdriver.read(pv)
 
             if val == '':
-                val = '\0'
+                val = r'\0'
 
             #prevent it writing "True" and "False" for bools
             if isinstance(val, bool):
@@ -154,14 +163,14 @@ class AutoSaveBase(cas9core.CASUser):
 
 burt_header_template = """
 --- Start BURT header
-Time: 
-Login ID: 
-Eff  UID: 
-Group ID: 
+Time:     {time}
+Login ID: {uname} ()
+Eff  UID:
+Group ID:
 Keywords:
-Comments: 
-Type:   
-Directory 
-Req File: 
+Comments:
+Type:     Absolute
+Directory
+Req File:
 --- End BURT header
 """.strip()

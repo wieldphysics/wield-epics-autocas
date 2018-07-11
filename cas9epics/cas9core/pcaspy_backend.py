@@ -62,14 +62,14 @@ class CADriverServer(pcaspy.Driver):
         for channel, db_entry in self.db.items():
             #ignore the remote entries
             if db_entry['remote']:
-                print('REMOTE')
-                print(channel, db_entry)
+                #print('REMOTE')
+                #print(channel, db_entry)
                 continue
             rv = db_entry['rv']
             entry_use = {}
 
             #provide a callback key so that we can avoid the callback during the write method
-            print("ENTRY", db_entry)
+            #print("ENTRY", db_entry)
             if not db_entry['deferred']:
                 rv.register(
                     callback = self._put_cb_generator_immediate(channel),
@@ -128,8 +128,8 @@ class CADriverServer(pcaspy.Driver):
             db_cas_raw[channel] = entry_use
 
         self.db_cas_raw = db_cas_raw
-        print("INT:")
-        pprint(self.db_cas_raw)
+        #print("INT:")
+        #pprint(self.db_cas_raw)
         #have to setup createPV before starting the driver
         self.cas.createPV('', self.db_cas_raw)
         super(CADriverServer, self).__init__()
@@ -199,9 +199,9 @@ class CADriverServer(pcaspy.Driver):
                 with self.reactor.task_lock:
                     rv.put_exclude_cb(value, key = self)
         except relay_values.RelayValueCoerced as E:
-            print(value, type(value))
+            #print(value, type(value))
             value = E.preferred
-            print(value, type(value))
+            #print(value, type(value))
             if mt_assign:
                 rv.put_valid_exclude_cb(E.preferred, key = self)
             else:

@@ -303,7 +303,7 @@ class TEK_AFG3000_Chn(SerialUser):
            default = -1,
            about = "level_dbm readback default (used when value unavailable)"
        )
-       rv = cas9core.RelayValueInt(default)
+       rv = cas9core.RelayValueFloat(default)
        self.cas_host(
            rv,
            'level_RB',
@@ -429,7 +429,7 @@ class TEK_AFG3000_Chn(SerialUser):
                cmd.writeline('SOURCE{0}:{1}:STATE ON'.format(self.device_channel_name, self.rv_mod_type_set.value_str))
            self.SB_mod_func_RB()
            self.SB_mod_source_RB()
-               
+
        block = self.serial.block_add(
            action_sequence,
            ordering = 0,
@@ -461,8 +461,8 @@ class TEK_AFG3000_Chn(SerialUser):
                    cmd.writeline('SOURCE{0}:{1}:STATE?'.format(self.device_channel_name, mod))
                    if int(cmd.readline()):
                        type = self.rv_mod_type_RB.state2int[mod]
-           
-           
+
+
            self.rv_mod_type_RB.value = type
 
        block = self.serial.block_add(
@@ -487,7 +487,7 @@ class TEK_AFG3000_Chn(SerialUser):
            interaction = "setting",
        )
        return rv
-   
+
     @cas9core.dproperty
     def SB_mod_source_set(self):
        def action_sequence(cmd):
@@ -537,7 +537,7 @@ class TEK_AFG3000_Chn(SerialUser):
        )
        self.SBlist_readbacks.append(block)
        return block
-   
+
     ################################
     ## Modulation mode (if internal)
     ################################
@@ -557,7 +557,7 @@ class TEK_AFG3000_Chn(SerialUser):
        def action_sequence(cmd):
            if self.rv_mod_type_set.value_str != 'OFF':
                cmd.writeline('SOURCE{0}:{1}:INTernal:FUNCtion {2}'.format(self.device_channel_name, self.rv_mod_type_set.value_str, self.rv_mod_func_set.value_str))
-           
+
        block = self.serial.block_add(
            action_sequence,
            ordering = 0,
@@ -601,7 +601,7 @@ class TEK_AFG3000_Chn(SerialUser):
        return block
 
 
-   
+
 class TEK_AFG3000_FM(SerialUser):
     """
     Must be hosted by a TEK_AFG3000Channel

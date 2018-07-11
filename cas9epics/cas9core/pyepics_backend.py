@@ -16,7 +16,7 @@ ca_element_count = epics.ca.element_count
 class CAEpicsClient(declarative.OverridableObject):
     @declarative.callbackmethod
     def connections_changed(self):
-        print("ECONN: ", self.epics_pending_connections)
+        #print("ECONN: ", self.epics_pending_connections)
         return
 
     @declarative.dproperty
@@ -295,7 +295,7 @@ class CAEpicsClient(declarative.OverridableObject):
             return
 
         #TODO Check type and update the bad connections
-        print(pv.type)
+        #print(pv.type)
 
         channel = pv.pvname
         value   = pv.value
