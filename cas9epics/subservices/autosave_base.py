@@ -27,10 +27,10 @@ class AutoSaveBase(cas9core.CASUser):
         self._my_casdriver = driver
         chnlist = []
         for pv, db_entry in db.items():
-            do_burt = db_entry.get('burt')
+            do_burt = db_entry['burt']
             if not do_burt:
                 continue
-            writable = db_entry.get('burtRO')
+            writable = db_entry['burtRO']
             RO = not writable
             chnlist.append((pv, RO))
         chnlist.sort()

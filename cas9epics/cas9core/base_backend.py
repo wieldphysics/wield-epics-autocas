@@ -76,6 +76,7 @@ class CASCollector(declarative.OverridableObject):
 
             EDCU        = None,
             burt        = None,
+            burtRO      = None,
             urgentsave  = None,
             deferred    = False,
 
@@ -128,11 +129,30 @@ class CASCollector(declarative.OverridableObject):
         if interaction == 'command':
             if burt is None:
                 burt = False
+            if burtRO is None:
+                burtRO = True
             if EDCU is None:
                 EDCU = False
         elif interaction == 'setting':
             if burt is None:
                 burt = True
+            if burtRO is None:
+                burtRO = False
+        elif interaction == 'report':
+            if burt is None:
+                burt = True
+            if burtRO is None:
+                burtRO = True
+        elif interaction == 'external':
+            if burt is None:
+                burt = False
+            if burtRO is None:
+                burtRO = True
+        elif interaction == 'internal':
+            if burt is None:
+                burt = True
+            if burtRO is None:
+                burtRO = False
 
         #----------------- SETUP DEFAULTS
         # use the values already specified to setup and generate defaults
