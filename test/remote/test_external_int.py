@@ -26,7 +26,7 @@ class RVConnects(cas9epics.CASUser):
         if not self.remote:
             def update():
                 rv.value += .1
-            self.reactor.enqueue_looping(update, period_s = 2)
+            self.reactor.enqueue_looping(update, period_s = .1)
         return rv
 
     #@declarative.dproperty

@@ -227,7 +227,7 @@ class CADriverServer(pcaspy.Driver):
             #self.updatePVs()
             return True
 
-    def write_sync(self, channel, value):
+    def write_sync_typecast(self, channel, value):
         """
         This is a special write function for burt/autosave and other users of the synchronous system. It does two things different:
 

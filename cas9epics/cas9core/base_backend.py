@@ -135,24 +135,25 @@ class CASCollector(declarative.OverridableObject):
 
         # a convenient way to inject all of the settings
         db_inj = dict(
-            EDCU       = EDCU,
-            type       = type,
-            count      = count,
-            enums      = enums,
-            prec       = prec,
-            unit       = unit,
-            lolim      = lolim,
-            hilim      = hilim,
-            low        = low,
-            high       = high,
-            lolo       = lolo,
-            hihi       = hihi,
-            adel       = adel,
-            mdel       = mdel,
-            burt       = burt,
-            urgentsave = urgentsave,
-            remote     = remote,
-            deferred   = deferred,
+            EDCU        = EDCU,
+            type        = type,
+            count       = count,
+            enums       = enums,
+            prec        = prec,
+            unit        = unit,
+            lolim       = lolim,
+            hilim       = hilim,
+            low         = low,
+            high        = high,
+            lolo        = lolo,
+            hihi        = hihi,
+            adel        = adel,
+            mdel        = mdel,
+            burt        = burt,
+            urgentsave  = urgentsave,
+            remote      = remote,
+            deferred    = deferred,
+            interaction = interaction,
         )
         for k, v in db_inj.items():
             if v is not None:
@@ -174,10 +175,12 @@ class CASCollector(declarative.OverridableObject):
                 db[pname] = tfunc(cval2)
             return
 
+        #TODO annotate all of these
         if cdb is not None:
             dtype = db['type']
             ctree_check('remote', bool)
             ctree_check('deferred', bool)
+            ctree_check('interaction', bool)
 
             if dtype in ['float', 'int']:
                 if db.get('count', None) is None:

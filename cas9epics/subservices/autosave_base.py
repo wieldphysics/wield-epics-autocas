@@ -106,7 +106,7 @@ class AutoSaveBase(cas9core.CASUser):
             #TODO, make the internal/remote save decision better
             remote = self._my_pvdb[pv].get('remote', False)
             if not remote:
-                did_write = self._my_casdriver.write_sync(pv, val)
+                did_write = self._my_casdriver.write_sync_typecast(pv, val)
                 if not did_write:
                     print("WARNING, write failed loading non-RO PV: \"{0}\" with value {1}".format(pv, val) )
         return

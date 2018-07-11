@@ -2,15 +2,12 @@
 """
 """
 import epics
-from collections import deque
 import time
 import numpy as np
 
 import declarative
 
-import threading
 import warnings
-import collections
 
 from . import relay_values
 
@@ -39,14 +36,14 @@ class CAEpicsClient(declarative.OverridableObject):
     @declarative.dproperty
     def pending_writes(self):
         """
-        List of RVs needing to commit values to PVs
+        set of (RV, PV) tuples needing to commit values to PVs
         """
         return set()
 
     @declarative.dproperty
     def pending_reads(self):
         """
-        List of PVs needing to commit values to RVs
+        set of (RV, PV) tuples needing to commit values to RVs
         """
         return set()
 
@@ -54,6 +51,43 @@ class CAEpicsClient(declarative.OverridableObject):
     def PV_RV_map(self):
         """
         Stores the mapping of PVs to RVs
+        """
+        return {}
+
+    PV_update_rateconst_s = 10
+    @declarative.dproperty
+    def PV_update_rateFOM(self):
+        """
+        Stores a FOM consisting of (tintR, mtime) to represent how often on
+        average the PV is changing. tintR is the inverse change rate,
+        mtime is the last change time.
+        """
+        return {}
+
+    @declarative.dproperty
+    def PV_putfails(self):
+        """
+        Stores a FOM consisting of (tintR, mtime) to represent how often on
+        average the PV is changing. tintR is the inverse change rate,
+        mtime is the last change time.
+        """
+        return {}
+
+    PV_put_rateconst_s = 10
+    @declarative.dproperty
+    def PV_put_rateFOM(self):
+        """
+        Stores a FOM consisting of (tintR, mtime) to represent how often on
+        average the PV is changing. tintR is the inverse change rate,
+        mtime is the last change time.
+        """
+        return {}
+    @declarative.dproperty
+    def RV_connection_attached(self):
+        """
+        Stores a mapping from pvs to bools indicating that the connection
+        is live and attached. This helps with the transition to/from fully
+        connected
         """
         return {}
 
@@ -78,6 +112,7 @@ class CAEpicsClient(declarative.OverridableObject):
         self.saver   = saver
 
         db_cas_raw = {}
+        rvdb_cas_raw = {}
 
         for channel, db_entry in self.db.items():
             #use only the remote entries
@@ -89,6 +124,7 @@ class CAEpicsClient(declarative.OverridableObject):
                 'rv' : rv
             }
 
+            self.RV_connection_attached[rv] = False
             #provide a callback key so that we can avoid the callback during the write method
             if not db_entry["deferred"]:
                 rv.register(
@@ -109,19 +145,19 @@ class CAEpicsClient(declarative.OverridableObject):
 
             #setup relays for any of the channel values to be inserted
             for elem in [
-                    "count" 	,  # 1 	Number of elements
-                    "enums" 	,  # [] 	String representations of the enumerate states
-                    "states" 	,  # [] 	Severity values of the enumerate states.
-                    "prec",     # 0 	Data precision
-                    "unit",     # '' 	Physical meaning of data
-                    "lolim" 	,  # 0 	Data low limit for graphics display
-                    "hilim" 	,  # 0 	Data high limit for graphics display
+                    "count",   # 1 	Number of elements
+                    "enums",   # [] 	String representations of the enumerate states
+                    "states",  # [] 	Severity values of the enumerate states.
+                    "prec",    # 0 	Data precision
+                    "unit",    # '' 	Physical meaning of data
+                    "lolim",   # 0 	Data low limit for graphics display
+                    "hilim",   # 0 	Data high limit for graphics display
                     "low",     # 0 	Data low limit for alarm
-                    "high",     # 0 	Data high limit for alarm
-                    "lolo",     # 0 	Data low low limit for alarm
-                    "hihi",     # 0 	Data high high limit for alarm
-                    "adel",     # 0 	Archive deadband
-                    "mdel",     # 0 	Monitor,                    value change deadband
+                    "high",    # 0 	Data high limit for alarm
+                    "lolo",    # 0 	Data low low limit for alarm
+                    "hihi",    # 0 	Data high high limit for alarm
+                    "adel",    # 0 	Archive deadband
+                    "mdel",    # 0 	Monitor, value change deadband
             ]:
                 if elem in db_entry:
                     elem_val = db_entry[elem]
@@ -149,9 +185,12 @@ class CAEpicsClient(declarative.OverridableObject):
             if 'value' not in entry_use:
                 entry_use['value'] = rv.value
             db_cas_raw[channel] = entry_use
+            rvdb_cas_raw[rv] = entry_use
 
             #writable = db_entry['writable']
-        self.db_cas_raw = db_cas_raw
+
+        self.db_cas_raw   = db_cas_raw
+        self.rvdb_cas_raw = rvdb_cas_raw
         #have to setup createPV before starting the driver
 
         #the deferred writes will happen this often
@@ -160,8 +199,6 @@ class CAEpicsClient(declarative.OverridableObject):
                 self.write_pending,
                 period_s = deferred_write_period,
             )
-
-        #print("CAS RAW", self.db, self.db_cas_raw)
 
         return  # ~__init__
 
@@ -173,7 +210,8 @@ class CAEpicsClient(declarative.OverridableObject):
 
     def _put_cb_generator_deferred(self, rv):
         def put_cb(value):
-            self.pending_writes.add(rv)
+            pv = self.RV_to_PV[rv]
+            self.pending_writes.add((rv, pv))
             pass
         return put_cb
 
@@ -188,10 +226,10 @@ class CAEpicsClient(declarative.OverridableObject):
                 return
             elif conn:
                 def conn_task():
-                    self._setup_callbacks(rv, pv)
+                    self._connection_start(rv, pv)
             else:
                 def conn_task():
-                    self._remove_callbacks(rv, pv)
+                    self._connection_end(rv, pv)
             self.reactor.send_task(conn_task)
             return
         return first_CB_event_deferred
@@ -204,6 +242,21 @@ class CAEpicsClient(declarative.OverridableObject):
                 connection_callback = self._conn_cb_generator_deferred(rv),
                 auto_monitor = True,
             )
+
+            def cb_gen(rv, pv):
+                def update_cb_reactor():
+                    #TODO, deal with deferred type
+                    self.xfer_PV_to_RV(rv, pv)
+                    return
+
+                #this callback runs in the epics thread, so enqueue
+                #it in the reactor to be in the main thread
+                def update_cb(value, *args, **kwargs):
+                    return self.reactor.send_task(update_cb_reactor)
+                return update_cb
+
+            pv.add_callback(callback = cb_gen(rv, pv), index = self)
+
             #register the PV as wanting a connection
             self.epics_pending_connections.add(pv)
             self.PV_RV_map[pv] = rv
@@ -221,6 +274,8 @@ class CAEpicsClient(declarative.OverridableObject):
 
         self.PV_RV_map.clear()
         self.RV_PV_map.clear()
+        self.pending_reads.clear()
+        self.pending_writes.clear()
         self.epics_pending_connections.clear()
         self.epics_bad_connections.clear()
         return
@@ -231,7 +286,7 @@ class CAEpicsClient(declarative.OverridableObject):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
-    def _setup_callbacks(self, rv, pv):
+    def _connection_start(self, rv, pv):
         """
         Checks the PV types
         """
@@ -239,27 +294,22 @@ class CAEpicsClient(declarative.OverridableObject):
             warnings.warn("WARNING SHOULDNT GET CALLED")
             return
 
-
         #TODO Check type and update the bad connections
         print(pv.type)
 
-        def _test_cb(value, *args, **kwargs):
-            print("SETUP CB", rv, value)
-
-        print("SETUP: ", rv, pv)
-        pv.add_callback(callback = _test_cb, index = self)
-
+        self.RV_connection_attached[rv] = True
         self.epics_pending_connections.remove(pv)
         self.connections_changed()
         return
 
-    def _remove_callbacks(self, rv, pv):
+    def _connection_end(self, rv, pv):
         if pv in self.epics_pending_connections:
-            #this is OK, since it means that it was unregistered by a method noticing that "conn" was unset
+            #this is OK, since it means that it was unregistered by a method
+            #noticing that "conn" was unset
             #warnings.warn("WARNING SHOULDNT GET CALLED")
             return
 
-        pv.remove_callback(index = self)
+        self.RV_connection_attached[rv] = False
         self.epics_pending_connections.add(pv)
         self.connections_changed()
         return
@@ -274,13 +324,74 @@ class CAEpicsClient(declarative.OverridableObject):
             self.xfer_PV_to_RV(pv)
         self.pending_reads.clear()
 
-    def xfer_PV_to_RV(self, pv):
+    def xfer_PV_to_RV(self, rv, pv):
+        """
+        """
+        if not self.RV_connection_attached[rv]:
+            #the connection start code must apply the first PV_to_RV transfer
+            #based on the interaction type set for the rv cas_host
+            return
+        channel = pv.pvname
+        value   = pv.value
+        db = self.db[channel]
+
+        tnow = time.time()
+        tintR, tlast = self.PV_update_rateFOM.get(pv, (0, 0))
+        tdiff = (tnow - tlast)
+        weight = np.exp(-tdiff / self.PV_update_rateconst_s)
+        tintR = (1 - weight)/tdiff + weight * tintR
+        self.PV_update_rateFOM[pv] = (tintR, tnow)
+
+        # reject writes to non-writable channels
+        if db['interaction'] == 'report':
+            #should put the OLD value back into the PV
+            #TODO, should this depend on interaction_type
+            self.xfer_RV_to_PV(rv, pv)
+            return
+
+        if self.saver is not None:
+            urgentsave = db.get('urgentsave', None)
+            if urgentsave is not None and urgentsave >= 0:
+                self.saver.urgentsave_notify(channel, urgentsave)
+
+        try:
+            rv.put_exclude_cb(value, key = self)
+        except relay_values.RelayValueCoerced as E:
+            pref_value = E.preferred
+            #it should NOT exclude the callback, so that the changed
+            #value gets updated into the PV
+            #this is like calling put_exclude_cb, then xfer_RV_to_PV
+            rv.put_valid(pref_value)
+        except relay_values.RelayValueRejected:
+            #should put the OLD value back into the PV
+            #TODO, should this depend on interaction_type
+            self.xfer_RV_to_PV(rv, pv)
         return
 
-    def xfer_RV_to_PV(self, rv):
+    def xfer_RV_to_PV(self, rv, pv):
+        if not pv.connected or not self.RV_connection_attached[rv]:
+            return
+
+        channel = pv.pvname
+        db = self.db[channel]
+        #TODO, determine if interaction type should affect this method.
+
+        if not pv.put_complete:
+            Nlast = self.PV_putfails.get(pv, 0)
+            self.PV_putfails[pv] = Nlast + 1
+
+        tnow = time.time()
+        tintR, tlast = self.PV_put_rateFOM.get(pv, (0, 0))
+        tdiff = (tnow - tlast)
+        weight = np.exp(-tdiff / self.PV_put_rateconst_s)
+        tintR = (1 - weight)/tdiff + weight * tintR
+        self.PV_put_rateFOM[pv] = (tintR, tnow)
+
+        pv.put(rv.value, wait = False)
         return
 
     def check_pending_connections(self):
-        #TODO, make something to check that the pending connections list is up-to-date
+        #TODO, make something to check that the pending connections list is
+        #up-to-date
         raise NotImplementedError()
 
