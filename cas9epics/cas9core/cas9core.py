@@ -168,16 +168,20 @@ class CASUser(declarative.OverridableObject):
     @cas9declarative.dproperty
     def subprefix(self, val = cas9declarative.NOARG):
         if val is cas9declarative.NOARG:
-            val = self.name
+            val = (self.name, )
+        elif val is None:
+            val = ()
+        else:
+            if isinstance(val, (str, unicode)):
+                val = (val, )
+            else:
+                val = tuple(val)
         return val
 
     @cas9declarative.dproperty
     def prefix(self, val = cas9declarative.NOARG):
         if val is cas9declarative.NOARG:
-            if self.subprefix is None:
-                default = tuple(self.parent.prefix)
-            else:
-                default = tuple(self.parent.prefix) + (self.subprefix,)
+            default = tuple(self.parent.prefix) + self.subprefix
 
             val = self.ctree.get_configured(
                 'prefix',

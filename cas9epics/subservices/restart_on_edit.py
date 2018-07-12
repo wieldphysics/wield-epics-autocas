@@ -32,10 +32,16 @@ class RestartOnEdit(cas9core.CASUser):
         )
         inotify = inotify_simple.INotify()
         for fpath in modfiles:
-            inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
+            try:
+                inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
+            except OSError as E:
+                print('inotify error: ', E)
         #also check the config files
         for fpath in self.root.config_files:
-            inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
+            try:
+                inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
+            except OSError as E:
+                print('inotify error: ', E)
         self._myinotify = inotify
 
         self.reactor.enqueue_looping(self._loop_check_task, period_s = self.poll_rate_s)
