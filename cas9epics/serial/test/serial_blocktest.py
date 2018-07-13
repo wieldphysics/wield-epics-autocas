@@ -116,7 +116,7 @@ class IFR2026Channel(
             rv,
             'freq_set',
             writable   = True,
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 9,
         )
         return rv

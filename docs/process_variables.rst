@@ -10,7 +10,7 @@ up process variable specifications, many other useful services related will be
 set up
 
  * logging through a BURT service
-   * With extra rapid-prototyping and debugging features `urgentsave`
+   * With extra rapid-prototyping and debugging features `urgentsave_s`
  * setup of listings for LIGO epics DCU configurations
  * Connection monitoring (for externally hosted variables)
 

@@ -370,9 +370,9 @@ class CAEpicsClient(declarative.OverridableObject):
             return
 
         if self.saver is not None:
-            urgentsave = db.get('urgentsave', None)
-            if urgentsave is not None and urgentsave >= 0:
-                self.saver.urgentsave_notify(channel, urgentsave)
+            urgentsave_s = db.get('urgentsave_s', None)
+            if urgentsave_s is not None and urgentsave_s >= 0:
+                self.saver.urgentsave_notify(channel, urgentsave_s)
 
         try:
             rv.put_exclude_cb(value, key = self)

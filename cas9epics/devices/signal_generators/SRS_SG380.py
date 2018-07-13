@@ -16,7 +16,7 @@ class SRS_SG380(SerialDevice):
             rb,
             'AUTOSET',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rb
 
@@ -147,7 +147,7 @@ class SRS_SG380_Chn(SerialUser):
             rv,
             'freq_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 6,
         )
         return rv
@@ -243,7 +243,7 @@ class SRS_SG380_Chn(SerialUser):
             rv,
             'level_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 3,
         )
         return rv
@@ -321,7 +321,7 @@ class SRS_SG380_Chn(SerialUser):
             rv,
             'output_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 
@@ -454,7 +454,7 @@ class SRS_SG380_Chn(SerialUser):
             rv,
             'MODSTAT',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 
@@ -543,7 +543,7 @@ class SRS_SG380_FM(SerialUser):
             rv,
             'FDEV',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 3,
         )
         return rv
@@ -631,7 +631,7 @@ class SRS_SG380_FM(SerialUser):
             rv,
             'DEVN',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 3,
         )
         return rv
@@ -694,7 +694,7 @@ class SRS_SG380_FM(SerialUser):
             rv,
             'CPLG',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 

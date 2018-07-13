@@ -14,7 +14,7 @@ class RVExternals(cas9epics.CASUser):
         self.cas_host(
             rv, 'INT',
             remote = False,
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
             interaction = 'internal',
         )
 
@@ -32,7 +32,7 @@ class RVExternals(cas9epics.CASUser):
             prefix = ['ISC', 'ADC28', 'GAIN'],
             remote = True,
             interaction = 'internal',
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):

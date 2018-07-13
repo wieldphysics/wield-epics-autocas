@@ -46,7 +46,7 @@ class SerialDevice(SerialUser):
             rb,
             'AUTOSET',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rb
 

@@ -77,7 +77,7 @@ class CASCollector(declarative.OverridableObject):
             EDCU        = None,
             burt        = None,
             burtRO      = None,
-            urgentsave  = None,
+            urgentsave_s  = None,
             deferred    = False,
 
             remote      = False,
@@ -175,7 +175,7 @@ class CASCollector(declarative.OverridableObject):
             mdel        = mdel,
             burt        = burt,
             burtRO      = burtRO,
-            urgentsave  = urgentsave,
+            urgentsave_s  = urgentsave_s,
             remote      = remote,
             deferred    = deferred,
             interaction = interaction,
@@ -234,7 +234,7 @@ class CASCollector(declarative.OverridableObject):
                 ctree_check('burt', burt)
                 ctree_check('burtRO', bool)
 
-        #special case for urgentsave type to only check the config if it is relevant
+        #special case for urgentsave_s type to only check the config if it is relevant
         def urgentsave_float_bool_none(val):
             if val is None:
                 return False
@@ -243,7 +243,7 @@ class CASCollector(declarative.OverridableObject):
             return float(val)
 
         if db.get('burt'):
-            ctree_check('urgentsave', urgentsave_float_bool_none)
+            ctree_check('urgentsave_s', urgentsave_float_bool_none)
 
         type = db['type']
         if type == 'float':

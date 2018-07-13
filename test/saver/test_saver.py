@@ -15,7 +15,7 @@ class RVTester(cas9epics.CASUser):
             rv, 'VAL',
             unit  = 'seconds',
             interaction = "setting",
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):
@@ -30,7 +30,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'STR',
             interaction = "setting",
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):
@@ -45,7 +45,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'STRL',
             interaction = "setting",
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):
@@ -60,7 +60,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'BOOL',
             interaction = "setting",
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):
@@ -75,7 +75,7 @@ class RVTester(cas9epics.CASUser):
         self.cas_host(
             rv, 'ENUM',
             interaction = "setting",
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):

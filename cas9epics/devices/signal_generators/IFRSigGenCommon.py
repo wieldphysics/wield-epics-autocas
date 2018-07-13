@@ -57,7 +57,7 @@ class IFRSigGenChannel(SerialUser):
             rv,
             'freq_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 6,
         )
         return rv
@@ -160,7 +160,7 @@ class IFRSigGenChannel(SerialUser):
             rv,
             'level_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 3,
         )
         return rv
@@ -248,7 +248,7 @@ class IFRSigGenChannel(SerialUser):
             rv,
             'output_set',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 
@@ -336,7 +336,7 @@ class IFRSigGenChannel(SerialUser):
             rv,
             'MODSTAT',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 
@@ -432,7 +432,7 @@ class IFRSigGenChannelFM(SerialUser):
             rv,
             'DEVN',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
             prec       = 3,
         )
         return rv
@@ -524,7 +524,7 @@ class IFRSigGenChannelFM(SerialUser):
             rv,
             'MODSTAT',
             interaction = "setting",
-            urgentsave = 10,
+            urgentsave_s = 10,
         )
         return rv
 

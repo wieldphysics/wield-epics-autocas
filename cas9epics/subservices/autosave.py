@@ -36,7 +36,7 @@ class AutoSave(autosave_base.AutoSaveBase):
     def save_rate_s(self, val):
         """
         Rate to autosave the snapshot. within the rollover rate_these will all have the same name and will be overwritten until rollover.
-        This prevents excessive saving while providing recent saves. If variables are marked "urgentsave", then saving may be more frequent
+        This prevents excessive saving while providing recent saves. If variables are marked "urgentsave_s", then saving may be more frequent
         as those variables are edited.
         """
         return val

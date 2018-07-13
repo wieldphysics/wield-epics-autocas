@@ -24,7 +24,7 @@ class RVTester(cas9epics.CASUser):
             hihi  = 100,
             lolim = 1,
             hilim = self.rv_test_hi,
-            urgentsave = 0.1,
+            urgentsave_s = 0.1,
         )
 
         def cb(value):
