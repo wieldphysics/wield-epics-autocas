@@ -12,16 +12,12 @@ import YALL.controls.epics as epics
 from .epics_relay import EpicsIndirectEBridge, EpicsIndirectController
 
 
-class PDCalibratorEBridge(
-    #contexts.EpicsCarrier,
-    epics.EpicsRelayUser,
+class PDCalibratorController(
+    contexts.AlertsUser,
+    contexts.EpicsConnectable,
     contexts.ParentCarrier,
-    epics.Connectable,
+    declarative.OverridableObject
 ):
-    RELAY_EPICS = epics.RelayEpics((epics.EpicsRelayUser.RELAY_EPICS,))
-
-    name = '<NONAME>'
-
     @declarative.dproperty
     def indirect(self, ind = declarative.NOARG):
         if ind is declarative.NOARG:
@@ -75,12 +71,6 @@ class PDCalibratorEBridge(
         rv = declarative.RelayValue(1)
         return rv
 
-    @RELAY_EPICS.float_value_add('GAIN_DB', precision = 5, value = 1, shadow = True)
-    @declarative.dproperty
-    def rv_gain_db(self):
-        rv = declarative.RelayValue(1)
-        return rv
-
     @RELAY_EPICS.float_value_add('LAMBDA_NM', precision = 5, value = 1064, shadow = True)
     @declarative.dproperty
     def rv_lambda_nm(self):
@@ -125,61 +115,6 @@ class PDCalibratorEBridge(
     @declarative.callbackmethod
     def set_subtract_V(self):
         return
-
-    @declarative.mproperty
-    def medm_settings_panel(self):
-        medm = epics.MEDMSystemScreen(
-            system        = self,
-            relpath       = __file__,
-            medm_template = 'PD_CAL_SETTINGS.adl',
-        )
-        medm.medm_screen_filename_from_namechain(self.egroup.name_chain.child('SETTINGS'))
-        return medm
-
-    @declarative.mproperty
-    def medm_view_panel(self):
-        medm = epics.MEDMSystemScreen(
-            system        = self,
-            relpath       = __file__,
-            medm_template = 'PD_CAL_VIEW_BIG.adl',
-        )
-        return medm
-
-    def medm_embed_panels(self):
-        return {'PANEL_FNAME' : self.medm_settings_panel}
-
-    def augment_medm(self, pvs_by_part, extra_replace, prefix = ''):
-        super(PDCalibratorEBridge, self).augment_medm(pvs_by_part, extra_replace, prefix = prefix)
-        self.indirect.augment_medm(pvs_by_part, extra_replace, prefix = prefix + 'IND_')
-        extra_replace['TITLE'] = self.name
-        #extra_replace['PANEL_FNAME'] = self.medm_settings_panel.medm_screen_filename
-        return
-
-
-class PDCalibratorController(
-    contexts.AlertsUser,
-    contexts.EpicsConnectable,
-    contexts.ParentCarrier,
-    declarative.OverridableObject
-):
-    master_mode = True
-
-    _last_update_t = 0
-
-    @declarative.dproperty
-    def ebridge(self, ebr):
-        ebr.rv_connect_mode.value = 'master'
-        ebr.state_connect.bool_register(self.state_connect_epics)
-        return ebr
-
-    @declarative.dproperty
-    def indirect(self):
-        if self.ebridge.indirect is not None:
-            ctrl = EpicsIndirectController(
-                parent = self,
-                ebridge = self.ebridge.indirect,
-            )
-        return ctrl
 
     @declarative.dproperty
     def setup_callbacks(self):
@@ -274,41 +209,13 @@ class PDCalibratorController(
             callback = gain_cb_generic,
         )
         def gain_cb(value):
-            if value > 0:
-                self.ebridge.rv_gain_db.put_exclude_cb(
-                    20 * np.log10(value),
-                    key = gain_db_cb,
-                )
-            elif value < 0:
-                self.ebridge.rv_gain_db.put_exclude_cb(
-                    20 * np.log10(-value),
-                    key = gain_db_cb,
-                )
-            else:
-                self.ebridge.rv_gain_db.put_exclude_cb(
-                    -8888.8888,
-                    key = gain_db_cb,
-                )
             gain_cb_generic()
         self.ebridge.rv_gain.register(
             callback = gain_cb,
         )
         def gain_db_cb(value):
-            if self.ebridge.rv_gain.value >= 0:
-                self.ebridge.rv_gain.put_exclude_cb(
-                    10**(value / 20),
-                    key = gain_cb,
-                )
-            else:
-                self.ebridge.rv_gain.put_exclude_cb(
-                    -10**(value / 20),
-                    key = gain_cb,
-                )
             gain_cb_generic()
 
-        self.ebridge.rv_gain_db.register(
-            callback = gain_db_cb,
-        )
         #so that we can access all of the methods for potential removal
         return declarative.Bunch(locals())
 
