@@ -5,8 +5,6 @@ from __future__ import division, print_function, unicode_literals
 import sys
 import os
 from os import path
-#TODO import this later or make it failsafe
-import inotify_simple
 import datetime
 
 from .. import cas9core
