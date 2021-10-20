@@ -4,6 +4,9 @@ timer.update
 .stversions/
 _configtest.o.d
 
+RUNDATA*/
+burt_archives/
+
 .pytest_cache
 
 MANIFEST
