@@ -2,7 +2,7 @@
 """
 from __future__ import division, print_function
 
-import declarative
+from wavestate import declarative
 
 from YALL.controls.core import (
     StandardSystem,

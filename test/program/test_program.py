@@ -4,7 +4,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 from __future__ import division, print_function, unicode_literals
 import sys
 import cas9epics
-import declarative
+from wavestate import declarative
 from cas9epics.utilities import pprint
 from cas9epics.subservices.restart_on_edit import RestartOnEdit
 

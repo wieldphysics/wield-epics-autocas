@@ -7,7 +7,7 @@ import time
 import serial
 #from epics import PV
 import re
-import declarative
+from wavestate import declarative
 
 
 terminator_string = '\r\n'

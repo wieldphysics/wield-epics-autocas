@@ -4,7 +4,7 @@ from __future__ import division, print_function, unicode_literals
 import threading
 import time
 import functools
-import declarative
+from wavestate import declarative
 try:
     import queue as queue
 except ImportError:

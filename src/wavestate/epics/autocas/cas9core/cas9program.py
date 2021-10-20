@@ -4,8 +4,8 @@ from __future__ import division, print_function, unicode_literals
 
 import os
 import sys
-import declarative
-import declarative.argparse as declarg
+from wavestate import declarative
+from wavestate import declarative.argparse as declarg
 import socket
 
 from ..config import pytoml

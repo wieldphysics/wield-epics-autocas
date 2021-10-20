@@ -4,7 +4,7 @@ Script for EPICS communication with Newport 3040 Temperature controller
 """
 from __future__ import print_function, division
 import time
-import declarative
+from wavestate import declarative
 import numpy as np
 from YALL.controls.filters.sos_cascades2 import sos_zp
 from openLoop.utilities.np import logspaced

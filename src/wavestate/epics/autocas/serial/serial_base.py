@@ -3,7 +3,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 from __future__ import division, print_function, unicode_literals
 
-import declarative
+from wavestate import declarative
 
 from .. import cas9core
 from ..subservices import error

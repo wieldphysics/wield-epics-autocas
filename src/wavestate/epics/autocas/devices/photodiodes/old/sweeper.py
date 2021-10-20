@@ -3,7 +3,7 @@ TODO: Not finished
 """
 from __future__ import division, print_function
 
-import declarative
+from wavestate import declarative
 
 import YALL.controls.core.contexts as contexts
 import YALL.controls.epics as epics

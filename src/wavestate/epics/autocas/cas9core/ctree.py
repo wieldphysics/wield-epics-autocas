@@ -3,7 +3,7 @@
 """
 from collections import namedtuple, Mapping
 from numbers import Number
-import declarative.bunch
+from wavestate import declarative.bunch
 import logging
 
 CTreeKey = namedtuple('CTreeKey', ['namespace', 'name'])

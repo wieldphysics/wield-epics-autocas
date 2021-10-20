@@ -1,7 +1,7 @@
 """
 """
 from __future__ import division, print_function
-import declarative
+from wavestate import declarative
 import numbers
 
 import YALL.controls.epics as epics

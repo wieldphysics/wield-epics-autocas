@@ -2,7 +2,7 @@
 """
 from __future__ import division, print_function
 
-import declarative as decl
+from wavestate import declarative as decl
 
 import t7
 

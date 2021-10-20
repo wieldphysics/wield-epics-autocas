@@ -5,7 +5,7 @@ import epics
 import time
 import numpy as np
 
-import declarative
+from wavestate import declarative
 
 import warnings
 

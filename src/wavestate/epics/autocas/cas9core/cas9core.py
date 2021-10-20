@@ -2,7 +2,7 @@
 """
 from __future__ import division, print_function, unicode_literals
 
-import declarative
+from wavestate import declarative
 from declarative import bunch
 
 from . import reactor

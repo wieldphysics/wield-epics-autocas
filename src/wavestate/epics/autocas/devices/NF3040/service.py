@@ -1,6 +1,6 @@
 """
 """
-import declarative
+from wavestate import declarative
 from YALL.controls import epics
 from YALL.controls.epics import panels as epics_panels
 from YALL.controls.core import processes

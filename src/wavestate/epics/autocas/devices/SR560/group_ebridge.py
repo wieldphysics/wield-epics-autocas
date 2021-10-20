@@ -1,6 +1,6 @@
 """
 """
-import declarative
+from wavestate import declarative
 
 from YALL.controls.core import contexts
 from YALL.controls import epics

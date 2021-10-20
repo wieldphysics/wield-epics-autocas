@@ -4,7 +4,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 from __future__ import division, print_function, unicode_literals
 import warnings
 import serial
-import declarative
+from wavestate import declarative
 
 #for exclusive device locks
 import fcntl

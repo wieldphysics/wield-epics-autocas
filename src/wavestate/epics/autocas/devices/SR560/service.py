@@ -2,7 +2,7 @@
 """
 import sys as sysmod
 import contextlib
-import declarative
+from wavestate import declarative
 
 from YALL.controls import epics
 from YALL.controls.core import contexts
