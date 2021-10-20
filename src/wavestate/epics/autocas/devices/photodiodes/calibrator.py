@@ -133,7 +133,7 @@ class PDCalibratorController(
         self.ebridge.set_subtract_V.register(
             callback = subtract_V,
         )
-        return declarative.Bunch(locals())
+        return Bunch(locals())
 
     @declarative.dproperty
     def V_to_MW_setup(self):
@@ -187,7 +187,7 @@ class PDCalibratorController(
             callback = Vref_to_MW,
         )
         #so that we can access all of the methods for potential removal
-        return declarative.Bunch(locals())
+        return Bunch(locals())
 
     _gain = 0
 
@@ -217,5 +217,5 @@ class PDCalibratorController(
             gain_cb_generic()
 
         #so that we can access all of the methods for potential removal
-        return declarative.Bunch(locals())
+        return Bunch(locals())
 

@@ -29,9 +29,9 @@ def remap_recursive(d, remap = None):
 
 
 def dict_diff(d1, d2):
-    d_unused = declarative.DeepBunch()
-    d1_diff = declarative.DeepBunch()
-    d2_diff = declarative.DeepBunch()
+    d_unused = DeepBunch()
+    d1_diff = DeepBunch()
+    d2_diff = DeepBunch()
     _dict_diff(d1, d2, d_unused, d1_diff, d2_diff, None)
     d1_diff = d1_diff.mydict.get(None, None)
     d2_diff = d2_diff.mydict.get(None, None)

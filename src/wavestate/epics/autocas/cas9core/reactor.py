@@ -303,7 +303,7 @@ class Reactor(object):
         a period_s of None (default) stops any looping!
         skip_cb is called if the loop is ever skipped
         """
-        loop_settings = declarative.Bunch()
+        loop_settings = Bunch()
         loop_settings.period_s = period_s
         loop_settings.skip_fraction = skip_fraction
         loop_settings.skip_cb = skip_cb
@@ -438,7 +438,7 @@ class Reactor(object):
         #would be an "else of the previous if, but this allows it to handle force_requeue as well
         if qdat_current is None:
             if mtime is not None:
-                qdata = declarative.Bunch()
+                qdata = Bunch()
                 qdata.key = key
                 qdata.command = command
                 qdata.has_run = False

@@ -207,7 +207,7 @@ class TempControllerScript(declarative.OverridableObject):
             callback = set_val,
             assumed_value = False,
         )
-        return declarative.Bunch(locals())
+        return Bunch(locals())
 
     def main(self):
         ctime = time.time()

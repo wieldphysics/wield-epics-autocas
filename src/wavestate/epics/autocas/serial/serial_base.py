@@ -55,7 +55,7 @@ class SerialConnection(
         return []
 
     def cmd_object(self):
-        b = declarative.Bunch()
+        b = Bunch()
 
         def writeline(line):
             print("SERIAL: ", line)

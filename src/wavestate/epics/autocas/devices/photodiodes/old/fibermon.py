@@ -133,5 +133,5 @@ class FiberMonController(
         )
 
         #so that we can access all of the methods for potential removal
-        return declarative.Bunch(locals())
+        return Bunch(locals())
 

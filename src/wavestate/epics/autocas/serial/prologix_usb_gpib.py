@@ -124,7 +124,7 @@ class USBPrologixGPIB(SerialConnection):
             return
 
     def cmd_object(self):
-        b = declarative.Bunch()
+        b = Bunch()
         b.writeline = self._device_writeline
         b.readline  = self._device_readline
         b.flush     = self._device_flush

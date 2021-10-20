@@ -51,7 +51,7 @@ class ConfigArgs(
 
         program = self.cmd.meta_program_generate()
 
-        db = declarative.DeepBunch()
+        db = DeepBunch()
         db.update_recursive(program.root.ctree_root.value_retrieve_recursive())
         db = nested_dict_utils.remap_recursive(db.mydict)
 

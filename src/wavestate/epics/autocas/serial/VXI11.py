@@ -106,7 +106,7 @@ class VXI11Connection(SerialConnection):
             return
 
     def cmd_object(self):
-        b = declarative.Bunch()
+        b = Bunch()
         b.writeline = self._device_writeline
         b.readline  = self._device_readline
         return b
