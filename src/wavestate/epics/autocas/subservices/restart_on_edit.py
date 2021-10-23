@@ -5,7 +5,8 @@ from __future__ import division, print_function, unicode_literals
 import sys
 import os
 from os import path
-#TODO import this later or make it failsafe
+
+# TODO import this later or make it failsafe
 import inotify_simple
 
 from .. import cas9core
@@ -17,75 +18,77 @@ class RestartOnEdit(cas9core.CASUser):
     poll_rate_s = 1
 
     @cas9core.dproperty
-    def policy(self, val = 'EXIT'):
-        assert(val in ['EXIT', 'REPLACE'])
+    def policy(self, val="EXIT"):
+        assert val in ["EXIT", "REPLACE"]
         return val
 
     @cas9core.dproperty
     def setup_action(self):
-        self.reactor.enqueue(self._startup_task, future_s = 3)
+        self.reactor.enqueue(self._startup_task, future_s=3)
 
     def _startup_task(self):
         modfiles = modlist(
-            ignores = self.ignore_list,
-            accepts = self.accept_list,
+            ignores=self.ignore_list,
+            accepts=self.accept_list,
         )
         inotify = inotify_simple.INotify()
         for fpath in modfiles:
             try:
                 inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
             except OSError as E:
-                print('inotify error: ', E)
-        #also check the config files
+                print("inotify error: ", E)
+        # also check the config files
         for fpath in self.root.config_files:
             try:
                 inotify.add_watch(fpath, inotify_simple.flags.MODIFY)
             except OSError as E:
-                print('inotify error: ', E)
+                print("inotify error: ", E)
         self._myinotify = inotify
 
-        self.reactor.enqueue_looping(self._loop_check_task, period_s = self.poll_rate_s)
+        self.reactor.enqueue_looping(self._loop_check_task, period_s=self.poll_rate_s)
 
     def _loop_check_task(self):
-        events = self._myinotify.read(timeout = 0)
-        #only modify is registered
+        events = self._myinotify.read(timeout=0)
+        # only modify is registered
         if events:
             print("RestartOnEdit noticed a modified file on inotify!")
-            if self.policy == 'REPLACE':
+            if self.policy == "REPLACE":
                 print("RESTARTING and REPLACING process")
-                os.execv(sys.executable, ['python{v.major}.{v.minor}'.format(v = sys.version_info)] + sys.argv)
-            elif self.policy == 'EXIT':
+                os.execv(
+                    sys.executable,
+                    ["python{v.major}.{v.minor}".format(v=sys.version_info)] + sys.argv,
+                )
+            elif self.policy == "EXIT":
                 print("Exiting Process")
                 sys.exit(0)
 
-    @cas9core.dproperty_ctree(default = lambda self : default_ignores())
+    @cas9core.dproperty_ctree(default=lambda self: default_ignores())
     def ignore_list(self, lval):
         """
         List of substrings that will cause the inotify system to ignore python packages
         """
-        assert(isinstance(lval, (list, tuple)))
+        assert isinstance(lval, (list, tuple))
         for val in lval:
-            assert(isinstance(val, (str, unicode)))
+            assert isinstance(val, (str, unicode))
         return lval
 
-    @cas9core.dproperty_ctree(default = lambda self : [])
+    @cas9core.dproperty_ctree(default=lambda self: [])
     def accept_list(self, lval):
         """
         List of substrings that will cause the inotify system to accept python packages even if they match the ignore list.
         """
-        assert(isinstance(lval, (list, tuple)))
+        assert isinstance(lval, (list, tuple))
         for val in lval:
-            assert(isinstance(val, (str, unicode)))
+            assert isinstance(val, (str, unicode))
         return lval
 
 
-
 def default_ignores():
-    pyname = 'python{v.major}.{v.minor}'.format(v = sys.version_info)
-    return [pyname, 'site-packages']
+    pyname = "python{v.major}.{v.minor}".format(v=sys.version_info)
+    return [pyname, "site-packages"]
 
 
-def modlist(include_pyc = True, ignores = None, accepts = []):
+def modlist(include_pyc=True, ignores=None, accepts=[]):
     if ignores is None:
         ignores = default_ignores()
 
@@ -98,9 +101,9 @@ def modlist(include_pyc = True, ignores = None, accepts = []):
                 pass
             else:
                 pbase, pext = path.splitext(fname)
-                if pext in ['.py', '.pyc']:
-                    fnamepy = pbase + '.py'
-                    fnamepyc = pbase + '.py'
+                if pext in [".py", ".pyc"]:
+                    fnamepy = pbase + ".py"
+                    fnamepyc = pbase + ".py"
 
                     skip = False
                     for ignore in ignores:
@@ -119,4 +122,3 @@ def modlist(include_pyc = True, ignores = None, accepts = []):
                     if include_pyc:
                         mods.append(fnamepyc)
     return mods
-

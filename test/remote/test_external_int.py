@@ -9,28 +9,32 @@ from wavestate import declarative
 
 class RVConnects(cas9epics.CASUser):
     remote = False
+
     @declarative.dproperty
     def rv_fl(self):
         rv = cas9epics.RelayValueFloat(0)
         self.cas_host(
-            rv, 'FL',
-            remote = self.remote,
-            interaction = 'internal',
+            rv,
+            "FL",
+            remote=self.remote,
+            interaction="internal",
         )
 
         def cb(value):
             print("RV_FL({0}): ".format(self.name), value)
 
-        rv.register(callback = cb, key = self)
+        rv.register(callback=cb, key=self)
 
         if not self.remote:
+
             def update():
-                rv.value += .1
-            self.reactor.enqueue_looping(update, period_s = .1)
+                rv.value += 0.1
+
+            self.reactor.enqueue_looping(update, period_s=0.1)
         return rv
 
-    #@declarative.dproperty
-    #def rv_int(self):
+    # @declarative.dproperty
+    # def rv_int(self):
     #    rv = cas9epics.RelayValueInt(0)
     #    self.cas_host(
     #        rv, 'INT',
@@ -44,8 +48,8 @@ class RVConnects(cas9epics.CASUser):
     #    rv.register(callback = cb)
     #    return rv
 
-    #@declarative.dproperty
-    #def rv_str(self):
+    # @declarative.dproperty
+    # def rv_str(self):
     #    rv = cas9epics.RelayValueString("test")
     #    self.cas_host(
     #        rv, 'STR',
@@ -64,13 +68,13 @@ class Testers(cas9epics.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVConnects(
-            name = 'connects',
-            subprefix = None,
-            parent = self,
+            name="connects",
+            subprefix=None,
+            parent=self,
         )
+
 
 if __name__ == "__main__":
     Testers.cmdline(
-        module_name_base = 'RVInternal',
+        module_name_base="RVInternal",
     )
-

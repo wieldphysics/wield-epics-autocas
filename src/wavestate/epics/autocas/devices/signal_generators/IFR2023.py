@@ -11,16 +11,16 @@ class IFR2023(SerialDevice):
     @cas9core.dproperty
     def chn(self):
         chn = IFRSigGenCommon.IFRSigGenChannel(
-            parent = self,
-            SB_parent = self.SB_SN_id_check,
-            name = 'chn',
+            parent=self,
+            SB_parent=self.SB_SN_id_check,
+            name="chn",
         )
         self.SBlist_setters.extend(chn.SBlist_setters)
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    #@cas9core.dproperty
-    #def lockout_soft(self):
+    # @cas9core.dproperty
+    # def lockout_soft(self):
     #    """
     #    Sends soft (front panel) lockout signal when using rs232.
     #    """
@@ -41,4 +41,3 @@ class IFR2023(SerialDevice):
     #        prefix = self.prefix,
     #    )
     #    return block
-

@@ -33,30 +33,30 @@
 # ones.
 extensions = [
     #'nbsphinx',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'cas9epics'
-copyright = '2018, Lee McCuller'
-author = 'Lee McCuller'
+project = "cas9epics"
+copyright = "2018, Lee McCuller"
+author = "Lee McCuller"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -64,6 +64,7 @@ author = 'Lee McCuller'
 #
 # The short X.Y version.
 import cas9epics
+
 version = cas9epics.__version__
 # The full version, including alpha/beta/rc tags.
 release = cas9epics.__version__
@@ -78,12 +79,12 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', '**.ipynb_checkpoints']
+exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-#pygments_style = 'sphinx'
-#pygments_style = 'colorful'
-pygments_style = 'default'
+# pygments_style = 'sphinx'
+# pygments_style = 'colorful'
+pygments_style = "default"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
@@ -91,27 +92,28 @@ todo_include_todos = True
 
 # -- Options for sourcelinks
 
-srclink_project = 'https://github.com/mccullerlp/cas9epics'
-srclink_src_path = 'cas9epics/'
-srclink_branch = 'master'
+srclink_project = "https://github.com/mccullerlp/cas9epics"
+srclink_src_path = "cas9epics/"
+srclink_branch = "master"
 
 # -- Options for HTML output ----------------------------------------------
 
-#useful for downloading the ipynb files
-html_sourcelink_suffix = ''
+# useful for downloading the ipynb files
+html_sourcelink_suffix = ""
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 import sphinx_rtd_theme
+
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
-#import jupyter_sphinx_theme
-#html_theme = "jupyter_sphinx_theme"
-#html_theme_path = [jupyter_sphinx_theme.get_html_theme_path()]
+# import jupyter_sphinx_theme
+# html_theme = "jupyter_sphinx_theme"
+# html_theme_path = [jupyter_sphinx_theme.get_html_theme_path()]
 
-#html_theme = "alabaster"
+# html_theme = "alabaster"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -122,14 +124,14 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-#html_sidebars = {
+# html_sidebars = {
 #    '**': [
 #        'about.html',
 #        'navigation.html',
@@ -138,30 +140,30 @@ html_static_path = ['_static']
 #        ''
 #        #'donate.html',
 #    ]
-#}
+# }
 # Custom sidebar templates, maps document names to template names.
 
 html_sidebars = {
-    '**': [
-        'localtoc.html',
-        'navigation.html',
-        'relations.html',
-        'searchbox.html',
-        'srclinks.html',
-        ],
-    'index': [
-        'globaltoc.html',
-        'navigation.html',
-        'relations.html',
-        'searchbox.html',
-        'srclinks.html',
-        ],
+    "**": [
+        "localtoc.html",
+        "navigation.html",
+        "relations.html",
+        "searchbox.html",
+        "srclinks.html",
+    ],
+    "index": [
+        "globaltoc.html",
+        "navigation.html",
+        "relations.html",
+        "searchbox.html",
+        "srclinks.html",
+    ],
 }
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'cas9epics'
+htmlhelp_basename = "cas9epics"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -170,15 +172,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -188,13 +187,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (
-        master_doc,
-        'cas9epics.tex',
-        'cas9epics Documentation',
-        'Lee McCuller',
-        'manual'
-    ),
+    (master_doc, "cas9epics.tex", "cas9epics Documentation", "Lee McCuller", "manual"),
 ]
 
 
@@ -202,15 +195,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (
-        master_doc,
-        'cas9epics',
-        'cas9epics Documentation',
-        [author],
-        1
-    )
-]
+man_pages = [(master_doc, "cas9epics", "cas9epics Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -221,17 +206,15 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        'cas9epics',
-        'cas9epics Documentation',
+        "cas9epics",
+        "cas9epics Documentation",
         author,
-        'cas9epics',
-        'One line description of project.',
-        'Miscellaneous'
+        "cas9epics",
+        "One line description of project.",
+        "Miscellaneous",
     ),
 ]
 
-#def setup(app):
+# def setup(app):
 #    app.add_stylesheet('my_theme.css')
 #    app.add_stylesheet('pygments_adjust.css')
-
-

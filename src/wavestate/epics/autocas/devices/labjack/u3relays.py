@@ -10,11 +10,11 @@ from .service import LJIORelay
 
 
 class LJU3ADCRelay(LJIORelay):
-    use_type = 'bits'
+    use_type = "bits"
 
-    posChannel  = None
-    negChannel  = 31
-    longSettle  = False
+    posChannel = None
+    negChannel = 31
+    longSettle = False
     quickSample = False
 
     clear_val = None
@@ -32,26 +32,21 @@ class LJU3ADCRelay(LJIORelay):
 
     def interface(self, lj):
         self.ebridge.rv_ADC.value = lj.getAIN(
-            posChannel  = self.posChannel,
-            negChannel  = self.negChannel,
-            longSettle  = self.longSettle,
-            quickSample = self.quickSample,
+            posChannel=self.posChannel,
+            negChannel=self.negChannel,
+            longSettle=self.longSettle,
+            quickSample=self.quickSample,
         )
         return
 
     def bits_write(self, lj):
         """Split the getAIN method of u3 into the two sections for this"""
         if self.negChannel == 32:
-            #part of being isSpecial in the read section
+            # part of being isSpecial in the read section
             negChannel = 30
         else:
             negChannel = self.negChannel
-        return u3.AIN(
-            self.posChannel,
-            negChannel,
-            self.longSettle,
-            self.quickSample
-        )
+        return u3.AIN(self.posChannel, negChannel, self.longSettle, self.quickSample)
 
     def bits_read(self, lj, bits):
         """Split the getAIN method of u3 into the two sections for this"""
@@ -72,30 +67,30 @@ class LJU3ADCRelay(LJIORelay):
 
         self.ebridge.rv_ADC.value = lj.binaryToCalibratedAnalogVoltage(
             bits,
-            isLowVoltage     = lvChannel,
-            isSingleEnded    = singleEnded,
-            isSpecialSetting = isSpecial,
-            channelNumber    = self.posChannel,
+            isLowVoltage=lvChannel,
+            isSingleEnded=singleEnded,
+            isSpecialSetting=isSpecial,
+            channelNumber=self.posChannel,
         )
         return
 
 
 class LJU3DACRelay(LJIORelay):
-    use_type = 'callback'
+    use_type = "callback"
 
-    dacChannel  = None
-    is16Bits    = True
+    dacChannel = None
+    is16Bits = True
 
     def setup(self, lj):
         if self.dacChannel == 1:
-            lj.configU3(DAC1Enable = True)
+            lj.configU3(DAC1Enable=True)
 
     @decl.dproperty
     def callback_setup(self):
         self.parent.ebridge.state_LJ_connected.register_via(
             self.ebridge.rv_DAC.register,
-            callback = self._DAC_val_change_cb,
-            call_immediate = True,
+            callback=self._DAC_val_change_cb,
+            call_immediate=True,
         )
 
     def _DAC_val_change_cb(self, value):
@@ -114,6 +109,7 @@ class LJU3DACRelay(LJIORelay):
                 bits = u3.DAC8(self.dacChannel, value_raw)
             lj.getFeedback(bits)
             return
+
         self.parent.LJ_cb_via(send)
         return
 
@@ -135,9 +131,9 @@ class LJU3DACRelay(LJIORelay):
 
 
 class LJU3DOUTRelay(LJIORelay):
-    use_type = 'bits'
+    use_type = "bits"
 
-    dChannel  = None
+    dChannel = None
 
     def setup(self, lj):
         lj.configDigital(self.dChannel)
@@ -149,10 +145,11 @@ class LJU3DOUTRelay(LJIORelay):
     def bits_read(self, lj, bits):
         return
 
-class LJU3DINRelay(LJIORelay):
-    use_type = 'bits'
 
-    dChannel  = None
+class LJU3DINRelay(LJIORelay):
+    use_type = "bits"
+
+    dChannel = None
     clear_val = None
 
     def clear(self):

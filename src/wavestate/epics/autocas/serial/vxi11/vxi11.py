@@ -33,33 +33,33 @@ import time
 # VXI-11 RPC constants
 
 # Device async
-DEVICE_ASYNC_PROG = 0x0607b0
+DEVICE_ASYNC_PROG = 0x0607B0
 DEVICE_ASYNC_VERS = 1
-DEVICE_ABORT      = 1
+DEVICE_ABORT = 1
 
 # Device core
-DEVICE_CORE_PROG  = 0x0607af
-DEVICE_CORE_VERS  = 1
-CREATE_LINK       = 10
-DEVICE_WRITE      = 11
-DEVICE_READ       = 12
-DEVICE_READSTB    = 13
-DEVICE_TRIGGER    = 14
-DEVICE_CLEAR      = 15
-DEVICE_REMOTE     = 16
-DEVICE_LOCAL      = 17
-DEVICE_LOCK       = 18
-DEVICE_UNLOCK     = 19
+DEVICE_CORE_PROG = 0x0607AF
+DEVICE_CORE_VERS = 1
+CREATE_LINK = 10
+DEVICE_WRITE = 11
+DEVICE_READ = 12
+DEVICE_READSTB = 13
+DEVICE_TRIGGER = 14
+DEVICE_CLEAR = 15
+DEVICE_REMOTE = 16
+DEVICE_LOCAL = 17
+DEVICE_LOCK = 18
+DEVICE_UNLOCK = 19
 DEVICE_ENABLE_SRQ = 20
-DEVICE_DOCMD      = 22
-DESTROY_LINK      = 23
-CREATE_INTR_CHAN  = 25
+DEVICE_DOCMD = 22
+DESTROY_LINK = 23
+CREATE_INTR_CHAN = 25
 DESTROY_INTR_CHAN = 26
 
 # Device intr
-DEVICE_INTR_PROG  = 0x0607b1
-DEVICE_INTR_VERS  = 1
-DEVICE_INTR_SRQ   = 30
+DEVICE_INTR_PROG = 0x0607B1
+DEVICE_INTR_VERS = 1
+DEVICE_INTR_SRQ = 30
 
 # Error states
 ERR_NO_ERROR = 0
@@ -89,12 +89,12 @@ RX_END = 4
 
 # IEEE 488.1 interface device commands
 CMD_SEND_COMMAND = 0x020000
-CMD_BUS_STATUS   = 0x020001
-CMD_ATN_CTRL     = 0x020002
-CMD_REN_CTRL     = 0x020003
-CMD_PASS_CTRL    = 0x020004
-CMD_BUS_ADDRESS  = 0x02000A
-CMD_IFC_CTRL     = 0x020010
+CMD_BUS_STATUS = 0x020001
+CMD_ATN_CTRL = 0x020002
+CMD_REN_CTRL = 0x020003
+CMD_PASS_CTRL = 0x020004
+CMD_BUS_ADDRESS = 0x02000A
+CMD_IFC_CTRL = 0x020010
 
 CMD_BUS_STATUS_REMOTE = 1
 CMD_BUS_STATUS_SRQ = 2
@@ -123,6 +123,7 @@ GPIB_CMD_SAD = 0x60  # my secondary address (base)
 GPIB_CMD_PPE = 0x60  # parallel poll enable (base)
 GPIB_CMD_PPD = 0x70  # parallel poll disable
 
+
 def parse_visa_resource_string(resource_string):
     # valid resource strings:
     # TCPIP::10.0.0.1::INSTR
@@ -132,41 +133,46 @@ def parse_visa_resource_string(resource_string):
     # TCPIP0::10.0.0.1::usb0::INSTR
     # TCPIP0::10.0.0.1::usb0[1234::5678::MYSERIAL::0]::INSTR
     m = re.match(
-        '^(?P<prefix>(?P<type>TCPIP)\d*)(::(?P<arg1>[^\s:]+))'
-        '(::(?P<arg2>[^\s:]+(\[.+\])?))?(::(?P<suffix>INSTR))$',
-        resource_string, re.I)
+        "^(?P<prefix>(?P<type>TCPIP)\d*)(::(?P<arg1>[^\s:]+))"
+        "(::(?P<arg2>[^\s:]+(\[.+\])?))?(::(?P<suffix>INSTR))$",
+        resource_string,
+        re.I,
+    )
 
     if m is not None:
         return dict(
-            type = m.group('type').upper(),
-            prefix = m.group('prefix'),
-            arg1 = m.group('arg1'),
-            arg2 = m.group('arg2'),
-            suffix = m.group('suffix'),
+            type=m.group("type").upper(),
+            prefix=m.group("prefix"),
+            arg1=m.group("arg1"),
+            arg2=m.group("arg2"),
+            suffix=m.group("suffix"),
         )
+
 
 # Exceptions
 class Vxi11Exception(Exception):
-    em = {0:  "No error",
-          1:  "Syntax error",
-          3:  "Device not accessible",
-          4:  "Invalid link identifier",
-          5:  "Parameter error",
-          6:  "Channel not established",
-          8:  "Operation not supported",
-          9:  "Out of resources",
-          11: "Device locked by another link",
-          12: "No lock held by this link",
-          15: "IO timeout",
-          17: "IO error",
-          21: "Invalid address",
-          23: "Abort",
-          29: "Channel already established"}
+    em = {
+        0: "No error",
+        1: "Syntax error",
+        3: "Device not accessible",
+        4: "Invalid link identifier",
+        5: "Parameter error",
+        6: "Channel not established",
+        8: "Operation not supported",
+        9: "Out of resources",
+        11: "Device locked by another link",
+        12: "No lock held by this link",
+        15: "IO timeout",
+        17: "IO error",
+        21: "Invalid address",
+        23: "Abort",
+        29: "Channel already established",
+    }
 
-    def __init__(self, err = None, note = None):
+    def __init__(self, err=None, note=None):
         self.err = err
         self.note = note
-        self.msg = ''
+        self.msg = ""
 
         if err is None:
             self.msg = note
@@ -183,6 +189,7 @@ class Vxi11Exception(Exception):
 
     def __str__(self):
         return self.msg
+
 
 class Packer(rpc.Packer):
     def pack_device_link(self, link):
@@ -242,7 +249,16 @@ class Packer(rpc.Packer):
         self.pack_uint(lock_timeout)
 
     def pack_device_docmd_parms(self, params):
-        link, flags, timeout, lock_timeout, cmd, network_order, datasize, data_in = params
+        (
+            link,
+            flags,
+            timeout,
+            lock_timeout,
+            cmd,
+            network_order,
+            datasize,
+            data_in,
+        ) = params
         self.pack_int(link)
         self.pack_int(flags)
         self.pack_uint(timeout)
@@ -286,6 +302,7 @@ class Packer(rpc.Packer):
         error, data_out = params
         self.pack_int(error)
         self.pack_opaque(data_out)
+
 
 class Unpacker(rpc.Unpacker):
     def unpack_device_link(self):
@@ -394,137 +411,178 @@ class Unpacker(rpc.Unpacker):
 
 
 class CoreClient(rpc.TCPClient):
-    def __init__(self, host, port=0, timeout_s = None):
+    def __init__(self, host, port=0, timeout_s=None):
         self.packer = Packer()
-        self.unpacker = Unpacker('')
+        self.unpacker = Unpacker("")
         super(CoreClient, self).__init__(
             host,
             DEVICE_CORE_PROG,
             DEVICE_CORE_VERS,
             port,
-            timeout_s = timeout_s,
+            timeout_s=timeout_s,
         )
 
     def create_link(self, id, lock_device, lock_timeout, name):
         params = (id, lock_device, lock_timeout, name)
         return self.make_call(
-            CREATE_LINK, params,
+            CREATE_LINK,
+            params,
             self.packer.pack_create_link_parms,
-            self.unpacker.unpack_create_link_resp)
+            self.unpacker.unpack_create_link_resp,
+        )
 
     def device_write(self, link, timeout, lock_timeout, flags, data):
         params = (link, timeout, lock_timeout, flags, data)
         return self.make_call(
-            DEVICE_WRITE, params,
+            DEVICE_WRITE,
+            params,
             self.packer.pack_device_write_parms,
-            self.unpacker.unpack_device_write_resp)
+            self.unpacker.unpack_device_write_resp,
+        )
 
     def device_read(self, link, request_size, timeout, lock_timeout, flags, term_char):
         params = (link, request_size, timeout, lock_timeout, flags, term_char)
         return self.make_call(
-            DEVICE_READ, params,
+            DEVICE_READ,
+            params,
             self.packer.pack_device_read_parms,
-            self.unpacker.unpack_device_read_resp)
+            self.unpacker.unpack_device_read_resp,
+        )
 
     def device_read_stb(self, link, flags, lock_timeout, timeout):
         params = (link, flags, lock_timeout, timeout)
         return self.make_call(
-            DEVICE_READSTB, params,
+            DEVICE_READSTB,
+            params,
             self.packer.pack_device_generic_parms,
-            self.unpacker.unpack_device_read_stb_resp)
+            self.unpacker.unpack_device_read_stb_resp,
+        )
 
     def device_trigger(self, link, flags, lock_timeout, timeout):
         params = (link, flags, lock_timeout, timeout)
         return self.make_call(
-            DEVICE_TRIGGER, params,
+            DEVICE_TRIGGER,
+            params,
             self.packer.pack_device_generic_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_clear(self, link, flags, lock_timeout, timeout):
         params = (link, flags, lock_timeout, timeout)
         return self.make_call(
-            DEVICE_CLEAR, params,
+            DEVICE_CLEAR,
+            params,
             self.packer.pack_device_generic_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_remote(self, link, flags, lock_timeout, timeout):
         params = (link, flags, lock_timeout, timeout)
         return self.make_call(
-            DEVICE_REMOTE, params,
+            DEVICE_REMOTE,
+            params,
             self.packer.pack_device_generic_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_local(self, link, flags, lock_timeout, timeout):
         params = (link, flags, lock_timeout, timeout)
         return self.make_call(
-            DEVICE_LOCAL, params,
+            DEVICE_LOCAL,
+            params,
             self.packer.pack_device_generic_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_lock(self, link, flags, lock_timeout):
         params = (link, flags, lock_timeout)
         return self.make_call(
-            DEVICE_LOCK, params,
+            DEVICE_LOCK,
+            params,
             self.packer.pack_device_lock_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_unlock(self, link):
         return self.make_call(
-            DEVICE_UNLOCK, link,
+            DEVICE_UNLOCK,
+            link,
             self.packer.pack_device_link,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def device_enable_srq(self, link, enable, handle):
         params = (link, enable, handle)
         return self.make_call(
-            DEVICE_ENABLE_SRQ, params,
+            DEVICE_ENABLE_SRQ,
+            params,
             self.packer.pack_device_enable_srq_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
-    def device_docmd(self, link, flags, timeout, lock_timeout, cmd, network_order, datasize, data_in):
-        params = (link, flags, timeout, lock_timeout, cmd, network_order, datasize, data_in)
+    def device_docmd(
+        self, link, flags, timeout, lock_timeout, cmd, network_order, datasize, data_in
+    ):
+        params = (
+            link,
+            flags,
+            timeout,
+            lock_timeout,
+            cmd,
+            network_order,
+            datasize,
+            data_in,
+        )
         return self.make_call(
-            DEVICE_DOCMD, params,
+            DEVICE_DOCMD,
+            params,
             self.packer.pack_device_docmd_parms,
-            self.unpacker.unpack_device_docmd_resp)
+            self.unpacker.unpack_device_docmd_resp,
+        )
 
     def destroy_link(self, link):
         return self.make_call(
-            DESTROY_LINK, link,
+            DESTROY_LINK,
+            link,
             self.packer.pack_device_link,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def create_intr_chan(self, host_addr, host_port, prog_num, prog_vers, prog_family):
         params = (host_addr, host_port, prog_num, prog_vers, prog_family)
         return self.make_call(
-            CREATE_INTR_CHAN, params,
+            CREATE_INTR_CHAN,
+            params,
             self.packer.pack_device_remote_func_parms,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
     def destroy_intr_chan(self):
         return self.make_call(
-            DESTROY_INTR_CHAN, None, None,
-            self.unpacker.unpack_device_error)
+            DESTROY_INTR_CHAN, None, None, self.unpacker.unpack_device_error
+        )
 
 
 class AbortClient(rpc.TCPClient):
     def __init__(self, host, port=0):
         self.packer = Packer()
-        self.unpacker = Unpacker('')
+        self.unpacker = Unpacker("")
         rpc.TCPClient.__init__(self, host, DEVICE_ASYNC_PROG, DEVICE_ASYNC_VERS, port)
 
     def device_abort(self, link):
         return self.make_call(
-            DEVICE_ABORT, link,
+            DEVICE_ABORT,
+            link,
             self.packer.pack_device_link,
-            self.unpacker.unpack_device_error)
+            self.unpacker.unpack_device_error,
+        )
 
 
 def list_devices(ip=None, timeout=1):
     "Detect VXI-11 devices on network"
 
     if ip is None:
-        ip = ['255.255.255.255']
+        ip = ["255.255.255.255"]
 
     if type(ip) is str:
         ip = [ip]
@@ -540,7 +598,7 @@ def list_devices(ip=None, timeout=1):
 
         hosts.extend(l_repack)
 
-    return sorted(hosts, key=lambda ip: tuple(int(part) for part in ip.split('.')))
+    return sorted(hosts, key=lambda ip: tuple(int(part) for part in ip.split(".")))
 
 
 def list_resources(ip=None, timeout=1):
@@ -560,7 +618,7 @@ def list_resources(ip=None, timeout=1):
                 intf_dev = InterfaceDevice(host)
                 # enumerate connected devices
                 devs = intf_dev.find_listeners()
-                res.extend(['TCPIP::%s::gpib0,%d::INSTR' % (host, d) for d in devs])
+                res.extend(["TCPIP::%s::gpib0,%d::INSTR" % (host, d) for d in devs])
             except Exception:
                 # if that fails, just list the host
                 res.append("TCPIP::%s::INSTR" % host)
@@ -570,17 +628,18 @@ def list_resources(ip=None, timeout=1):
 
 class Device(object):
     "VXI-11 device interface client"
-    def __init__(self, host, name = None, client_id = None, term_char = None):
+
+    def __init__(self, host, name=None, client_id=None, term_char=None):
         "Create new VXI-11 device object"
 
-        if host.upper().startswith('TCPIP') and '::' in host:
+        if host.upper().startswith("TCPIP") and "::" in host:
             res = parse_visa_resource_string(host)
 
             if res is None:
-                raise Vxi11Exception('Invalid resource string', 'init')
+                raise Vxi11Exception("Invalid resource string", "init")
 
-            host = res['arg1']
-            name = res['arg2']
+            host = res["arg1"]
+            name = res["arg2"]
 
         if name is None:
             name = "inst0"
@@ -600,7 +659,7 @@ class Device(object):
         self.abort_port = 0
         self.link = None
         self.max_recv_size = 0
-        self.max_read_len = 128*1024*1024
+        self.max_read_len = 128 * 1024 * 1024
         self.locked = False
 
     def __del__(self):
@@ -635,23 +694,20 @@ class Device(object):
             return
 
         if self.client is None:
-            self.client = CoreClient(self.host, timeout_s = self.timeout)
+            self.client = CoreClient(self.host, timeout_s=self.timeout)
 
         self.client.sock.settimeout(self.timeout * 1.1)
         error, link, abort_port, max_recv_size = self.client.create_link(
-            self.client_id,
-            0,
-            self._lock_timeout_ms,
-            self.name.encode("utf-8")
+            self.client_id, 0, self._lock_timeout_ms, self.name.encode("utf-8")
         )
 
         if error:
-            raise Vxi11Exception(error, 'open')
+            raise Vxi11Exception(error, "open")
 
         self.abort_port = abort_port
 
         self.link = link
-        self.max_recv_size = min(max_recv_size, 1024*1024)
+        self.max_recv_size = min(max_recv_size, 1024 * 1024)
 
     def close(self):
         "Close connection"
@@ -675,7 +731,7 @@ class Device(object):
         error = self.abort_client.device_abort(self.link)
 
         if error:
-            raise Vxi11Exception(error, 'abort')
+            raise Vxi11Exception(error, "abort")
 
     def write_raw(self, data):
         "Write binary data to instrument"
@@ -684,7 +740,7 @@ class Device(object):
 
         if self.term_char is not None:
             flags = OP_FLAG_TERMCHAR_SET
-            term_char = str(self.term_char).encode('utf-8')[0]
+            term_char = str(self.term_char).encode("utf-8")[0]
             data += term_char
 
         flags = 0
@@ -697,20 +753,16 @@ class Device(object):
             if num <= self.max_recv_size:
                 flags |= OP_FLAG_END
 
-            block = data[offset:offset+self.max_recv_size]
+            block = data[offset : offset + self.max_recv_size]
 
             error, size = self.client.device_write(
-                self.link,
-                self._timeout_ms,
-                self._lock_timeout_ms,
-                flags,
-                block
+                self.link, self._timeout_ms, self._lock_timeout_ms, flags, block
             )
 
             if error:
-                raise Vxi11Exception(error, 'write')
+                raise Vxi11Exception(error, "write")
             elif size < len(block):
-                raise Vxi11Exception("did not write complete block", 'write')
+                raise Vxi11Exception("did not write complete block", "write")
 
             offset += size
             num -= size
@@ -731,7 +783,7 @@ class Device(object):
 
         if self.term_char is not None:
             flags = OP_FLAG_TERMCHAR_SET
-            term_char = str(self.term_char).encode('utf-8')[0]
+            term_char = str(self.term_char).encode("utf-8")[0]
 
         read_data = bytearray()
 
@@ -742,11 +794,11 @@ class Device(object):
                 self._timeout_ms,
                 self._lock_timeout_ms,
                 flags,
-                term_char
+                term_char,
             )
 
             if error:
-                raise Vxi11Exception(error, 'read')
+                raise Vxi11Exception(error, "read")
 
             read_data.extend(data)
 
@@ -764,7 +816,7 @@ class Device(object):
         self.write_raw(data)
         return self.read_raw(num)
 
-    def write(self, message, encoding = 'utf-8'):
+    def write(self, message, encoding="utf-8"):
         "Write string to instrument"
         if type(message) is tuple or type(message) is list:
             # recursive call for a list of commands
@@ -774,11 +826,11 @@ class Device(object):
 
         self.write_raw(str(message).encode(encoding))
 
-    def read(self, num=-1, encoding = 'utf-8'):
+    def read(self, num=-1, encoding="utf-8"):
         "Read string from instrument"
-        return self.read_raw(num).decode(encoding).rstrip('\r\n')
+        return self.read_raw(num).decode(encoding).rstrip("\r\n")
 
-    def ask(self, message, num=-1, encoding = 'utf-8'):
+    def ask(self, message, num=-1, encoding="utf-8"):
         "Write then read string"
         if type(message) is tuple or type(message) is list:
             # recursive call for a list of commands
@@ -798,14 +850,11 @@ class Device(object):
         flags = 0
 
         error = self.client.device_trigger(
-            self.link,
-            flags,
-            self._lock_timeout_ms,
-            self._timeout_ms
+            self.link, flags, self._lock_timeout_ms, self._timeout_ms
         )
 
         if error:
-            raise Vxi11Exception(error, 'trigger')
+            raise Vxi11Exception(error, "trigger")
 
     def clear(self):
         "Send clear command"
@@ -815,14 +864,11 @@ class Device(object):
         flags = 0
 
         error = self.client.device_clear(
-            self.link,
-            flags,
-            self._lock_timeout_ms,
-            self._timeout_ms
+            self.link, flags, self._lock_timeout_ms, self._timeout_ms
         )
 
         if error:
-            raise Vxi11Exception(error, 'clear')
+            raise Vxi11Exception(error, "clear")
 
     def lock(self):
         "Send lock command"
@@ -831,14 +877,10 @@ class Device(object):
 
         flags = 0
 
-        error = self.client.device_lock(
-            self.link,
-            flags,
-            self._lock_timeout_ms
-        )
+        error = self.client.device_lock(self.link, flags, self._lock_timeout_ms)
 
         if error:
-            raise Vxi11Exception(error, 'lock')
+            raise Vxi11Exception(error, "lock")
 
         self.locked = True
 
@@ -850,24 +892,25 @@ class Device(object):
         error = self.client.device_unlock(self.link)
 
         if error:
-            raise Vxi11Exception(error, 'unlock')
+            raise Vxi11Exception(error, "unlock")
 
         self.locked = False
 
 
 class InterfaceDevice(Device):
     "VXI-11 IEEE 488.1 interface device interface client"
-    def __init__(self, host, name = None, client_id = None, term_char = None):
+
+    def __init__(self, host, name=None, client_id=None, term_char=None):
         "Create new VXI-11 488.1 interface device object"
 
-        if host.upper().startswith('TCPIP') and '::' in host:
+        if host.upper().startswith("TCPIP") and "::" in host:
             res = parse_visa_resource_string(host)
 
             if res is None:
-                raise Vxi11Exception('Invalid resource string', 'init')
+                raise Vxi11Exception("Invalid resource string", "init")
 
-            host = res['arg1']
-            name = res['arg2']
+            host = res["arg1"]
+            name = res["arg2"]
 
         if name is None:
             name = "gpib0"
@@ -881,7 +924,7 @@ class InterfaceDevice(Device):
         if self.link is not None:
             return
 
-        if ',' in self.name:
+        if "," in self.name:
             raise Vxi11Exception("Cannot specify address for InterfaceDevice")
 
         super(InterfaceDevice, self).open()
@@ -903,11 +946,11 @@ class InterfaceDevice(Device):
             CMD_SEND_COMMAND,
             True,
             1,
-            data
+            data,
         )
 
         if error:
-            raise Vxi11Exception(error, 'send_command')
+            raise Vxi11Exception(error, "send_command")
 
         return data_out
 
@@ -920,15 +963,15 @@ class InterfaceDevice(Device):
         for addr in address_list:
             if type(addr) is tuple:
                 if addr[0] < 0 or addr[0] > 30:
-                    raise Vxi11Exception("Invalid address", 'create_setup')
+                    raise Vxi11Exception("Invalid address", "create_setup")
                 data.append(addr[0] | GPIB_CMD_LAD)
                 if len(addr) > 1:
                     if addr[1] < 0 or addr[1] > 30:
-                        raise Vxi11Exception("Invalid address", 'create_setup')
+                        raise Vxi11Exception("Invalid address", "create_setup")
                     data.append(addr[1] | GPIB_CMD_SAD)
             else:
                 if addr < 0 or addr > 30:
-                    raise Vxi11Exception("Invalid address", 'create_setup')
+                    raise Vxi11Exception("Invalid address", "create_setup")
                 data.append(addr | GPIB_CMD_LAD)
 
         return bytes(data)
@@ -952,13 +995,13 @@ class InterfaceDevice(Device):
             CMD_BUS_STATUS,
             True,
             2,
-            struct.pack('!H', val)
+            struct.pack("!H", val),
         )
 
         if error:
-            raise Vxi11Exception(error, 'bus_status')
+            raise Vxi11Exception(error, "bus_status")
 
-        return struct.unpack('!H', data_out)[0]
+        return struct.unpack("!H", data_out)[0]
 
     def test_ren(self):
         "Read REN line"
@@ -1007,13 +1050,13 @@ class InterfaceDevice(Device):
             CMD_ATN_CTRL,
             True,
             2,
-            struct.pack('!H', val)
+            struct.pack("!H", val),
         )
 
         if error:
-            raise Vxi11Exception(error, 'set_atn')
+            raise Vxi11Exception(error, "set_atn")
 
-        return struct.unpack('!H', data_out)[0]
+        return struct.unpack("!H", data_out)[0]
 
     def set_ren(self, val):
         "Set REN line"
@@ -1030,19 +1073,19 @@ class InterfaceDevice(Device):
             CMD_REN_CTRL,
             True,
             2,
-            struct.pack('!H', val)
+            struct.pack("!H", val),
         )
 
         if error:
-            raise Vxi11Exception(error, 'set_ren')
+            raise Vxi11Exception(error, "set_ren")
 
-        return struct.unpack('!H', data_out)[0]
+        return struct.unpack("!H", data_out)[0]
 
     def pass_control(self, addr):
         "Pass control to another controller"
 
         if addr < 0 or addr > 30:
-            raise Vxi11Exception("Invalid address", 'pass_control')
+            raise Vxi11Exception("Invalid address", "pass_control")
 
         if self.link is None:
             self.open()
@@ -1057,19 +1100,19 @@ class InterfaceDevice(Device):
             CMD_PASS_CTRL,
             True,
             4,
-            struct.pack('!L', addr)
+            struct.pack("!L", addr),
         )
 
         if error:
-            raise Vxi11Exception(error, 'pass_control')
+            raise Vxi11Exception(error, "pass_control")
 
-        return struct.unpack('!L', data_out)[0]
+        return struct.unpack("!L", data_out)[0]
 
     def set_bus_address(self, addr):
         "Set interface device bus address"
 
         if addr < 0 or addr > 30:
-            raise Vxi11Exception("Invalid address", 'set_bus_address')
+            raise Vxi11Exception("Invalid address", "set_bus_address")
 
         if self.link is None:
             self.open()
@@ -1084,15 +1127,15 @@ class InterfaceDevice(Device):
             CMD_BUS_ADDRESS,
             True,
             4,
-            struct.pack('!L', addr)
+            struct.pack("!L", addr),
         )
 
         if error:
-            raise Vxi11Exception(error, 'set_bus_address')
+            raise Vxi11Exception(error, "set_bus_address")
 
         self._bus_address = addr
 
-        return struct.unpack('!L', data_out)[0]
+        return struct.unpack("!L", data_out)[0]
 
     def send_ifc(self):
         "Send IFC"
@@ -1109,11 +1152,11 @@ class InterfaceDevice(Device):
             CMD_IFC_CTRL,
             True,
             1,
-            b''
+            b"",
         )
 
         if error:
-            raise Vxi11Exception(error, 'send_ifc')
+            raise Vxi11Exception(error, "send_ifc")
 
     def find_listeners(self, address_list=None):
         "Find devices"
@@ -1131,11 +1174,13 @@ class InterfaceDevice(Device):
             for addr in address_list:
                 # check for listener at primary address
                 cmd = bytearray([GPIB_CMD_UNL, GPIB_CMD_UNT])
-                cmd.append(self._bus_address | GPIB_CMD_TAD)  # spec says this is unnecessary, but doesn't appear to work without this
+                cmd.append(
+                    self._bus_address | GPIB_CMD_TAD
+                )  # spec says this is unnecessary, but doesn't appear to work without this
                 if type(addr) is tuple:
                     addr = addr[0]
                 if addr < 0 or addr > 30:
-                    raise Vxi11Exception("Invalid address", 'find_listeners')
+                    raise Vxi11Exception("Invalid address", "find_listeners")
                 cmd.append(addr | GPIB_CMD_LAD)
                 self.send_command(cmd)
                 self.set_atn(False)
@@ -1145,7 +1190,9 @@ class InterfaceDevice(Device):
                 else:
                     # check for listener at any sub-address
                     cmd = bytearray([GPIB_CMD_UNL, GPIB_CMD_UNT])
-                    cmd.append(self._bus_address | GPIB_CMD_TAD)  # spec says this is unnecessary, but doesn't appear to work without this
+                    cmd.append(
+                        self._bus_address | GPIB_CMD_TAD
+                    )  # spec says this is unnecessary, but doesn't appear to work without this
                     cmd.append(addr | GPIB_CMD_LAD)
                     for sa in range(31):
                         cmd.append(sa | GPIB_CMD_SAD)
@@ -1156,12 +1203,16 @@ class InterfaceDevice(Device):
                         # find specific sub-address
                         for sa in range(31):
                             cmd = bytearray([GPIB_CMD_UNL, GPIB_CMD_UNT])
-                            cmd.append(self._bus_address | GPIB_CMD_TAD)  # spec says this is unnecessary, but doesn't appear to work without this
+                            cmd.append(
+                                self._bus_address | GPIB_CMD_TAD
+                            )  # spec says this is unnecessary, but doesn't appear to work without this
                             cmd.append(addr | GPIB_CMD_LAD)
                             cmd.append(sa | GPIB_CMD_SAD)
                             self.send_command(cmd)
                             self.set_atn(False)
-                            time.sleep(0.0015)  # probably not necessary due to network delays
+                            time.sleep(
+                                0.0015
+                            )  # probably not necessary due to network delays
                             if self.test_ndac():
                                 found.append((addr, sa))
             self.unlock()
@@ -1183,14 +1234,11 @@ class Instrument(Device):
         flags = 0
 
         error, stb = self.client.device_read_stb(
-            self.link,
-            flags,
-            self._lock_timeout_ms,
-            self._timeout_ms
+            self.link, flags, self._lock_timeout_ms, self._timeout_ms
         )
 
         if error:
-            raise Vxi11Exception(error, 'read_stb')
+            raise Vxi11Exception(error, "read_stb")
 
         return stb
 
@@ -1202,14 +1250,11 @@ class Instrument(Device):
         flags = 0
 
         error = self.client.device_remote(
-            self.link,
-            flags,
-            self._lock_timeout_ms,
-            self._timeout_ms
+            self.link, flags, self._lock_timeout_ms, self._timeout_ms
         )
 
         if error:
-            raise Vxi11Exception(error, 'remote')
+            raise Vxi11Exception(error, "remote")
 
     def local(self):
         "Send local command"
@@ -1219,12 +1264,8 @@ class Instrument(Device):
         flags = 0
 
         error = self.client.device_local(
-            self.link,
-            flags,
-            self._lock_timeout_ms,
-            self._timeout_ms
+            self.link, flags, self._lock_timeout_ms, self._timeout_ms
         )
 
         if error:
-            raise Vxi11Exception(error, 'local')
-
+            raise Vxi11Exception(error, "local")

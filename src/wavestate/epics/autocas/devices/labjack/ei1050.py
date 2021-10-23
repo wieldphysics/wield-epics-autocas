@@ -17,12 +17,13 @@ class EI1050relay(LJIORelay):
     """
     EI1050 class to simplify communication with an EI1050 probe
     """
-    use_type = 'callback'
+
+    use_type = "callback"
 
     dataPinNum = None
     clockPinNum = None
     enablePinNum = None
-    shtOptions   = 0xc0
+    shtOptions = 0xC0
 
     ebridge_temp = None
     ebridge_humidity = None
@@ -31,14 +32,14 @@ class EI1050relay(LJIORelay):
 
     def setup(self, lj):
         self._deviceMod = {
-            "U3":  u3,
-            "U6":  u6,
+            "U3": u3,
+            "U6": u6,
             "UE9": ue9,
         }[lj.__class__.__name__]
 
-        #if self._deviceMod is u3:
-            # Set U3 pins
-            #lj.configIO(FIOAnalog = 0)
+        # if self._deviceMod is u3:
+        # Set U3 pins
+        # lj.configIO(FIOAnalog = 0)
         if self.enablePinNum is not None:
             lj.configDigital(self.enablePinNum)
             lj.getFeedback(self._deviceMod.BitDirWrite(self.enablePinNum, 1))
@@ -46,21 +47,21 @@ class EI1050relay(LJIORelay):
     @declarative.dproperty
     def callback_setup(self):
         self.parent.ebridge.state_LJ_connected.register(
-            callback = self._connect_cb,
-            assumed_value = False,
+            callback=self._connect_cb,
+            assumed_value=False,
         )
 
     def _connect_cb(self, bstate):
         if bstate:
             self._task = ChurnMethod()
-            ntime = discrete_increment(self._task.time(), self.read_period_s, add = True)
+            ntime = discrete_increment(self._task.time(), self.read_period_s, add=True)
             self._task(self._update_task, ntime)
         else:
             self._task.cancel()
 
     def _update_task(self, task):
         self.parent.LJ_cb_via(self.interface)
-        ntime = discrete_increment(task.time(), self.read_period_s, add = True)
+        ntime = discrete_increment(task.time(), self.read_period_s, add=True)
         task(self._update_task, ntime)
         return
 
@@ -73,21 +74,18 @@ class EI1050relay(LJIORelay):
         Desc: Gets a fresh set of readings from this probe
         """
         import time
+
         t1 = time.time()
-        self.write_bit_state(lj, self.enablePinNum, 1) # Enable the probe
-        state = lj.sht1x(
-            self.dataPinNum,
-            self.clockPinNum,
-            self.shtOptions
-        )
-        self.write_bit_state(lj, self.enablePinNum, 0) # Disable the probe
+        self.write_bit_state(lj, self.enablePinNum, 1)  # Enable the probe
+        state = lj.sht1x(self.dataPinNum, self.clockPinNum, self.shtOptions)
+        self.write_bit_state(lj, self.enablePinNum, 0)  # Disable the probe
         try:
-            self.ebridge_temp.rv_ADC.value = state['Temperature']
-            self.ebridge_humidity.rv_ADC.value = state['Humidity']
+            self.ebridge_temp.rv_ADC.value = state["Temperature"]
+            self.ebridge_humidity.rv_ADC.value = state["Humidity"]
         except Exception as e:
             print("EI1050 error: ", e)
         t2 = time.time()
-        #print "TIME: ", t2-t1
+        # print "TIME: ", t2-t1
         return
 
     def write_bit_state(self, lj, pinNum, state):
@@ -102,9 +100,8 @@ class EI1050relay(LJIORelay):
                 lj.singleIO(1, pinNum, Dir=1, State=state)
 
 
-def discrete_increment(val, inc, add = False):
+def discrete_increment(val, inc, add=False):
     if add:
         return val + inc - (val % inc)
     else:
         return val - (val % inc)
-

@@ -15,10 +15,10 @@ class IFR2026(SerialDevice):
     @cas9core.dproperty
     def chnA(self):
         chn = IFR2026Channel(
-            parent = self,
-            name = 'chnA',
-            device_channel_name = 'A',
-            SB_parent = self.SB_SN_id_check,
+            parent=self,
+            name="chnA",
+            device_channel_name="A",
+            SB_parent=self.SB_SN_id_check,
         )
         self.SBlist_setters.extend(chn.SBlist_setters)
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
@@ -27,17 +27,17 @@ class IFR2026(SerialDevice):
     @cas9core.dproperty
     def chnB(self):
         chn = IFR2026Channel(
-            parent = self,
-            name = 'chnB',
-            device_channel_name = 'B',
-            SB_parent = self.SB_SN_id_check,
+            parent=self,
+            name="chnB",
+            device_channel_name="B",
+            SB_parent=self.SB_SN_id_check,
         )
         self.SBlist_setters.extend(chn.SBlist_setters)
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    #@cas9core.dproperty
-    #def lockout_soft(self):
+    # @cas9core.dproperty
+    # def lockout_soft(self):
     #    """
     #    Sends soft (front panel) lockout signal when using rs232.
     #    """
@@ -92,11 +92,11 @@ class IFR2026Channel(
 
     @cas9core.dproperty
     def SB_set_chn(self):
-        #one group, the channel name
-        re_SOURCE = re.compile('^:SOURCE (.)$')
+        # one group, the channel name
+        re_SOURCE = re.compile("^:SOURCE (.)$")
 
         def action_sequence(cmd):
-            cmd.writeline(':SOURCE {0};:SOURCE?'.format(self.device_channel_name))
+            cmd.writeline(":SOURCE {0};:SOURCE?".format(self.device_channel_name))
             response = cmd.readline()
             match = re_SOURCE.match(response)
             if not match:
@@ -107,18 +107,18 @@ class IFR2026Channel(
 
         block = self.serial.block_add(
             action_sequence,
-            ordering = 0,
-            parent = self.SB_parent,
-            name = 'set_chn',
-            prefix = self.prefix,
+            ordering=0,
+            parent=self.SB_parent,
+            name="set_chn",
+            prefix=self.prefix,
         )
         return block
 
     @cas9core.dproperty
     def channel(self):
         return IFRSigGenCommon.IFRSigGenChannel(
-            parent = self,
-            SB_parent = self.SB_set_chn,
-            name = 'channel',
-            subprefix = None,
+            parent=self,
+            SB_parent=self.SB_set_chn,
+            name="channel",
+            subprefix=None,
         )

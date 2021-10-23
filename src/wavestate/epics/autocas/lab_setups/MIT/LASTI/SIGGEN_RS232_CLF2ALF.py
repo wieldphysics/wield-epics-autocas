@@ -12,29 +12,29 @@ class IFR2026Controller(cas9epics.CAS9Module):
     @cas9epics.dproperty
     def serial(self):
         return serial.USBDeviceRS232(
-            name = 'SERIAL',
-            parent = self,
-            _debug_echo = True,
+            name="SERIAL",
+            parent=self,
+            _debug_echo=True,
         )
 
     @cas9epics.dproperty
     def CLF2ALF(self):
         return IFR2026(
-            serial = self.serial,
-            name   = 'CLF2ALF',
-            parent = self,
+            serial=self.serial,
+            name="CLF2ALF",
+            parent=self,
         )
 
     @cas9epics.dproperty
     def CLF2ALF_CMD(self):
         return serial.SerialCommandResponse(
-            serial = self.serial,
-            name   = 'CLF2ALF_CMD',
-            parent = self,
+            serial=self.serial,
+            name="CLF2ALF_CMD",
+            parent=self,
         )
 
 
 if __name__ == "__main__":
     IFR2026Controller.cmdline(
-        module_name_base = 'CLF2ALF',
+        module_name_base="CLF2ALF",
     )

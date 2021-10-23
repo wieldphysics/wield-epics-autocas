@@ -2,11 +2,13 @@
 .. autoclass:: HeapPriorityQueue
 """
 import heapq
+
 try:
     import queue as queue
 except ImportError:
     import Queue as queue
 import threading
+
 
 class HeapPriorityQueue(object):
     """
@@ -30,7 +32,8 @@ class HeapPriorityQueue(object):
     .. automethod:: pushpop
 
     """
-    def __init__(self, iterable = ()):
+
+    def __init__(self, iterable=()):
         """
         :param iterable: iterable of initial items
         """
@@ -118,7 +121,8 @@ class HeapPriorityQueueThreadsafe(object):
     .. automethod:: pushpop
 
     """
-    def __init__(self, iterable = ()):
+
+    def __init__(self, iterable=()):
         """
         :param iterable: iterable of initial items
         """
@@ -178,5 +182,3 @@ class HeapPriorityQueueThreadsafe(object):
         """
         with self.lock:
             return heapq.pushpop(self.heap, item)
-
-

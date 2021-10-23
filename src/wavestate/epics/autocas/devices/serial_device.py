@@ -25,7 +25,7 @@ class SerialUser(
         return []
 
     @cas9core.dproperty
-    def SB_parent(self, val = None):
+    def SB_parent(self, val=None):
         """
         Parent serial-block
         """
@@ -34,7 +34,7 @@ class SerialUser(
 
 class SerialDevice(SerialUser):
     @cas9core.dproperty
-    def serial(self, val = None):
+    def serial(self, val=None):
         if val is None:
             val = self.parent.serial
         return val
@@ -44,9 +44,9 @@ class SerialDevice(SerialUser):
         rb = cas9core.RelayBool(False)
         self.cas_host(
             rb,
-            'AUTOSET',
-            interaction = "setting",
-            urgentsave_s = 10,
+            "AUTOSET",
+            interaction="setting",
+            urgentsave_s=10,
         )
         return rb
 
@@ -61,18 +61,19 @@ class SerialDevice(SerialUser):
                     RB()
                 self.reactor.send_task(self.serial.run)
                 return
+
         self.serial.rb_connected.register(
-            callback = connect_cb,
+            callback=connect_cb,
         )
         return
 
-    @cas9core.dproperty_ctree(default = None)
+    @cas9core.dproperty_ctree(default=None)
     def device_SN(self, val):
         """
         Serial number of the device to check via *IDN? call.
         ID command Must succeed to attempt future commands and SN must match if specified
         """
-        if val == '':
+        if val == "":
             val = None
         return val
 
@@ -96,21 +97,26 @@ class SerialDevice(SerialUser):
 
         block = self.serial.block_add(
             action_sequence,
-            ordering = 0,
-            name = 'root',
-            prefix = self.prefix,
+            ordering=0,
+            name="root",
+            prefix=self.prefix,
         )
         return block
 
     @cas9core.dproperty
     def SB_SN_id_check(self):
         def action_sequence(cmd):
-            cmd.writeline('*IDN?')
+            cmd.writeline("*IDN?")
             val = cmd.readline()
             SN_found = val.strip()
             if self.device_SN is not None:
                 if SN_found != self.device_SN:
-                    print("Warning, device expected {0} but device found: {1}".format(self.device_SN, SN_found), file = sys.stderr)
+                    print(
+                        "Warning, device expected {0} but device found: {1}".format(
+                            self.device_SN, SN_found
+                        ),
+                        file=sys.stderr,
+                    )
                     raise SerialError("Wrong Device")
             try:
                 with self.serial.error.clear_pending():
@@ -120,10 +126,9 @@ class SerialDevice(SerialUser):
 
         block = self.serial.block_add(
             action_sequence,
-            ordering = 0,
-            parent = self.block_root,
-            name = 'id_check',
-            prefix = self.prefix,
+            ordering=0,
+            parent=self.block_root,
+            name="id_check",
+            prefix=self.prefix,
         )
         return block
-

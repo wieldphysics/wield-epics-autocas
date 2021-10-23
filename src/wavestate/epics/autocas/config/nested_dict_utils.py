@@ -5,7 +5,7 @@ from wavestate import declarative
 import collections
 
 
-def remap_recursive(d, remap = None):
+def remap_recursive(d, remap=None):
     if remap is not None:
         d = remap(d)
     if isinstance(d, collections.Mapping):
@@ -37,6 +37,7 @@ def dict_diff(d1, d2):
     d2_diff = d2_diff.mydict.get(None, None)
     return d_unused.mydict, d1_diff, d2_diff
 
+
 def _dict_diff(d1, d2, d_unused, d1_diff, d2_diff, k_prev):
     """
     determines d1 - d2 in the set-subtraction sense. Separates d_unused and d1_diff and d2_diff
@@ -50,7 +51,14 @@ def _dict_diff(d1, d2, d_unused, d1_diff, d2_diff, k_prev):
             if k not in d2:
                 d_unused[k] = v
             else:
-                _dict_diff(d1[k], d2[k], d_unused[k], d1_diff[k_prev], d2_diff[k_prev], k_prev = k)
+                _dict_diff(
+                    d1[k],
+                    d2[k],
+                    d_unused[k],
+                    d1_diff[k_prev],
+                    d2_diff[k_prev],
+                    k_prev=k,
+                )
     else:
         if d1 != d2:
             d1_diff[k_prev] = d1
@@ -81,12 +89,9 @@ def dict_about_merge(d1, d2):
     Merges d2 into d1, adds "about" keys which are missing from d2. Intended to merge the CAS9CmdLine._ctree_about with the root.ctree.about dictionary
     """
     if not isinstance(d2, collections.Mapping):
-        #TODO, avoid this cast
-        #have to cast to str to avoid unicode typing that annoys YAML
-        d1[str('about')] = d2
+        # TODO, avoid this cast
+        # have to cast to str to avoid unicode typing that annoys YAML
+        d1[str("about")] = d2
     else:
         for k, v in d2.items():
             dict_about_merge(d1[k], v)
-
-
-

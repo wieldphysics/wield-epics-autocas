@@ -8,18 +8,19 @@ from wavestate import declarative
 
 from test_external_int import RVConnects
 
+
 class Testers(cas9epics.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVConnects(
-            name = 'TEST',
-            subprefix = None,
-            parent = self,
-            remote = True,
+            name="TEST",
+            subprefix=None,
+            parent=self,
+            remote=True,
         )
+
 
 if __name__ == "__main__":
     Testers.cmdline(
-        module_name_base = 'RVExternal',
+        module_name_base="RVExternal",
     )
-

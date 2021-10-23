@@ -12,31 +12,30 @@ class IFR2023Controller(cas9epics.CAS9Module):
     @cas9epics.dproperty
     def serial(self):
         return serial.VXI11Connection(
-            name = 'VXI11',
-            parent = self,
-            _debug_echo = True,
-            timeout_s = 1,
+            name="VXI11",
+            parent=self,
+            _debug_echo=True,
+            timeout_s=1,
         )
 
     @cas9epics.dproperty
     def CLFDEMOD(self):
         return TEK_AFG3000(
-            serial = self.serial,
-            name   = 'CLFDEMOD',
-            parent = self,
+            serial=self.serial,
+            name="CLFDEMOD",
+            parent=self,
         )
 
     @cas9epics.dproperty
     def cmd2023(self):
         return serial.SerialCommandResponse(
-            serial = self.serial,
-            name   = 'CLFDEMOD_CMD',
-            parent = self,
+            serial=self.serial,
+            name="CLFDEMOD_CMD",
+            parent=self,
         )
-
 
 
 if __name__ == "__main__":
     IFR2023Controller.cmdline(
-        module_name_base = 'LOELF',
+        module_name_base="LOELF",
     )
