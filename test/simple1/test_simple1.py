@@ -1,11 +1,11 @@
 """
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
-from __future__ import division, print_function, unicode_literals
+
 from wavestate.epics import autocas
 
-rv_test = cas9epics.RelayValueFloat(0)
-rv_test_hi = cas9epics.RelayValueFloat(10)
+rv_test = autocas.RelayValueFloat(0)
+rv_test_hi = autocas.RelayValueFloat(10)
 
 db = {
     "X1:TEST-VAL": {
@@ -31,9 +31,9 @@ def cb(value):
 rv_test.register(callback=cb)
 
 if __name__ == "__main__":
-    reactor = cas9epics.Reactor()
+    reactor = autocas.Reactor()
 
-    with cas9epics.CADriverServer(db, reactor):
+    with autocas.CADriverServer(db, reactor):
         rv_test.value = 10
         rv_test_hi.value = 100
         while True:

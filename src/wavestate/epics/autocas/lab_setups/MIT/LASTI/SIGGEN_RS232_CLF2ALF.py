@@ -15,8 +15,8 @@ from wavestate.epics.autocas import serial
 from wavestate.epics.autocas.devices.IFR2026 import IFR2026
 
 
-class IFR2026Controller(cas9epics.CAS9Module):
-    @cas9epics.dproperty
+class IFR2026Controller(autocas.CAS9Module):
+    @autocas.dproperty
     def serial(self):
         return serial.USBDeviceRS232(
             name="SERIAL",
@@ -24,7 +24,7 @@ class IFR2026Controller(cas9epics.CAS9Module):
             _debug_echo=True,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def CLF2ALF(self):
         return IFR2026(
             serial=self.serial,
@@ -32,7 +32,7 @@ class IFR2026Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def CLF2ALF_CMD(self):
         return serial.SerialCommandResponse(
             serial=self.serial,

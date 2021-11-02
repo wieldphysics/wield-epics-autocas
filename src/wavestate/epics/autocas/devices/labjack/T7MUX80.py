@@ -13,7 +13,7 @@ from labjack import ljm
 class ljT7MUX80Driver(Driver):
     ljIPNumber = '18.120.0.66'
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def AIN_PN_pairs(self):
         pChan = range(48,56)+range(64,72)+range(80,88)+range(96,104)+range(112,120) #Positive AIN LabJack Address
         nChan = range(56,64)+range(72,80)+range(88,96)+range(104,112)+range(120,128) #Negative AIN LabJack Address

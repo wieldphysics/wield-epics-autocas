@@ -8,10 +8,10 @@ from wavestate.epics.autocas.utilities import pprint
 from wavestate.epics.autocas.subservices.restart_on_edit import RestartOnEdit
 
 
-class RVTester(cas9epics.CASUser):
+class RVTester(autocas.CASUser):
     @declarative.dproperty
     def rv_test(self):
-        rv = cas9epics.RelayValueFloat(0)
+        rv = autocas.RelayValueFloat(0)
         self.cas_host(
             rv,
             "VAL",
@@ -35,7 +35,7 @@ class RVTester(cas9epics.CASUser):
 
     @declarative.dproperty
     def rv_test_hi(self):
-        return cas9epics.RelayValueFloat(10)
+        return autocas.RelayValueFloat(10)
 
     task_period_s = 1 / 8.0
 
@@ -53,7 +53,7 @@ class RVTester(cas9epics.CASUser):
         return task
 
 
-class Testers(cas9epics.CAS9Module):
+class Testers(autocas.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVTester(

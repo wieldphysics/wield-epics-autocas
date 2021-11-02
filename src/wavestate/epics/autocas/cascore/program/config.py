@@ -10,7 +10,7 @@
 
 
 from wavestate import declarative
-from wavestate import declarative.argparse as declarg
+from wavestate.declarative import argparse as declarg
 
 from ...config import nested_dict_utils
 from ...config import pytoml

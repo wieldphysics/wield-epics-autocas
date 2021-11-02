@@ -8,8 +8,6 @@
 """
 """
 
-
-from wavestate import declarative
 import numpy as np
 import pcaspy
 import pcaspy.tools
@@ -21,9 +19,6 @@ from ..utilities.pprint import pprint
 class CADriverServer(pcaspy.Driver):
     def _put_cb_generator_immediate(self, channel):
         def put_cb(value):
-            # a python2 safety as unicode objects crash the CAS
-            if (str is not unicode) and isinstance(value, unicode):
-                value = str(value)
             self.setParam(channel, value)
             self.updatePVs()
 
@@ -31,9 +26,6 @@ class CADriverServer(pcaspy.Driver):
 
     def _put_cb_generator_deferred(self, channel):
         def put_cb(value):
-            # a python2 safety as unicode objects crash the CAS
-            if (str is not unicode) and isinstance(value, unicode):
-                value = str(value)
             self.setParam(channel, value)
             self.updatePVs()
             pass
@@ -206,22 +198,14 @@ class CADriverServer(pcaspy.Driver):
                 with self.reactor.task_lock:
                     rv.put_valid_exclude_cb(E.preferred, key=self)
 
-            # a python2 safety as unicode objects crash the CAS
-            if ctype_strlike and str is not unicode:
-                self.setParam(channel, str(value))
-            else:
-                self.setParam(channel, value)
+            self.setParam(channel, value)
 
             self.updatePVs()
             return False
         except relay_values.RelayValueRejected:
             return False
         else:
-            # a python2 safety as unicode objects crash the CAS
-            if ctype_strlike and str is not unicode:
-                self.setParam(channel, str(value))
-            else:
-                self.setParam(channel, value)
+            self.setParam(channel, value)
             # self.updatePVs()
             return True
 
@@ -294,22 +278,14 @@ class CADriverServer(pcaspy.Driver):
                 key=self,
             )
 
-            # a python2 safety as unicode objects crash the CAS
-            if ctype_strlike and str is not unicode:
-                self.setParam(channel, str(value))
-            else:
-                self.setParam(channel, value)
+            self.setParam(channel, value)
 
             self.updatePVs()
             return False
         except relay_values.RelayValueRejected:
             return False
         else:
-            # a python2 safety as unicode objects crash the CAS
-            if ctype_strlike and str is not unicode:
-                self.setParam(channel, str(value))
-            else:
-                self.setParam(channel, value)
+            self.setParam(channel, value)
             # self.updatePVs()
             return True
 

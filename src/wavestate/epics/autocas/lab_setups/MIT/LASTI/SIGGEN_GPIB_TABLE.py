@@ -18,8 +18,8 @@ from wavestate.epics.autocas.devices.IFR2023 import IFR2023
 from wavestate.epics.autocas.devices.SRS_SG380 import SRS_SG380
 
 
-class IFR2023Controller(cas9epics.CAS9Module):
-    @cas9epics.dproperty
+class IFR2023Controller(autocas.CAS9Module):
+    @autocas.dproperty
     def gpib(self):
         return serial.USBPrologixGPIB(
             name="GPIB",
@@ -27,7 +27,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             _debug_echo=True,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def gpibLOELF(self):
         return self.gpib.address_gpib_create(
             GPIB_addr="0",
@@ -35,7 +35,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             name="GPIB_LOELF",
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def siggen2023(self):
         return IFR2023(
             serial=self.gpibLOELF,
@@ -43,7 +43,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def cmd2023(self):
         return serial.SerialCommandResponse(
             serial=self.gpibLOELF,
@@ -52,7 +52,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
         )
 
     ##Not functioning well over GPIB, so running separately over RS232
-    # @cas9epics.dproperty
+    # @autocas.dproperty
     # def gpibCLF2ALF(self):
     #    return self.gpib.address_gpib_create(
     #        GPIB_addr = '30',
@@ -60,7 +60,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
     #        name = 'GPIB_CLF2ALF',
     #    )
     #
-    # @cas9epics.dproperty
+    # @autocas.dproperty
     # def CLF2ALF_IFR2026(self):
     #    return IFR2026(
     #        serial = self.gpibCLF2ALF,
@@ -68,7 +68,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
     #        parent = self,
     #    )
 
-    # @cas9epics.dproperty
+    # @autocas.dproperty
     # def CLF2ALF_cmd(self):
     #    return serial.SerialCommandResponse(
     #        serial = self.gpibCLF2ALF,
@@ -76,7 +76,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
     #        parent = self,
     #    )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def gpibFCG(self):
         return self.gpib.address_gpib_create(
             GPIB_addr="3",
@@ -84,7 +84,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             name="GPIB_FCG",
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def FCG_SG382(self):
         return SRS_SG380(
             serial=self.gpibFCG,
@@ -92,7 +92,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def FCG_cmd(self):
         return serial.SerialCommandResponse(
             serial=self.gpibFCG,
@@ -100,7 +100,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def gpibCLF1(self):
         return self.gpib.address_gpib_create(
             GPIB_addr="2",
@@ -108,7 +108,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             name="GPIB_CLF1",
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def CLF1_SG382(self):
         return SRS_SG380(
             serial=self.gpibCLF1,
@@ -116,7 +116,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def CLF1_cmd(self):
         return serial.SerialCommandResponse(
             serial=self.gpibCLF1,

@@ -28,7 +28,7 @@ class SHGLJU3Relay(LJRelay):
 
         return u3.U3()
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def DAC_io(self):
         return [
             LJU3DACRelay(
@@ -43,7 +43,7 @@ class SHGLJU3Relay(LJRelay):
             ),
         ]
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def ADC_io(self):
         return [
             LJU3ADCRelay(
@@ -81,7 +81,7 @@ class SHGLJU3Relay(LJRelay):
             ),
         ]
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def DOUT_io(self):
         return [
             LJU3DOUTRelay(
@@ -96,7 +96,7 @@ class SHGLJU3Relay(LJRelay):
             ),
         ]
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def DIN_io(self):
         return [
             LJU3DINRelay(

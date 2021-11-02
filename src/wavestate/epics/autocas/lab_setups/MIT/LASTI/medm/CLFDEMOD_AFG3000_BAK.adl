@@ -1,6 +1,6 @@
 
 file {
-	name="/opt/pythonM1-dev/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/CLFDEMOD_AFG3000.adl"
+	name="/opt/pythonM1-dev/autocas/autocas/lab_setups/MIT/LASTI/medm/CLFDEMOD_AFG3000.adl"
 	version=030109
 }
 display {

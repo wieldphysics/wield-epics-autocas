@@ -1,9 +1,4 @@
-
 import io, datetime, math, sys
-
-if sys.version_info[0] == 3:
-    long = int
-    unicode = str
 
 
 def dumps(obj, sort_keys=False):
@@ -59,14 +54,14 @@ def _total_seconds(td):
 def _format_value(v):
     if isinstance(v, bool):
         return "true" if v else "false"
-    if isinstance(v, int) or isinstance(v, long):
-        return unicode(v)
+    if isinstance(v, int) or isinstance(v, int):
+        return str(v)
     if isinstance(v, float):
         if math.isnan(v) or math.isinf(v):
             raise ValueError("{0} is not a valid TOML value".format(v))
         else:
             return repr(v)
-    elif isinstance(v, unicode) or isinstance(v, bytes):
+    elif isinstance(v, str) or isinstance(v, bytes):
         return _escape_string(v)
     elif isinstance(v, datetime.datetime):
         offs = v.utcoffset()

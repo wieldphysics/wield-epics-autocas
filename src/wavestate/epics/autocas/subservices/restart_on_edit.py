@@ -76,7 +76,7 @@ class RestartOnEdit(cascore.CASUser):
         """
         assert isinstance(lval, (list, tuple))
         for val in lval:
-            assert isinstance(val, (str, unicode))
+            assert isinstance(val, str)
         return lval
 
     @cascore.dproperty_ctree(default=lambda self: [])
@@ -86,7 +86,7 @@ class RestartOnEdit(cascore.CASUser):
         """
         assert isinstance(lval, (list, tuple))
         for val in lval:
-            assert isinstance(val, (str, unicode))
+            assert isinstance(val, str)
         return lval
 
 

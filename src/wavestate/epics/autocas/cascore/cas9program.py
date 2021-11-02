@@ -11,9 +11,10 @@
 
 import os
 import sys
-from wavestate import declarative
-from wavestate import declarative.argparse as declarg
 import socket
+
+from wavestate import declarative
+from wavestate.declarative import argparse as declarg
 
 from ..config import pytoml
 

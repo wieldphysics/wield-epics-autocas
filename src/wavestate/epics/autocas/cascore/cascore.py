@@ -7,10 +7,7 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-
-
 from wavestate import declarative
-from declarative import bunch
 
 from . import reactor
 from . import pcaspy_backend
@@ -184,7 +181,7 @@ class CASUser(declarative.OverridableObject):
         elif val is None:
             val = ()
         else:
-            if isinstance(val, (str, unicode)):
+            if isinstance(val, str):
                 val = (val,)
             else:
                 val = tuple(val)
@@ -208,7 +205,7 @@ class CASUser(declarative.OverridableObject):
 
         assert isinstance(val, (list, tuple))
         for p in val:
-            assert isinstance(p, (str, unicode))
+            assert isinstance(p, str)
             assert "." not in p
         val = tuple(val)
         return val

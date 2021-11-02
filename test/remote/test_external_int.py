@@ -1,18 +1,18 @@
 """
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
-from __future__ import division, print_function, unicode_literals
+
 import sys
 from wavestate.epics import autocas
 from wavestate import declarative
 
 
-class RVConnects(cas9epics.CASUser):
+class RVConnects(autocas.CASUser):
     remote = False
 
     @declarative.dproperty
     def rv_fl(self):
-        rv = cas9epics.RelayValueFloat(0)
+        rv = autocas.RelayValueFloat(0)
         self.cas_host(
             rv,
             "FL",
@@ -35,7 +35,7 @@ class RVConnects(cas9epics.CASUser):
 
     # @declarative.dproperty
     # def rv_int(self):
-    #    rv = cas9epics.RelayValueInt(0)
+    #    rv = autocas.RelayValueInt(0)
     #    self.cas_host(
     #        rv, 'INT',
     #        remote = self.remote,
@@ -50,7 +50,7 @@ class RVConnects(cas9epics.CASUser):
 
     # @declarative.dproperty
     # def rv_str(self):
-    #    rv = cas9epics.RelayValueString("test")
+    #    rv = autocas.RelayValueString("test")
     #    self.cas_host(
     #        rv, 'STR',
     #        remote = self.remote,
@@ -64,7 +64,7 @@ class RVConnects(cas9epics.CASUser):
     #    return rv
 
 
-class Testers(cas9epics.CAS9Module):
+class Testers(autocas.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVConnects(

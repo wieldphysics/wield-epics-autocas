@@ -15,8 +15,8 @@ from wavestate.epics.autocas import serial
 from wavestate.epics.autocas.devices.TEK_AFG3000 import TEK_AFG3000
 
 
-class IFR2023Controller(cas9epics.CAS9Module):
-    @cas9epics.dproperty
+class IFR2023Controller(autocas.CAS9Module):
+    @autocas.dproperty
     def serial(self):
         return serial.VXI11Connection(
             name="VXI11",
@@ -25,7 +25,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             timeout_s=1,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def CLFDEMOD(self):
         return TEK_AFG3000(
             serial=self.serial,
@@ -33,7 +33,7 @@ class IFR2023Controller(cas9epics.CAS9Module):
             parent=self,
         )
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def cmd2023(self):
         return serial.SerialCommandResponse(
             serial=self.serial,

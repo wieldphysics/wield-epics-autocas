@@ -7,10 +7,10 @@ from wavestate.epics import autocas
 # from wavestate.epics.autocas.utilities import pprint
 
 
-class RVTester(cas9epics.CASUser):
-    @cas9epics.dproperty
+class RVTester(autocas.CASUser):
+    @autocas.dproperty
     def rv_test_float(self):
-        rv = cas9epics.RelayValueFloat(0)
+        rv = autocas.RelayValueFloat(0)
         self.cas_host(
             rv,
             "VAL",
@@ -25,9 +25,9 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback=cb)
         return rv
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_test_str(self):
-        rv = cas9epics.RelayValueString("hello")
+        rv = autocas.RelayValueString("hello")
         self.cas_host(
             rv,
             "STR",
@@ -41,9 +41,9 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback=cb)
         return rv
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_test_long_str(self):
-        rv = cas9epics.RelayValueLongString("hello")
+        rv = autocas.RelayValueLongString("hello")
         self.cas_host(
             rv,
             "STRL",
@@ -57,9 +57,9 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback=cb)
         return rv
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_test_bool(self):
-        rv = cas9epics.RelayBool(False)
+        rv = autocas.RelayBool(False)
         self.cas_host(
             rv,
             "BOOL",
@@ -73,9 +73,9 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback=cb)
         return rv
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_test_enum(self):
-        rv = cas9epics.RelayValueEnum("A", ["A", "B", "C"])
+        rv = autocas.RelayValueEnum("A", ["A", "B", "C"])
         self.cas_host(
             rv,
             "ENUM",
@@ -90,8 +90,8 @@ class RVTester(cas9epics.CASUser):
         return rv
 
 
-class Testers(cas9epics.CAS9Module):
-    @cas9epics.dproperty
+class Testers(autocas.CAS9Module):
+    @autocas.dproperty
     def save(self):
         return RVTester(
             name="SAVE",

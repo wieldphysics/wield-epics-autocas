@@ -20,7 +20,9 @@ def print(*args):
             if isinstance(a, np.array):
                 rep = a
             else:
-                rep = unicode(a, "utf-8")
+                # was a conversion check, may still be needed but call changed
+                # rep = unicode(a, "utf-8")
+                rep = a
         except TypeError:
             rep = repr(a)
         pargs.append(rep)

@@ -15,20 +15,20 @@ import socket
 from LabJackPython import LabJackException
 
 
-class LJRelay(cas9epics.OverridableObject):
+class LJRelay(autocas.OverridableObject):
     @staticmethod
     def construct_device():
         import u3
 
         return u3.U3()
 
-    @cas9epics.dproperty
-    def serial_number(self, val=cas9epics.NOARG):
-        if val is cas9epics.NOARG:
+    @autocas.dproperty
+    def serial_number(self, val=autocas.NOARG):
+        if val is autocas.NOARG:
             val = None
         return val
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def state_enable(self):
         rbool = self.ebridge.state_enable
         rbool.register(
@@ -52,24 +52,24 @@ class LJRelay(cas9epics.OverridableObject):
             return
 
     # @RELAY_EPICS.bool_add('LJ_CONN', binding_type = 'W')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def state_LJ_connected(self):
-        rbool = cas9epics.RelayBool(False)
+        rbool = autocas.RelayBool(False)
         return rbool
 
     # @RELAY_EPICS.float_value_add('SAMPLE_FREQ', precision = 2, value = 2, shadow = True)
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_sample_Hz(self):
-        rv = cas9epics.RelayValue(2, cas9epics.min_max_validator(0.01, 128))
+        rv = autocas.RelayValue(2, autocas.min_max_validator(0.01, 128))
         return rv
 
     # @RELAY_EPICS.float_value_add('SAMPLE_DIFF', precision = 5, binding_type = 'RO')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_sample_diff_t(self):
-        rv = cas9epics.RelayValue(0)
+        rv = autocas.RelayValue(0)
         return rv
 
-    @cas9epics.mproperty
+    @autocas.mproperty
     def IO_control_registry(self):
         return []
 
@@ -189,23 +189,23 @@ class LJRelay(cas9epics.OverridableObject):
             self.alerts.message_send_error("LJ socket timout: {0}".format(e))
             self._connect_close(self._connection_token)
 
-    @cas9epics.mproperty
+    @autocas.mproperty
     def IO_direct_registry(self):
         return []
 
-    @cas9epics.mproperty
+    @autocas.mproperty
     def IO_bits_registry(self):
         return []
 
-    @cas9epics.mproperty
+    @autocas.mproperty
     def IO_raw_registry(self):
         return []
 
 
-class LJIORelayBase(cas9epics.OverridableObject):
+class LJIORelayBase(autocas.OverridableObject):
     use_type = "callback"
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def _setup_io_registry(self):
         if self.use_type == "interface":
             self.parent.IO_direct_registry.append(self)
@@ -227,62 +227,62 @@ class LJIORelayBase(cas9epics.OverridableObject):
 
 class LJADCEBridge(LJIORelayBase):
     # @RELAY_EPICS.string_value_add('LABEL')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_label(self):
-        rv = cas9epics.RelayValue("")
+        rv = autocas.RelayValue("")
         return rv
 
     # @RELAY_EPICS.float_value_add('ADC', precision = 3, value = 0, burtRO = True, binding_type = 'RO')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_ADC(self):
-        rv = cas9epics.RelayValue(0)
+        rv = autocas.RelayValue(0)
         return rv
 
 
 class LJDACEBridge(LJIORelayBase):
     # @RELAY_EPICS.string_value_add('LABEL')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_label(self):
-        rv = cas9epics.RelayValue("")
+        rv = autocas.RelayValue("")
         return rv
 
     # @RELAY_EPICS.float_value_add('DAC', precision = 5, value = 0, shadow = True, binding_type = 'pull')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_DAC(self):
-        rv = cas9epics.RelayValue(0)
+        rv = autocas.RelayValue(0)
         return rv
 
 
 class LJDoutEBridge(LJIORelayBase):
 
     # @RELAY_EPICS.string_value_add('LABEL')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_label(self):
-        rv = cas9epics.RelayValue("")
+        rv = autocas.RelayValue("")
         return rv
 
     # @RELAY_EPICS.float_value_add('DAC', precision = 5, value = 0, shadow = True)
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_DAC(self):
-        rv = cas9epics.RelayValue(0)
+        rv = autocas.RelayValue(0)
         return rv
 
     # @RELAY_EPICS.bool_add('DOUT', buttons = True, binding_type = 'RW')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def state(self):
-        rbool = cas9epics.RelayBool(False)
+        rbool = autocas.RelayBool(False)
         return rbool
 
 
 class LJDinEBridge(LJIORelayBase):
     # @RELAY_EPICS.string_value_add('LABEL')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_label(self):
-        rv = cas9epics.RelayValue("")
+        rv = autocas.RelayValue("")
         return rv
 
     # @RELAY_EPICS.bool_add('DIN', binding_type = 'W')
-    @cas9epics.dproperty
+    @autocas.dproperty
     def state(self):
-        rbool = cas9epics.RelayBool(False)
+        rbool = autocas.RelayBool(False)
         return rbool

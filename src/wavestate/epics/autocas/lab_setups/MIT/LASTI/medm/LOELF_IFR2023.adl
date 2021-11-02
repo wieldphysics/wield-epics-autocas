@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/medm/LOELF_IFR2023.adl"
+	name="/home/mcculler/local/home_sync/projects/autocas/autocas/lab_setups/MIT/LASTI/medm/LOELF_IFR2023.adl"
 	version=030109
 }
 display {

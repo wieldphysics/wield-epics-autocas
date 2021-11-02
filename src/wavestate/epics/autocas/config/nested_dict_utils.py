@@ -7,8 +7,7 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-
-from wavestate import declarative
+from wavestate.bunch.deep_bunch import DeepBunch
 import collections
 
 
@@ -27,7 +26,7 @@ def remap_recursive(d, remap=None):
         return d2
     elif isinstance(d, (int, float)):
         return d
-    elif isinstance(d, (str, unicode)):
+    elif isinstance(d, str):
         return str(d)
     elif d is None:
         return d
@@ -96,9 +95,7 @@ def dict_about_merge(d1, d2):
     Merges d2 into d1, adds "about" keys which are missing from d2. Intended to merge the CAS9CmdLine._ctree_about with the root.ctree.about dictionary
     """
     if not isinstance(d2, collections.Mapping):
-        # TODO, avoid this cast
-        # have to cast to str to avoid unicode typing that annoys YAML
-        d1[str("about")] = d2
+        d1["about"] = d2
     else:
         for k, v in d2.items():
             dict_about_merge(d1[k], v)

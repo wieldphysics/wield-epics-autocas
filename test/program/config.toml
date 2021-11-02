@@ -9,8 +9,8 @@ IFO = "M1"
 load_fname = "{modname}_last.snap"
 rollover_rate_s = 300
 zip_rollover_program = "None"
-#load_folder = "/home/mcculler/local/home_sync/projects/cas9epics/test/burting"
+#load_folder = "/home/mcculler/local/home_sync/projects/autocas/test/burting"
 save_rate_s = 60
-#save_folder = "/home/mcculler/local/home_sync/projects/cas9epics/test/burt"
+#save_folder = "/home/mcculler/local/home_sync/projects/autocas/test/burt"
 save_fname_template = "{modname}_burt_{year}{month}{day}_{hour}{minute}{second}.snap"
 

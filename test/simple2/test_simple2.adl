@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/YALL/cas9epics/test2.adl"
+	name="/home/mcculler/local/home_sync/projects/YALL/autocas/test2.adl"
 	version=030109
 }
 display {

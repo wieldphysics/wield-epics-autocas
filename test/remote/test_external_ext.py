@@ -1,7 +1,7 @@
 """
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
-from __future__ import division, print_function, unicode_literals
+
 import sys
 from wavestate.epics import autocas
 from wavestate import declarative
@@ -9,7 +9,7 @@ from wavestate import declarative
 from test_external_int import RVConnects
 
 
-class Testers(cas9epics.CAS9Module):
+class Testers(autocas.CAS9Module):
     @declarative.dproperty
     def test(self):
         return RVConnects(

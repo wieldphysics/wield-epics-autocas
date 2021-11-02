@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/projects/cas9epics/cas9epics/lab_setups/MIT/LASTI/SG_CHANNEL.adl"
+	name="/home/mcculler/projects/autocas/autocas/lab_setups/MIT/LASTI/SG_CHANNEL.adl"
 	version=030109
 }
 display {

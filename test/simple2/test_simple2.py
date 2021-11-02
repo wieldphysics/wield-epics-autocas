@@ -1,14 +1,14 @@
 """
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
-from __future__ import division, print_function, unicode_literals
+
 from wavestate.epics import autocas
 
 
-class RVTester(cas9epics.CASUser):
-    @cas9epics.dproperty
+class RVTester(autocas.CASUser):
+    @autocas.dproperty
     def rv_test(self):
-        rv = cas9epics.RelayValueFloat(0)
+        rv = autocas.RelayValueFloat(0)
         self.cas_host(
             rv,
             "VAL",
@@ -29,13 +29,13 @@ class RVTester(cas9epics.CASUser):
         rv.register(callback=cb)
         return rv
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def rv_test_hi(self):
-        return cas9epics.RelayValueFloat(10)
+        return autocas.RelayValueFloat(10)
 
     task_period_s = 1 / 8.0
 
-    @cas9epics.dproperty
+    @autocas.dproperty
     def my_action(self):
         def task():
             if self.rv_test.value >= 100:
@@ -50,7 +50,7 @@ class RVTester(cas9epics.CASUser):
 
 
 if __name__ == "__main__":
-    root = cas9epics.InstaCAS()
+    root = autocas.InstaCAS()
     test = RVTester(
         name="TEST",
         parent=root,

@@ -7,10 +7,10 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-from collections import namedtuple, Mapping
-from numbers import Number
-from wavestate import declarative.bunch
 import logging
+from collections import namedtuple, Mapping
+
+from wavestate.bunch.deep_bunch import DeepBunchSingleAssign, DeepBunch
 
 CTreeKey = namedtuple('CTreeKey', ['namespace', 'name'])
 
@@ -103,7 +103,7 @@ class ConfigTree(object):
             pass
 
         #normalize the classification if it is a single string
-        if isinstance(classification, (str, unicode)):
+        if isinstance(classification, str):
             classification = [classification]
 
         #add in annotation information if the keys are set
@@ -194,7 +194,7 @@ class ConfigTreeRoot(object):
         self,
         annotations = True,
     ):
-        self._dict = declarative.bunch.DeepBunchSingleAssign()
+        self._dict = DeepBunchSingleAssign()
         self.annotations = annotations
         if annotations:
             self._ctree = ConfigTree(_subdict = self._dict)
@@ -220,7 +220,7 @@ class ConfigTreeRoot(object):
     def _key_retrieve_recursive(self, key):
         ctree_key = key
         #storage dict
-        SD = declarative.bunch.DeepBunch()
+        SD = DeepBunch()
 
         #subCD is the inner configuration dict
         #subSD is the inner nested storage dict

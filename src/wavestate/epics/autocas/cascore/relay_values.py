@@ -11,7 +11,6 @@
 
 import numpy as np
 from wavestate import declarative
-from declarative.utilities.future_from_2 import unicode
 
 from declarative import (
     RelayValueRejected,
@@ -193,7 +192,7 @@ class RelayValueLongString(CASRelay, RelayValueDecl):
 
     def validator(self, value):
         try:
-            new_val = unicode(value)[: self.max_length]
+            new_val = str(value)[: self.max_length]
         except ValueError:
             raise RelayValueRejected()
         if new_val != value:
@@ -241,7 +240,7 @@ class RelayValueEnum(CASRelay, RelayValueDecl):
     """
 
     def validator(self, value):
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, str):
             try:
                 new_val = self.state2int[value]
                 return new_val

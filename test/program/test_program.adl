@@ -1,6 +1,6 @@
 
 file {
-	name="/home/mcculler/local/home_sync/projects/cas9epics/test/test_program.adl"
+	name="/home/mcculler/local/home_sync/projects/autocas/test/test_program.adl"
 	version=030109
 }
 display {
