@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 import io, datetime, math, sys
 
 if sys.version_info[0] == 3:

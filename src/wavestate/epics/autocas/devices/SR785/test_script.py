@@ -2,7 +2,7 @@
 """
 Script for EPICS communication with Newport 3040 Temperature controller
 """
-from __future__ import print_function, division
+
 import time
 from wavestate import declarative
 import numpy as np

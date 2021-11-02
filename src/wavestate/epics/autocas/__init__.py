@@ -1,6 +1,6 @@
 """
 """
-from __future__ import division, print_function, unicode_literals
+from ._version import version, __version__, version_info
 
 from .cas9core import (
     Reactor,
@@ -31,7 +31,8 @@ from .cas9core import (
 )
 
 
-from .version import (
-    version,
-    __version__,
-)
+# __all__ = [
+#     "version",
+#     "__version__",
+#     "version_info",
+# ]

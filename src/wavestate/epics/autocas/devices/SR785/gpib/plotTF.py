@@ -37,7 +37,7 @@ Tomoki Isogai (isogait@mit.edu)
 #
 # =============================================================================
 
-from __future__ import division
+
 import os
 import sys
 import re

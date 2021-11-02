@@ -2,7 +2,7 @@
 Name: EI1050
 Desc: A few simple classes to handle communication with the EI1050 probe
 """
-from __future__ import division, print_function
+
 from wavestate import declarative
 
 import u3

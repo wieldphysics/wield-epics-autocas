@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 # http://docs.python.org/distutils/
 # http://packages.python.org/distribute/
