@@ -1,18 +1,12 @@
-#! /usr/bin/env python
-#
-# TFCoherSR785.py [-f filename] [-i ip_address] [-a gpib_address] [{-s|--startfreq} start_freq]
-#                 [{-e|--stopfreq} stop_freq] [-n|--numpoints num_of_points] [--sweep Linear|Log]
-#                 [{-x|--excamp} excitation_amplitude] [{-c|--settlecycle} settle_cycle]
-#                 [{-t|--intcycle} integration_cycle] [--ic1 AC|DC ] [--ic2 AC|DC ]
-#                 [--ig1 GND|Float ] [--ig2 GND|Float ] [--armode UpOnly|Tracking ] [--title Title]
-#                 [--memo Memo] [-r|--skipreset] [--coherence]
-#
-#
-# Command a SR785 to execute a transfer function measurement # and save coherence data for tthe same measurement
-#
-# Yoichi Aso  Sep 22 2008
-# modified by Nancy Aggarwal, 10/2/2012
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
+"""
+"""
 import re
 import sys
 import optparse

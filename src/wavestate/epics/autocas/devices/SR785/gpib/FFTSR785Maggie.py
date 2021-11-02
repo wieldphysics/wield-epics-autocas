@@ -1,28 +1,12 @@
 #!/usr/bin/env python
-#
-# FFT/Noise measurement script for squeezing (SR785).
-# Modified from SUS electronics testing code (C.M. Reed),
-# originally by Yoichi Aso.
-# Tomoki Isogai 02/29/2012
-#
-# SPSR785.py [-f filename] [-i ip_address] [-a gpib_address] [{-b|--bandwidth} bandwidth]
-#                 [{-n|--numpoints} num_of_points] [{-v|--averaging} num_of_avg] [--avgmode avg_mode]
-#                 [{-d|--dualchannel}] [--ic1 ch1_input_coupling] [--ic2 ch2_input_coupling]
-#                 [--ig1 ch1_input_ground] [--ig2 ch2_input_ground] [{-w|--window} window_func]
-#                 [--title Title] [--memo Memo]
-#
-
-
-# Note:
-# - change should be made so that it catches an abort (e.g. keyboard
-#   interruption) and clear the memory in the device. As long as the device
-#   is reset everytime (no --skipreset option), this is not a problem.
-#   This should be implemented in higher end (maybe in netgpib)
-#
-# - Find a way to know when the auto-range finishes (IFC bit changes when
-#   auto-range starts, not ends). Currently it is hardcoded to sleep 5 seconds.
-#
-
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
+"""
+"""
 import re
 import sys
 import optparse

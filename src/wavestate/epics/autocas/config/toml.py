@@ -1,9 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
 """
 Python module which parses and emits TOML.
 
 Originally Python toml library by Will Pearson (uiri on github)
 https://github.com/uiri/toml version 0.9.3
-Released under the MIT license.
+Released under the no-notice MIT license.
 
 Modified the dumping class for CAS9Epics commenting and ordered output
 """

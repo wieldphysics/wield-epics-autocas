@@ -1,15 +1,12 @@
-#! /usr/bin/env python2
-#
-# SPSR785.py [-f filename] [-i ip_address] [-a gpib_address] [{-b|--bandwidth} bandwidth]
-#                 [{-n|--numpoints} num_of_points] [{-v|--averaging} num_of_avg] [--avgmode avg_mode]
-#                 [{-d|--dualchannel}] [--ic1 ch1_input_coupling] [--ic2 ch2_input_coupling]
-#                 [--ig1 ch1_input_ground] [--ig2 ch2_input_ground] [{-w|--window} window_func]
-#                 [--title Title] [--memo Memo]
-#
-# Command an SR785 to measure spectra.
-#
-# Yoichi Aso  Feb. 8 2009
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
+"""
+"""
 import re
 import sys
 import math

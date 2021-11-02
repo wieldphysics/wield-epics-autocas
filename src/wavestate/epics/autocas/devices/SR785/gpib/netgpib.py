@@ -1,7 +1,12 @@
-# modified by Tomoki Isogai, 6/25/2012
-# - changed to make IFC bit check
-# - deleted the refresh function and made an explicit connect funtion
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
+"""
+"""
 import sys
 import socket
 import time

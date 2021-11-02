@@ -1,18 +1,12 @@
-#! /usr/bin/env python
-#
-# TFCohereSR785_FFTGroup.py [-f filename] [-i ip_address] [-a gpib_address] [{-b|--bandwidth} bandwidth]
-#                 [{-n|--numpoints} num_of_points] [{-v|--averaging} num_of_avg] [--avgmode avg_mode]
-#                [--tsource trigger_source] [--level trigger_level] [--del1 channel1_delay] [--del2 channel2_delay] [--ic1 ch1_input_coupling] [--ic2 ch2_input_coupling]
-#                 [--ig1 ch1_input_ground] [--ig2 ch2_input_ground] [{-w|--window} window_func]
-#                 [--title Title] [--memo Memo]
-#
-#
-# Command a SR785 to execute a transfer function measurement (from the FFT group, with manual trigger) and save coherence data for the same measurement.
-#
-# Yoichi Aso  Sep 22 2008
-# modified by Nancy Aggarwal, 10/2/2012
-# Modified by Aaron Buikema, 24 June 2014
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: © 2021 Massachusetts Institute of Technology.
+# SPDX-FileCopyrightText: © 2021 Lee McCuller <mcculler@mit.edu>
+# NOTICE: authors should document their contributions in concisely in NOTICE
+# with details inline in source files, comments, and docstrings.
+"""
+"""
 import re
 import sys
 import optparse
