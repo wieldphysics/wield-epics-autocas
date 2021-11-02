@@ -10,23 +10,23 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-from .. import cas9core
+from .. import cascore
 from .serial_base import (
     SerialError,
     SerialTimeout,
 )
 
 
-class SerialCommandResponse(cas9core.CASUser):
+class SerialCommandResponse(cascore.CASUser):
     autocount_str = "?"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self, val):
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_cmd1(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "CMD1",
@@ -35,9 +35,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_cmd2(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "CMD2",
@@ -46,9 +46,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_cmd3(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "CMD3",
@@ -57,9 +57,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_response_lines(self):
-        rv = cas9core.RelayValueInt(-1)
+        rv = cascore.RelayValueInt(-1)
         self.cas_host(
             rv,
             "RESLINES",
@@ -68,9 +68,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_response1(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "RESP1",
@@ -79,9 +79,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_response2(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "RESP2",
@@ -90,9 +90,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_response3(self):
-        rv = cas9core.RelayValueLongString("")
+        rv = cascore.RelayValueLongString("")
         self.cas_host(
             rv,
             "RESP3",
@@ -101,9 +101,9 @@ class SerialCommandResponse(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_send(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "SEND",
@@ -123,7 +123,7 @@ class SerialCommandResponse(cas9core.CASUser):
         rb.register(callback=_serial_action)
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_cmd_response(self):
         def action_sequence(cmd):
             try:

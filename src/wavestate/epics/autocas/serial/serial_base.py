@@ -12,7 +12,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 
 from wavestate import declarative
 
-from .. import cas9core
+from .. import cascore
 from ..subservices import error
 
 # from . import utilities
@@ -27,11 +27,11 @@ class SerialTimeout(SerialError):
 
 
 class SerialConnection(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
     @declarative.dproperty
     def rb_connected(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="CONNECT",
@@ -41,7 +41,7 @@ class SerialConnection(
 
     @declarative.dproperty
     def rb_running(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="RUNNING",
@@ -187,7 +187,7 @@ class SerialConnection(
 
 
 class SerialSubBlock(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
     """
     Takes a serial device and defines a new serial device with its own parent block
@@ -199,7 +199,7 @@ class SerialSubBlock(
 
     @declarative.dproperty
     def rb_connected(self):
-        rb = cas9core.RelayBoolAll([self.serial.rb_connected])
+        rb = cascore.RelayBoolAll([self.serial.rb_connected])
         self.cas_host(
             rb,
             name="CONNECT",
@@ -209,7 +209,7 @@ class SerialSubBlock(
 
     @declarative.dproperty
     def rb_running(self):
-        rb = cas9core.RelayBoolAll([self.serial.rb_running])
+        rb = cascore.RelayBoolAll([self.serial.rb_running])
         self.cas_host(
             rb,
             name="RUNNING",

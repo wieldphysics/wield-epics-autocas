@@ -14,7 +14,7 @@ import vxi11
 import socket
 import errno
 
-from .. import cas9core
+from .. import cascore
 from .serial_base import (
     SerialConnection,
     SerialError,
@@ -25,7 +25,7 @@ from .serial_base import (
 
 
 class VXI11Connection(SerialConnection):
-    @cas9core.dproperty_ctree(default="192.168.1.253")
+    @cascore.dproperty_ctree(default="192.168.1.253")
     def device_address(self, val):
         """
         path to the serial block device, usually something in /dev/serial/by-id/. Can use
@@ -34,7 +34,7 @@ class VXI11Connection(SerialConnection):
         """
         return val
 
-    @cas9core.dproperty_ctree(default=0.2)
+    @cascore.dproperty_ctree(default=0.2)
     def timeout_s(self, val):
         """
         Timeout for connection status
@@ -43,7 +43,7 @@ class VXI11Connection(SerialConnection):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def poll_rate_s(self, val=1):
         """
         Poll rate to attempt connections to the serial device in seconds
@@ -52,9 +52,9 @@ class VXI11Connection(SerialConnection):
         assert val > 0
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_communicating(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="COMM",
@@ -92,7 +92,7 @@ class VXI11Connection(SerialConnection):
             self.queue_clear()
             self.rb_connected.assign(True)
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def _startup(self):
         self.reactor.enqueue_looping(self._connect_task, period_s=self.poll_rate_s)
 

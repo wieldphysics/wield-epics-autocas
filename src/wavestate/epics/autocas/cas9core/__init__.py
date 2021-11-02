@@ -11,7 +11,7 @@
 
 from .reactor import Reactor
 
-from .cas9core import (
+from .cascore import (
     CASUser,
     InstaCAS,
 )

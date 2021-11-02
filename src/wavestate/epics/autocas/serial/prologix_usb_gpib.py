@@ -17,7 +17,7 @@ from wavestate import declarative
 import fcntl
 import termios
 
-from .. import cas9core
+from .. import cascore
 from .serial_base import (
     SerialConnection,
     SerialTimeout,
@@ -28,7 +28,7 @@ from .gpib_base import GPIBAddressed
 
 
 class USBPrologixGPIB(SerialConnection):
-    @cas9core.dproperty_ctree(default="/dev/serial/by-id/ttyUSB")
+    @cascore.dproperty_ctree(default="/dev/serial/by-id/ttyUSB")
     def device_path(self, val):
         """
         path to the serial block device, usually something in /dev/serial/by-id/. Can use
@@ -43,7 +43,7 @@ class USBPrologixGPIB(SerialConnection):
             )
         return val
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def poll_rate_s(self, val=1):
         """
         Poll rate to attempt connections to the serial device in seconds
@@ -52,7 +52,7 @@ class USBPrologixGPIB(SerialConnection):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=True)
+    @cascore.dproperty_ctree(default=True)
     def exclusive_lock(self, val):
         """
         Set the device into exclusive lock mode to prevent external manipulation
@@ -60,9 +60,9 @@ class USBPrologixGPIB(SerialConnection):
         val = bool(val)
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_communicating(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="COMM",
@@ -111,7 +111,7 @@ class USBPrologixGPIB(SerialConnection):
             self.queue_clear()
             self.rb_connected.assign(True)
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def _startup(self):
         self.reactor.enqueue_looping(self._connect_task, period_s=self.poll_rate_s)
 

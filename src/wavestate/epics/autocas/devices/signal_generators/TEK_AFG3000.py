@@ -10,14 +10,14 @@
 
 
 import numpy as np
-from ... import cas9core
+from ... import cascore
 
 # from ..serial import SerialError
 from ..serial_device import SerialDevice, SerialUser
 
 
 class TEK_AFG3000(SerialDevice):
-    @cas9core.dproperty
+    @cascore.dproperty
     def chn1(self):
         chn = TEK_AFG3000_Chn(
             parent=self,
@@ -29,7 +29,7 @@ class TEK_AFG3000(SerialDevice):
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def chn2(self):
         chn = TEK_AFG3000_Chn(
             parent=self,
@@ -45,11 +45,11 @@ class TEK_AFG3000(SerialDevice):
 class TEK_AFG3000_Chn(SerialUser):
     "Must be hosted by a"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def device_channel_name(self, val):
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def FM(self):
         fm = TEK_AFG3000_FM(
             parent=self,
@@ -63,24 +63,24 @@ class TEK_AFG3000_Chn(SerialUser):
     #############################
     # RF FREQUENCY
     #############################
-    @cas9core.dproperty_ctree(default=10e3)
+    @cascore.dproperty_ctree(default=10e3)
     def frequency_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=1.4e9)
+    @cascore.dproperty_ctree(default=1.4e9)
     def frequency_limit_high(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_set(self):
         default = self.ctree.get_configured(
             "frequency_set",
             default=100e6,
         )
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.frequency_limit_low,
             high=self.frequency_limit_high,
@@ -96,7 +96,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_set(self):
         def action_sequence(cmd):
             cmd.writeline(
@@ -120,14 +120,14 @@ class TEK_AFG3000_Chn(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_RB(self):
         default = self.ctree.get_configured(
             "frequency_RB",
             default=-1,
             about="frequency readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "FREQ_RB",
@@ -136,7 +136,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_RB(self):
         def action_sequence(cmd):
             cmd.writeline(
@@ -160,21 +160,21 @@ class TEK_AFG3000_Chn(SerialUser):
     #############################
     # RF PHASE
     #############################
-    @cas9core.dproperty_ctree(default=-180)
+    @cascore.dproperty_ctree(default=-180)
     def phase_limit_low(self, val):
         assert val >= -180
         return val
 
-    @cas9core.dproperty_ctree(default=180)
+    @cascore.dproperty_ctree(default=180)
     def phase_limit_high(self, val):
         assert val <= 360
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_phase_set(self):
         default = self.ctree.get_configured("phase_set", default=0)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.phase_limit_low,
             high=self.phase_limit_high,
@@ -189,7 +189,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_phase_set(self):
         def action_sequence(cmd):
             cmd.writeline(
@@ -213,14 +213,14 @@ class TEK_AFG3000_Chn(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_phase_RB(self):
         default = self.ctree.get_configured(
             "phase_RB",
             default=-1,
             about="phase readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "PHASE_RB",
@@ -229,7 +229,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_phase_RB(self):
         def action_sequence(cmd):
             cmd.writeline(
@@ -254,7 +254,7 @@ class TEK_AFG3000_Chn(SerialUser):
     ## RF LEVEL
     ##############################
 
-    @cas9core.dproperty_ctree(default=-35)
+    @cascore.dproperty_ctree(default=-35)
     def level_dbm_limit_low(self, val):
         """
         low limit of RF Output level in dbm
@@ -262,7 +262,7 @@ class TEK_AFG3000_Chn(SerialUser):
         assert val >= -35
         return val
 
-    @cas9core.dproperty_ctree(default=-10)
+    @cascore.dproperty_ctree(default=-10)
     def level_dbm_limit_high(self, val):
         """
         high limit of RF Output level in dbm (This can damage equipment to be too high! Be conservative here)
@@ -270,13 +270,13 @@ class TEK_AFG3000_Chn(SerialUser):
         assert val <= 20
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_set(self):
         default = self.ctree.get_configured(
             "level_dbm_set", default=-35, about="default RF level"
         )
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.level_dbm_limit_low,
             high=self.level_dbm_limit_high,
@@ -292,7 +292,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_set(self):
         def action_sequence(cmd):
             level_dbm = self.rv_level_dbm_set.value
@@ -319,14 +319,14 @@ class TEK_AFG3000_Chn(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_RB(self):
         default = self.ctree.get_configured(
             "level_dbm_RB",
             default=-1,
             about="level_dbm readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "level_RB",
@@ -335,7 +335,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_RB(self):
         def action_sequence(cmd):
             cmd.writeline("SOURCE{0}:VOLTage:UNIT DBM".format(self.device_channel_name))
@@ -361,13 +361,13 @@ class TEK_AFG3000_Chn(SerialUser):
     ##  RF Output ON/OFF
     ######################################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_set(self):
         default = self.ctree.get_configured(
             "output_set", default=False, about="default for activating RF output"
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -377,7 +377,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_output_set(self):
         def action_sequence(cmd):
             if self.rb_output_set:
@@ -398,14 +398,14 @@ class TEK_AFG3000_Chn(SerialUser):
         self.rb_output_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_RB(self):
         default = self.ctree.get_configured(
             "output_RB",
             default=True,
             about="output status readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
         self.cas_host(
             rv,
             "output_RB",
@@ -413,7 +413,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_output_RB(self):
         def action_sequence(cmd):
             cmd.writeline("OUTPUT{0}:STATe?".format(self.device_channel_name))
@@ -435,9 +435,9 @@ class TEK_AFG3000_Chn(SerialUser):
     ## Modulation type
     ################################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_type_set(self):
-        rv = cas9core.RelayValueEnum(0, ["OFF", "AM", "FM", "PM"])
+        rv = cascore.RelayValueEnum(0, ["OFF", "AM", "FM", "PM"])
         self.cas_host(
             rv,
             "MOD_TYPE",
@@ -445,7 +445,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_type_set(self):
         def action_sequence(cmd):
             if self.rv_mod_type_set.value_str == "OFF":
@@ -473,9 +473,9 @@ class TEK_AFG3000_Chn(SerialUser):
         self.rv_mod_type_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_type_RB(self):
-        rv = cas9core.RelayValueEnum(0, ["OFF", "AM", "FM", "PM"])
+        rv = cascore.RelayValueEnum(0, ["OFF", "AM", "FM", "PM"])
         self.cas_host(
             rv,
             "MOD_TYPE_RB",
@@ -483,7 +483,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_type_RB(self):
         def action_sequence(cmd):
             type = 0
@@ -510,9 +510,9 @@ class TEK_AFG3000_Chn(SerialUser):
     ######################################
     ##  MODULATION SOURCE (internal/external)
     ######################################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_source_set(self):
-        rv = cas9core.RelayValueEnum(0, ["INT", "EXT"])
+        rv = cascore.RelayValueEnum(0, ["INT", "EXT"])
         self.cas_host(
             rv,
             "MOD_SOURCE",
@@ -520,7 +520,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_source_set(self):
         def action_sequence(cmd):
             if self.rv_mod_type_set.value_str != "OFF":
@@ -545,9 +545,9 @@ class TEK_AFG3000_Chn(SerialUser):
         self.rv_mod_source_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_source_RB(self):
-        rv = cas9core.RelayValueEnum(0, ["INT", "EXT"])
+        rv = cascore.RelayValueEnum(0, ["INT", "EXT"])
         self.cas_host(
             rv,
             "mod_source_RB",
@@ -555,7 +555,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_source_RB(self):
         def action_sequence(cmd):
             if self.rv_mod_type_set.value_str != "OFF":
@@ -584,9 +584,9 @@ class TEK_AFG3000_Chn(SerialUser):
     ## Modulation mode (if internal)
     ################################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_func_set(self):
-        rv = cas9core.RelayValueEnum(0, ["SIN", "SQU", "TRI", "RAMP"])
+        rv = cascore.RelayValueEnum(0, ["SIN", "SQU", "TRI", "RAMP"])
         self.cas_host(
             rv,
             "MOD_FUNC",
@@ -594,7 +594,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_func_set(self):
         def action_sequence(cmd):
             if self.rv_mod_type_set.value_str != "OFF":
@@ -618,9 +618,9 @@ class TEK_AFG3000_Chn(SerialUser):
         self.rv_mod_func_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_func_RB(self):
-        rv = cas9core.RelayValueEnum(0, ["SIN", "SQU", "TRI", "RAMP"])
+        rv = cascore.RelayValueEnum(0, ["SIN", "SQU", "TRI", "RAMP"])
         self.cas_host(
             rv,
             "MOD_FUNC_RB",
@@ -628,7 +628,7 @@ class TEK_AFG3000_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_func_RB(self):
         def action_sequence(cmd):
             if self.rv_mod_type_set.value_str != "OFF":
@@ -658,12 +658,12 @@ class TEK_AFG3000_FM(SerialUser):
     Must be hosted by a TEK_AFG3000Channel
     """
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def FM_fdev_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=100e3)
+    @cascore.dproperty_ctree(default=100e3)
     def FM_fdev_limit_high(self, val):
         assert val > 0
         return val
@@ -671,11 +671,11 @@ class TEK_AFG3000_FM(SerialUser):
     ##############################
     ## RF FM_FDEV
     ##############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_fdev_set(self):
         default = self.ctree.get_configured("FM_fdev_set", default=10e3)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.FM_fdev_limit_low,
             high=self.FM_fdev_limit_high,
@@ -691,7 +691,7 @@ class TEK_AFG3000_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_fdev_set(self):
         def action_sequence(cmd):
             cmd.writeline(
@@ -713,14 +713,14 @@ class TEK_AFG3000_FM(SerialUser):
         self.rv_FM_fdev_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_fdev_RB(self):
         default = self.ctree.get_configured(
             "fdev_RB",
             default=-1,
             about="FM fdev readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "FDEV_RB",
@@ -729,7 +729,7 @@ class TEK_AFG3000_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_fdev_RB(self):
         def action_sequence(cmd):
             cmd.writeline(

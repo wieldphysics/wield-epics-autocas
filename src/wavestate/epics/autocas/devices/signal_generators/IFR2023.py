@@ -9,13 +9,13 @@
 """
 
 
-from ... import cas9core
+from ... import cascore
 from . import IFRSigGenCommon
 from ..serial_device import SerialDevice
 
 
 class IFR2023(SerialDevice):
-    @cas9core.dproperty
+    @cascore.dproperty
     def chn(self):
         chn = IFRSigGenCommon.IFRSigGenChannel(
             parent=self,
@@ -26,7 +26,7 @@ class IFR2023(SerialDevice):
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    # @cas9core.dproperty
+    # @cascore.dproperty
     # def lockout_soft(self):
     #    """
     #    Sends soft (front panel) lockout signal when using rs232.

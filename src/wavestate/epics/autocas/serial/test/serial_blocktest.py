@@ -10,18 +10,18 @@
 
 
 import sys
-from .. import cas9core
+from .. import cascore
 from ..serial import SerialError
 
 
 class IFR2026(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self, val):
         return val
 
-    @cas9core.dproperty_ctree(default=None)
+    @cascore.dproperty_ctree(default=None)
     def device_SN(self, val):
         """
         Serial number of the device to check via *IDN? call.
@@ -31,7 +31,7 @@ class IFR2026(
             val = None
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SN_id_check(self):
         def action_sequence(cmd):
             print("START BLOCK 2026")
@@ -61,7 +61,7 @@ class IFR2026(
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def chnA(self):
         return IFR2026Channel(
             parent=self,
@@ -70,7 +70,7 @@ class IFR2026(
             prefix="CLF2",
         )
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def chnB(self):
         return IFR2026Channel(
             parent=self,
@@ -81,19 +81,19 @@ class IFR2026(
 
 
 class IFR2026Channel(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
     "Must be hosted by a IFR2026"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self):
         return self.parent.serial
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def channel_name(self, val):
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial_set_chn(self):
         def action_sequence(cmd):
             # cmd.writeline('*IDN?')
@@ -114,10 +114,10 @@ class IFR2026Channel(
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rf_frequency_set(self):
         default = self.ctree.setdefault("frequency_set", -1)
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
 
         def cb(value):
             self.serial_freq_set()
@@ -134,7 +134,7 @@ class IFR2026Channel(
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial_freq_set(self):
         def action_sequence(cmd):
             # cmd.writeline('*IDN?')
@@ -155,14 +155,14 @@ class IFR2026Channel(
         self.serial.block_chain(block, self.serial_freq_RB)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_RB(self):
         default = self.ctree.setdefault(
             "frequency_RB",
             -1,
             about="frequency readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "freq_RB",
@@ -171,7 +171,7 @@ class IFR2026Channel(
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial_freq_RB(self):
         def action_sequence(cmd):
             print("FREQ RB")

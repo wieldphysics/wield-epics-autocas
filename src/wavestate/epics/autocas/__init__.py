@@ -9,7 +9,7 @@
 """
 from ._version import version, __version__, version_info
 
-from .cas9core import (
+from .cascore import (
     Reactor,
     CASUser,
     InstaCAS,

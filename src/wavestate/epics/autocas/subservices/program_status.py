@@ -9,7 +9,7 @@
 """
 
 
-from .. import cas9core
+from .. import cascore
 from . import cas_time
 
 
@@ -18,13 +18,13 @@ def time_validator(val):
     return val
 
 
-class ProgramSettings(cas9core.CASUser):
-    @cas9core.dproperty_ctree(default="GPS", validator=time_validator)
+class ProgramSettings(cascore.CASUser):
+    @cascore.dproperty_ctree(default="GPS", validator=time_validator)
     def time_convention(self, val):
         return val
 
 
-class ProgramStatus(cas9core.CASUser):
+class ProgramStatus(cascore.CASUser):
     """
     Service class which hosts variables related to the status of standard subcomponents of a CAS System. This includes
 
@@ -45,9 +45,9 @@ class ProgramStatus(cas9core.CASUser):
     global error status
     """
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_reactor_latency_ms(self):
-        rv = cas9core.RelayValueFloat(-1)
+        rv = cascore.RelayValueFloat(-1)
         self.cas_host(
             rv,
             "REACTOR_LAT_MS",
@@ -56,9 +56,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_reactor_rate(self):
-        rv = cas9core.RelayValueInt(-1)
+        rv = cascore.RelayValueInt(-1)
         self.cas_host(
             rv,
             "REACTOR_RATE",
@@ -67,9 +67,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_reactor_fill(self):
-        rv = cas9core.RelayValueInt(-1)
+        rv = cascore.RelayValueInt(-1)
         self.cas_host(
             rv,
             "REACTOR_FILL",
@@ -78,14 +78,14 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_reactor_canary(self):
         dt = cas_time.CASDateTime(parent=self, name="REACTOR_FAULT")
         return dt
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_PVs_missing(self):
-        rv = cas9core.RelayValueInt(0)
+        rv = cascore.RelayValueInt(0)
         self.cas_host(
             rv,
             "PVS_MISSING",
@@ -94,9 +94,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_PVs_bad(self):
-        rv = cas9core.RelayValueInt(0)
+        rv = cascore.RelayValueInt(0)
         self.cas_host(
             rv,
             "PVS_BAD",
@@ -105,9 +105,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_PVs_hosted(self):
-        rv = cas9core.RelayValueInt(0)
+        rv = cascore.RelayValueInt(0)
         self.cas_host(
             rv,
             "PVS_HOSTED",
@@ -116,9 +116,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_PVs_connected(self):
-        rv = cas9core.RelayValueInt(0)
+        rv = cascore.RelayValueInt(0)
         self.cas_host(
             rv,
             "PVS_REMOTE",
@@ -127,9 +127,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_hostname(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "HOSTNAME",
@@ -137,9 +137,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_version(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "VERSION",
@@ -147,9 +147,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_cpu(self):
-        rv = cas9core.RelayValueFloat(-1)
+        rv = cascore.RelayValueFloat(-1)
         self.cas_host(
             rv,
             "CPU_USAGE",
@@ -158,9 +158,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_softhash(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "ABOUT_SOFTHASH",
@@ -168,9 +168,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_confhash(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "ABOUT_CONFHASH",
@@ -178,9 +178,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_softhash_user(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "ABOUT_SOFTHASH_USE",
@@ -188,9 +188,9 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_about_confhash_user(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "ABOUT_CONFHASH_USE",
@@ -198,7 +198,7 @@ class ProgramStatus(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_burt_time(self):
         dt = cas_time.CASDateTime(parent=self, name="BURT_TIME")
 

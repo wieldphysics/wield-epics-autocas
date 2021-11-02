@@ -12,13 +12,13 @@
 import time
 import datetime
 
-from .. import cas9core
+from .. import cascore
 
 
-class CASDateTime(cas9core.CASUser):
-    @cas9core.dproperty
+class CASDateTime(cascore.CASUser):
+    @cascore.dproperty
     def rv_str(self):
-        rv = cas9core.RelayValueString("<TODO>")
+        rv = cascore.RelayValueString("<TODO>")
         self.cas_host(
             rv,
             "STR",
@@ -27,9 +27,9 @@ class CASDateTime(cas9core.CASUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_float(self, default=0):
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "ORD",

@@ -17,7 +17,7 @@ import time
 import errno
 from os import path
 
-from .. import cas9core
+from .. import cascore
 from . import autosave_base
 
 save_programs = dict(
@@ -41,7 +41,7 @@ class AutoSave(autosave_base.AutoSaveBase):
     The writing within the rollover rate is atomic. Writes are done to a temp file, then atomically moved to the old snapshot.
     """
 
-    @cas9core.dproperty_ctree(default=600)
+    @cascore.dproperty_ctree(default=600)
     def save_rate_s(self, val):
         """
         Rate to autosave the snapshot. within the rollover rate_these will all have the same name and will be overwritten until rollover.
@@ -50,28 +50,28 @@ class AutoSave(autosave_base.AutoSaveBase):
         """
         return val
 
-    @cas9core.dproperty_ctree(default=8 * 3600)
+    @cascore.dproperty_ctree(default=8 * 3600)
     def rollover_rate_s(self, val):
         """
         Rate to rollover to a new snapshot filename
         """
         return val
 
-    # @cas9core.dproperty_ctree(default = 'bzip')
+    # @cascore.dproperty_ctree(default = 'bzip')
     # def zip_rollover_program(self, val):
     #    """
     #    Use this program to zip files as they rollover to take less space. If null, then the files will not be zipped. Good values are ['gzip', 'bzip']
     #    """
     #    return val
 
-    @cas9core.dproperty_ctree(default=lambda self: path.abspath("./burt/"))
+    @cascore.dproperty_ctree(default=lambda self: path.abspath("./burt/"))
     def save_folder(self, val):
         """
         Folder to store burt save files within.
         """
         return val
 
-    @cas9core.dproperty_ctree(default=lambda self: self.save_folder)
+    @cascore.dproperty_ctree(default=lambda self: self.save_folder)
     def load_folder(self, val):
         """
         folder to put the load-file symlinks. Defaults in unspecified to using save_folder.
@@ -80,7 +80,7 @@ class AutoSave(autosave_base.AutoSaveBase):
             val = self.save_folder
         return val
 
-    @cas9core.dproperty_ctree(
+    @cascore.dproperty_ctree(
         default="{modname}_burt_{year}{month}{day}_{hour}{minute}{second}.snap"
     )
     def save_fname_template(self, val):
@@ -91,18 +91,18 @@ class AutoSave(autosave_base.AutoSaveBase):
         """
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def modname(self):
         return self.root.module_name
 
-    @cas9core.dproperty_ctree(default="{modname}_last.snap")
+    @cascore.dproperty_ctree(default="{modname}_last.snap")
     def load_fname(self, val):
         """
         File name that the latest snapshot is symlinked to. May use {modname} template. It is also the snapshot loaded at startup. if null, then symlink save is not supported and load will not be automatic.
         """
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def load_fpath(self):
         """
         load_fname with templates resolved
@@ -241,7 +241,7 @@ class AutoSave(autosave_base.AutoSaveBase):
         self.save_notify(ptime_now, ptime_epoch)
         return
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def setup_snap_rolling(self):
         if self.save_rate_s is not None:
             self.reactor.enqueue_looping(

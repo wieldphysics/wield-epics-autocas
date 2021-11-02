@@ -11,7 +11,7 @@
 
 import re
 
-from ... import cas9core
+from ... import cascore
 from ...serial import SerialError
 from ..serial_device import SerialUser
 
@@ -22,7 +22,7 @@ float_re = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?"
 class IFRSigGenChannel(SerialUser):
     "Must be hosted by a IFR2026 or IFR 2023"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def FM(self):
         fm = IFRSigGenChannelFM(
             parent=self,
@@ -33,12 +33,12 @@ class IFRSigGenChannel(SerialUser):
         self.SBlist_readbacks.extend(fm.SBlist_readbacks)
         return
 
-    @cas9core.dproperty_ctree(default=10e3)
+    @cascore.dproperty_ctree(default=10e3)
     def frequency_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=1.4e9)
+    @cascore.dproperty_ctree(default=1.4e9)
     def frequency_limit_high(self, val):
         assert val > 0
         return val
@@ -46,11 +46,11 @@ class IFRSigGenChannel(SerialUser):
     #############################
     # RF FREQUENCY
     #############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_set(self):
         default = self.ctree.get_configured("frequency_set", default=100e6)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.frequency_limit_low,
             high=self.frequency_limit_high,
@@ -66,7 +66,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_set(self):
         def action_sequence(cmd):
             cmd.writeline(":CFRQ:VALUE {0:f}Hz".format(self.rv_frequency_set.value))
@@ -86,14 +86,14 @@ class IFRSigGenChannel(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_RB(self):
         default = self.ctree.get_configured(
             "frequency_RB",
             default=-1,
             about="frequency readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "FREQ_RB",
@@ -102,7 +102,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_RB(self):
         # two groups 0: the frequency in Hz 1: The increment in Hz
         # the last group allows parsing 2026 and 2023 return values
@@ -131,7 +131,7 @@ class IFRSigGenChannel(SerialUser):
     #############################
     # RF LEVEL
     #############################
-    @cas9core.dproperty_ctree(default=-120)
+    @cascore.dproperty_ctree(default=-120)
     def level_dbm_limit_low(self, val):
         """
         low limit of RF Output level in dbm
@@ -139,7 +139,7 @@ class IFRSigGenChannel(SerialUser):
         assert val >= -120
         return val
 
-    @cas9core.dproperty_ctree(default=-10)
+    @cascore.dproperty_ctree(default=-10)
     def level_dbm_limit_high(self, val):
         """
         high limit of RF Output level in dbm (This can damage equipment to be too high! Be conservative here)
@@ -147,13 +147,13 @@ class IFRSigGenChannel(SerialUser):
         assert val <= 20
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_set(self):
         default = self.ctree.get_configured(
             "level_dbm_set", default=-120, about="default RF level"
         )
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.level_dbm_limit_low,
             high=self.level_dbm_limit_high,
@@ -169,7 +169,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_set(self):
         def action_sequence(cmd):
             level_dbm = self.rv_level_dbm_set.value
@@ -192,14 +192,14 @@ class IFRSigGenChannel(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_RB(self):
         default = self.ctree.get_configured(
             "level_dbm_RB",
             default=-1,
             about="level_dbm readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "level_RB",
@@ -208,7 +208,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_RB(self):
         re_LEVELVALUE = re.compile(
             "^:RFLV:UNITS DBM;TYPE (PD|EMF);VALUE ({0});INC {0};(ON|OFF)$".format(
@@ -242,13 +242,13 @@ class IFRSigGenChannel(SerialUser):
     #####################################
     #  RF Output ON/OFF
     #####################################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_set(self):
         default = self.ctree.get_configured(
             "output_set", default=False, about="default for activating RF output"
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -258,7 +258,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_output_set(self):
         def action_sequence(cmd):
             if self.rb_output_set:
@@ -279,14 +279,14 @@ class IFRSigGenChannel(SerialUser):
         self.rb_output_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_RB(self):
         default = self.ctree.get_configured(
             "output_RB",
             default=True,
             about="output status readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
         self.cas_host(
             rv,
             "output_RB",
@@ -298,9 +298,9 @@ class IFRSigGenChannel(SerialUser):
     # Modulation Mode
     ###############################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_modmode_RB(self):
-        rv = cas9core.RelayValueString("")
+        rv = cascore.RelayValueString("")
         self.cas_host(
             rv,
             "MODMODE_RB",
@@ -308,7 +308,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_modmode_RB(self):
         def action_sequence(cmd):
             cmd.writeline("MODE?")
@@ -328,7 +328,7 @@ class IFRSigGenChannel(SerialUser):
     ###############################
     # Modulation Status
     ###############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_mod_status_set(self):
         default = self.ctree.get_configured(
             "modulation_status",
@@ -336,7 +336,7 @@ class IFRSigGenChannel(SerialUser):
             about="default for activating modulation",
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -346,7 +346,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_status_set(self):
         def action_sequence(cmd):
             if self.rb_mod_status_set:
@@ -367,9 +367,9 @@ class IFRSigGenChannel(SerialUser):
         self.rb_mod_status_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_mod_status_RB(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "MODSTAT_RB",
@@ -377,7 +377,7 @@ class IFRSigGenChannel(SerialUser):
         )
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_status_RB(self):
         # three groups 0: EMF type (not used) 1: output level in DBM 2: output power state
         re_MODSTAT = re.compile("^:MOD:(ON|OFF)$")
@@ -408,12 +408,12 @@ class IFRSigGenChannelFM(SerialUser):
     Must be hosted by a IFRSigGenChannel
     """
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def FM_devn_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=100e3)
+    @cascore.dproperty_ctree(default=100e3)
     def FM_devn_limit_high(self, val):
         assert val > 0
         return val
@@ -421,11 +421,11 @@ class IFRSigGenChannelFM(SerialUser):
     #############################
     # RF FM_DEVN
     #############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_devn_set(self):
         default = self.ctree.get_configured("FM_devn_set", default=10e3)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.FM_devn_limit_low,
             high=self.FM_devn_limit_high,
@@ -441,7 +441,7 @@ class IFRSigGenChannelFM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_devn_set(self):
         def action_sequence(cmd):
             cmd.writeline(":FM:DEVN {0:f}Hz".format(self.rv_FM_devn_set.value))
@@ -459,14 +459,14 @@ class IFRSigGenChannelFM(SerialUser):
         self.rv_FM_devn_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_devn_RB(self):
         default = self.ctree.get_configured(
             "devn_RB",
             default=-1,
             about="FM devn readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "DEVN_RB",
@@ -475,9 +475,9 @@ class IFRSigGenChannelFM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_coupling_RB(self):
-        rv = cas9core.RelayValueEnum(0, ["INT", "EXTAC", "EXTALC", "EXTDC"])
+        rv = cascore.RelayValueEnum(0, ["INT", "EXTAC", "EXTALC", "EXTDC"])
         self.cas_host(
             rv,
             "CPLG_RB",
@@ -485,7 +485,7 @@ class IFRSigGenChannelFM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_FM_RB(self):
         # two groups 0: the frequency devn in Hz, 1: the coupling mode; 2: the local on/off; 3: the increment value
         re_DEVNVALUE = re.compile(
@@ -518,7 +518,7 @@ class IFRSigGenChannelFM(SerialUser):
     ###############################
     # Modulation Status
     ###############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_mod_status_set(self):
         default = self.ctree.get_configured(
             "modulation_status",
@@ -526,7 +526,7 @@ class IFRSigGenChannelFM(SerialUser):
             about="default for activating modulation",
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -536,7 +536,7 @@ class IFRSigGenChannelFM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_status_set(self):
         def action_sequence(cmd):
             if self.rb_mod_status_set:
@@ -557,9 +557,9 @@ class IFRSigGenChannelFM(SerialUser):
         self.rb_mod_status_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_FM_mod_status_RB(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "MODSTAT_RB",

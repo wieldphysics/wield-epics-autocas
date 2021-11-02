@@ -9,7 +9,7 @@
 """
 
 
-import cas9epics
+from wavestate.epics import autocas
 
 
 from YALL.controls.peripherals.labjack.service import LJRelay

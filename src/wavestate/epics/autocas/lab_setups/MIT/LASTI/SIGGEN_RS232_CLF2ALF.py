@@ -10,9 +10,9 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-import cas9epics
-from cas9epics import serial
-from cas9epics.devices.IFR2026 import IFR2026
+from wavestate.epics import autocas
+from wavestate.epics.autocas import serial
+from wavestate.epics.autocas.devices.IFR2026 import IFR2026
 
 
 class IFR2026Controller(cas9epics.CAS9Module):

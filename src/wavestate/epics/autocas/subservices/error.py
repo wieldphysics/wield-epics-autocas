@@ -12,15 +12,15 @@
 from wavestate import declarative
 import contextlib
 
-from .. import cas9core
+from .. import cascore
 
 
-class RVError(cas9core.CASUser):
+class RVError(cascore.CASUser):
     name_default = "ERR"
 
     @declarative.dproperty
     def rv_str(self):
-        rv = cas9core.RelayValueString("")
+        rv = cascore.RelayValueString("")
         self.cas_host(
             rv,
             "STR",
@@ -31,7 +31,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_level(self):
-        rv = cas9core.RelayValueInt(10000)
+        rv = cascore.RelayValueInt(10000)
         self.cas_host(
             rv,
             "LEVEL",
@@ -42,7 +42,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rv_thresh(self):
-        rv = cas9core.RelayValueInt(10)
+        rv = cascore.RelayValueInt(10)
         self.cas_host(
             rv,
             "THR",
@@ -53,7 +53,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rb_triggered(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "TRG",
@@ -63,7 +63,7 @@ class RVError(cas9core.CASUser):
 
     @declarative.dproperty
     def rb_clear(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "CLR",
@@ -96,13 +96,13 @@ class RVError(cas9core.CASUser):
                 self.rv_level.value = level
                 try:
                     self.rv_str.value = msg
-                except cas9core.RelayValueCoerced as E:
+                except cascore.RelayValueCoerced as E:
                     self.rv_str.put_valid(E.preferred)
                 self.rb_triggered.value = True
             elif level == self.rv_level.value:
                 try:
                     self.rv_str.value = msg
-                except cas9core.RelayValueCoerced as E:
+                except cascore.RelayValueCoerced as E:
                     self.rv_str.put_valid(E.preferred)
 
     def clear(self):
@@ -127,12 +127,12 @@ class RVError(cas9core.CASUser):
             elif self._level_temp == self.rv_thresh.value:
                 try:
                     self.rv_str.value = self._str_temp
-                except cas9core.RelayValueCoerced as E:
+                except cascore.RelayValueCoerced as E:
                     self.rv_str.put_valid(E.preferred)
             else:
                 try:
                     self.rv_str.value = self._str_temp
-                except cas9core.RelayValueCoerced as E:
+                except cascore.RelayValueCoerced as E:
                     self.rv_str.put_valid(E.preferred)
                 self.rv_level.value = self._level_temp
                 self.rb_triggered.value = True

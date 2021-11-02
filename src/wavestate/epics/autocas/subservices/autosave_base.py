@@ -14,10 +14,10 @@ import os
 from os import path
 import datetime
 
-from .. import cas9core
+from .. import cascore
 
 
-class AutoSaveBase(cas9core.CASUser):
+class AutoSaveBase(cascore.CASUser):
     """
     The writing within the rollover rate is atomic. Writes are done to a temp file, then atomically moved to the old snapshot.
     """
@@ -26,7 +26,7 @@ class AutoSaveBase(cas9core.CASUser):
     _my_chnlist = None
     _my_casdriver = None
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def username(self):
         import getpass
 

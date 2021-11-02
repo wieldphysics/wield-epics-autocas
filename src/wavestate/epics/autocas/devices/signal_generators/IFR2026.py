@@ -12,14 +12,14 @@
 import sys
 import re
 
-from ... import cas9core
+from ... import cascore
 from ...serial import SerialError
 from ..serial_device import SerialDevice
 from . import IFRSigGenCommon
 
 
 class IFR2026(SerialDevice):
-    @cas9core.dproperty
+    @cascore.dproperty
     def chnA(self):
         chn = IFR2026Channel(
             parent=self,
@@ -31,7 +31,7 @@ class IFR2026(SerialDevice):
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def chnB(self):
         chn = IFR2026Channel(
             parent=self,
@@ -43,7 +43,7 @@ class IFR2026(SerialDevice):
         self.SBlist_readbacks.extend(chn.SBlist_readbacks)
         return chn
 
-    # @cas9core.dproperty
+    # @cascore.dproperty
     # def lockout_soft(self):
     #    """
     #    Sends soft (front panel) lockout signal when using rs232.
@@ -68,36 +68,36 @@ class IFR2026(SerialDevice):
 
 
 class IFR2026Channel(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
     """
     Must be hosted by a IFR2026
     """
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self):
         return self.parent.serial
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SBlist_readbacks(self):
         return self.channel.SBlist_readbacks
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SBlist_setters(self):
         return self.channel.SBlist_setters
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_parent(self, val):
         """
         Parent serial-block
         """
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def device_channel_name(self, val):
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_set_chn(self):
         # one group, the channel name
         re_SOURCE = re.compile("^:SOURCE (.)$")
@@ -121,7 +121,7 @@ class IFR2026Channel(
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def channel(self):
         return IFRSigGenCommon.IFRSigGenChannel(
             parent=self,

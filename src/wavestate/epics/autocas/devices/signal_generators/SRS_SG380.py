@@ -10,15 +10,15 @@
 
 
 import sys
-from ... import cas9core
+from ... import cascore
 from ...serial import SerialError
 from ..serial_device import SerialDevice, SerialUser
 
 
 class SRS_SG380(SerialDevice):
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_autoset(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "AUTOSET",
@@ -27,7 +27,7 @@ class SRS_SG380(SerialDevice):
         )
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def _onconnect_setup(self):
         def connect_cb(value):
             if value:
@@ -44,7 +44,7 @@ class SRS_SG380(SerialDevice):
         )
         return
 
-    @cas9core.dproperty_ctree(default=None)
+    @cascore.dproperty_ctree(default=None)
     def device_SN(self, val):
         """
         Serial number of the device to check via *IDN? call.
@@ -54,7 +54,7 @@ class SRS_SG380(SerialDevice):
             val = None
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def block_root(self):
         def action_sequence(cmd):
             with self.serial.error.clear_pending():
@@ -74,7 +74,7 @@ class SRS_SG380(SerialDevice):
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_SN_id_check(self):
         def action_sequence(cmd):
             cmd.writeline("*IDN?")
@@ -104,7 +104,7 @@ class SRS_SG380(SerialDevice):
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def chn(self):
         chn = SRS_SG380_Chn(
             parent=self,
@@ -119,7 +119,7 @@ class SRS_SG380(SerialDevice):
 class SRS_SG380_Chn(SerialUser):
     "Must be hosted by a IFR2026"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def FM(self):
         fm = SRS_SG380_FM(
             parent=self,
@@ -130,12 +130,12 @@ class SRS_SG380_Chn(SerialUser):
         self.SBlist_readbacks.extend(fm.SBlist_readbacks)
         return
 
-    @cas9core.dproperty_ctree(default=10e3)
+    @cascore.dproperty_ctree(default=10e3)
     def frequency_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=1.4e9)
+    @cascore.dproperty_ctree(default=1.4e9)
     def frequency_limit_high(self, val):
         assert val > 0
         return val
@@ -143,11 +143,11 @@ class SRS_SG380_Chn(SerialUser):
     #############################
     # RF FREQUENCY
     #############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_set(self):
         default = self.ctree.get_configured("frequency_set", default=100e6)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.frequency_limit_low,
             high=self.frequency_limit_high,
@@ -163,7 +163,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_set(self):
         def action_sequence(cmd):
             cmd.writeline("FREQ {0:f}Hz".format(self.rv_frequency_set.value))
@@ -183,14 +183,14 @@ class SRS_SG380_Chn(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_frequency_RB(self):
         default = self.ctree.get_configured(
             "frequency_RB",
             default=-1,
             about="frequency readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "FREQ_RB",
@@ -199,7 +199,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_freq_RB(self):
         def action_sequence(cmd):
             cmd.writeline("FREQ?")
@@ -219,7 +219,7 @@ class SRS_SG380_Chn(SerialUser):
     #############################
     # RF LEVEL
     #############################
-    @cas9core.dproperty_ctree(default=-120)
+    @cascore.dproperty_ctree(default=-120)
     def level_dbm_limit_low(self, val):
         """
         low limit of RF Output level in dbm
@@ -227,7 +227,7 @@ class SRS_SG380_Chn(SerialUser):
         assert val >= -120
         return val
 
-    @cas9core.dproperty_ctree(default=-10)
+    @cascore.dproperty_ctree(default=-10)
     def level_dbm_limit_high(self, val):
         """
         high limit of RF Output level in dbm (This can damage equipment to be too high! Be conservative here)
@@ -235,13 +235,13 @@ class SRS_SG380_Chn(SerialUser):
         assert val <= 20
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_set(self):
         default = self.ctree.get_configured(
             "level_dbm_set", default=-120, about="default RF level"
         )
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.level_dbm_limit_low,
             high=self.level_dbm_limit_high,
@@ -257,7 +257,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_set(self):
         def action_sequence(cmd):
             level_dbm = self.rv_level_dbm_set.value
@@ -280,14 +280,14 @@ class SRS_SG380_Chn(SerialUser):
 
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_level_dbm_RB(self):
         default = self.ctree.get_configured(
             "level_dbm_RB",
             default=-1,
             about="level_dbm readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "level_RB",
@@ -296,7 +296,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_level_RB(self):
         def action_sequence(cmd):
             cmd.writeline("AMPR?")
@@ -316,13 +316,13 @@ class SRS_SG380_Chn(SerialUser):
     #####################################
     #  RF Output ON/OFF
     #####################################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_set(self):
         default = self.ctree.get_configured(
             "output_set", default=False, about="default for activating RF output"
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -332,7 +332,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_output_set(self):
         def action_sequence(cmd):
             if self.rb_output_set:
@@ -353,14 +353,14 @@ class SRS_SG380_Chn(SerialUser):
         self.rb_output_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_output_RB(self):
         default = self.ctree.get_configured(
             "output_RB",
             default=True,
             about="output status readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
         self.cas_host(
             rv,
             "output_RB",
@@ -368,7 +368,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_output_RB(self):
         def action_sequence(cmd):
             cmd.writeline("ENBR?")
@@ -390,9 +390,9 @@ class SRS_SG380_Chn(SerialUser):
     # Modulation type
     ###############################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_type_set(self):
-        rv = cas9core.RelayValueEnum(
+        rv = cascore.RelayValueEnum(
             1, ["AM", "FM", "PM", "SWEEP", "Pulse", "blank", "IQ"]
         )
         self.cas_host(
@@ -402,7 +402,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_type_set(self):
         def action_sequence(cmd):
             cmd.writeline("TYPE {0}".format(self.rv_mod_type_set.value))
@@ -419,9 +419,9 @@ class SRS_SG380_Chn(SerialUser):
         self.rv_mod_type_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_type_RB(self):
-        rv = cas9core.RelayValueEnum(
+        rv = cascore.RelayValueEnum(
             7, ["AM", "FM", "PM", "SWEEP", "Pulse", "blank", "IQ", "unknown"]
         )
         self.cas_host(
@@ -431,7 +431,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_type_RB(self):
         def action_sequence(cmd):
             cmd.writeline("TYPE?")
@@ -451,7 +451,7 @@ class SRS_SG380_Chn(SerialUser):
     ###############################
     # Modulation Status
     ###############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_mod_status_set(self):
         default = self.ctree.get_configured(
             "modulation_status",
@@ -459,7 +459,7 @@ class SRS_SG380_Chn(SerialUser):
             about="default for activating modulation",
         )
 
-        rv = cas9core.RelayBool(default)
+        rv = cascore.RelayBool(default)
 
         self.cas_host(
             rv,
@@ -469,7 +469,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_status_set(self):
         def action_sequence(cmd):
             if self.rb_mod_status_set:
@@ -490,9 +490,9 @@ class SRS_SG380_Chn(SerialUser):
         self.rb_mod_status_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_mod_status_RB(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "MODSTAT_RB",
@@ -500,7 +500,7 @@ class SRS_SG380_Chn(SerialUser):
         )
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_status_RB(self):
         def action_sequence(cmd):
             cmd.writeline("MODL?")
@@ -524,12 +524,12 @@ class SRS_SG380_FM(SerialUser):
     Must be hosted by a SRS_SG380Channel
     """
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def FM_fdev_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=100e3)
+    @cascore.dproperty_ctree(default=100e3)
     def FM_fdev_limit_high(self, val):
         assert val > 0
         return val
@@ -537,11 +537,11 @@ class SRS_SG380_FM(SerialUser):
     #############################
     # RF FM_FDEV
     #############################
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_fdev_set(self):
         default = self.ctree.get_configured("FM_fdev_set", default=10e3)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.FM_fdev_limit_low,
             high=self.FM_fdev_limit_high,
@@ -557,7 +557,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_fdev_set(self):
         def action_sequence(cmd):
             cmd.writeline("FDEV {0:f}".format(self.rv_FM_fdev_set.value))
@@ -575,14 +575,14 @@ class SRS_SG380_FM(SerialUser):
         self.rv_FM_fdev_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_fdev_RB(self):
         default = self.ctree.get_configured(
             "fdev_RB",
             default=-1,
             about="FM fdev readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "FDEV_RB",
@@ -591,7 +591,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_fdev_RB(self):
         def action_sequence(cmd):
             cmd.writeline("FDEV?")
@@ -612,21 +612,21 @@ class SRS_SG380_FM(SerialUser):
     # RF FM_DEVN
     #############################
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def FM_devn_limit_low(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=100e3)
+    @cascore.dproperty_ctree(default=100e3)
     def FM_devn_limit_high(self, val):
         assert val > 0
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_devn_set(self):
         default = self.ctree.get_configured("FM_devn_set", default=10e3)
 
-        rv = cas9core.RelayValueFloatLowHighMod(
+        rv = cascore.RelayValueFloatLowHighMod(
             default,
             low=self.FM_devn_limit_low,
             high=self.FM_devn_limit_high,
@@ -642,7 +642,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_devn_set(self):
         def action_sequence(cmd):
             cmd.writeline("FNDV {0:f}".format(self.rv_FM_devn_set.value))
@@ -660,14 +660,14 @@ class SRS_SG380_FM(SerialUser):
         self.rv_FM_devn_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_FM_devn_RB(self):
         default = self.ctree.get_configured(
             "devn_RB",
             default=-1,
             about="FM devn readback default (used when value unavailable)",
         )
-        rv = cas9core.RelayValueFloat(default)
+        rv = cascore.RelayValueFloat(default)
         self.cas_host(
             rv,
             "DEVN_RB",
@@ -676,7 +676,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_devn_RB(self):
         def action_sequence(cmd):
             cmd.writeline("FNDV?")
@@ -693,9 +693,9 @@ class SRS_SG380_FM(SerialUser):
         self.SBlist_readbacks.append(block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_coupling_set(self):
-        rv = cas9core.RelayValueEnum(1, ["AC", "DC"])
+        rv = cascore.RelayValueEnum(1, ["AC", "DC"])
         self.cas_host(
             rv,
             "CPLG",
@@ -704,7 +704,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_coupling_set(self):
         def action_sequence(cmd):
             cmd.writeline("COUP {0}".format(self.rv_coupling_set.value))
@@ -721,9 +721,9 @@ class SRS_SG380_FM(SerialUser):
         self.rv_coupling_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_coupling_RB(self):
-        rv = cas9core.RelayValueEnum(2, ["AC", "DC", "unknown"])
+        rv = cascore.RelayValueEnum(2, ["AC", "DC", "unknown"])
         self.cas_host(
             rv,
             "CPLG_RB",
@@ -731,7 +731,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_coupling_RB(self):
         def action_sequence(cmd):
             cmd.writeline("COUP?")
@@ -752,9 +752,9 @@ class SRS_SG380_FM(SerialUser):
     # Modulation mode
     ###############################
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_func_set(self):
-        rv = cas9core.RelayValueEnum(
+        rv = cascore.RelayValueEnum(
             5, ["sine", "ramp", "triangle", "square", "noise", "ext"]
         )
         self.cas_host(
@@ -764,7 +764,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_func_set(self):
         def action_sequence(cmd):
             cmd.writeline("MFNC {0}".format(self.rv_mod_func_set.value))
@@ -781,9 +781,9 @@ class SRS_SG380_FM(SerialUser):
         self.rv_mod_func_set.register(callback=block)
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rv_mod_func_RB(self):
-        rv = cas9core.RelayValueEnum(
+        rv = cascore.RelayValueEnum(
             6, ["sine", "ramp", "triangle", "square", "noise", "ext", "unknown"]
         )
         self.cas_host(
@@ -793,7 +793,7 @@ class SRS_SG380_FM(SerialUser):
         )
         return rv
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_mod_func_RB(self):
         def action_sequence(cmd):
             cmd.writeline("MFNC?")

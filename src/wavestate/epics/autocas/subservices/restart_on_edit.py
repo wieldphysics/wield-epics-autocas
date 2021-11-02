@@ -16,20 +16,20 @@ from os import path
 # TODO import this later or make it failsafe
 import inotify_simple
 
-from .. import cas9core
+from .. import cascore
 
 
-class RestartOnEdit(cas9core.CASUser):
+class RestartOnEdit(cascore.CASUser):
     _myinotify = None
 
     poll_rate_s = 1
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def policy(self, val="EXIT"):
         assert val in ["EXIT", "REPLACE"]
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def setup_action(self):
         self.reactor.enqueue(self._startup_task, future_s=3)
 
@@ -69,7 +69,7 @@ class RestartOnEdit(cas9core.CASUser):
                 print("Exiting Process")
                 sys.exit(0)
 
-    @cas9core.dproperty_ctree(default=lambda self: default_ignores())
+    @cascore.dproperty_ctree(default=lambda self: default_ignores())
     def ignore_list(self, lval):
         """
         List of substrings that will cause the inotify system to ignore python packages
@@ -79,7 +79,7 @@ class RestartOnEdit(cas9core.CASUser):
             assert isinstance(val, (str, unicode))
         return lval
 
-    @cas9core.dproperty_ctree(default=lambda self: [])
+    @cascore.dproperty_ctree(default=lambda self: [])
     def accept_list(self, lval):
         """
         List of substrings that will cause the inotify system to accept python packages even if they match the ignore list.

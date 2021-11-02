@@ -10,28 +10,28 @@
 
 
 import sys
-from .. import cas9core
+from .. import cascore
 from ..serial import SerialError
 
 
 class SerialUser(
-    cas9core.CASUser,
+    cascore.CASUser,
 ):
     "Must be hosted by a IFR2026"
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self):
         return self.parent.serial
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SBlist_readbacks(self):
         return []
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SBlist_setters(self):
         return []
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_parent(self, val=None):
         """
         Parent serial-block
@@ -40,15 +40,15 @@ class SerialUser(
 
 
 class SerialDevice(SerialUser):
-    @cas9core.dproperty
+    @cascore.dproperty
     def serial(self, val=None):
         if val is None:
             val = self.parent.serial
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_autoset(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             "AUTOSET",
@@ -57,7 +57,7 @@ class SerialDevice(SerialUser):
         )
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def _onconnect_setup(self):
         def connect_cb(value):
             if value:
@@ -74,7 +74,7 @@ class SerialDevice(SerialUser):
         )
         return
 
-    @cas9core.dproperty_ctree(default=None)
+    @cascore.dproperty_ctree(default=None)
     def device_SN(self, val):
         """
         Serial number of the device to check via *IDN? call.
@@ -84,7 +84,7 @@ class SerialDevice(SerialUser):
             val = None
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def block_root(self):
         def action_sequence(cmd):
             with self.serial.error.clear_pending():
@@ -110,7 +110,7 @@ class SerialDevice(SerialUser):
         )
         return block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_SN_id_check(self):
         def action_sequence(cmd):
             cmd.writeline("*IDN?")

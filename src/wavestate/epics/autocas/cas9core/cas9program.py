@@ -17,7 +17,7 @@ import socket
 
 from ..config import pytoml
 
-from . import cas9core
+from . import cascore
 from . import ctree
 from . import program
 
@@ -35,7 +35,7 @@ class CAS9MetaProgram(
 
     @declarative.dproperty
     def root(self):
-        root = cas9core.InstaCAS(
+        root = cascore.InstaCAS(
             prefix_base      = self.cmd.ifo,
             prefix_subsystem = self.cmd.subsystem,
             module_name      = self.cmd.module_name,
@@ -49,7 +49,7 @@ class CAS9MetaProgram(
     @declarative.dproperty
     def reloader(self):
         if self.cmd.auto_restart:
-            from cas9epics.subservices.restart_on_edit import RestartOnEdit
+            from wavestate.epics.autocas.subservices.restart_on_edit import RestartOnEdit
             reloader = RestartOnEdit(
                 name = 'reloader',
                 parent = self.root,
@@ -288,7 +288,7 @@ class CAS9CmdLine(
         )
 
 
-class CAS9Module(cas9core.CASUser):
+class CAS9Module(cascore.CASUser):
     t_cas9cmdline = CAS9CmdLine
 
     @classmethod

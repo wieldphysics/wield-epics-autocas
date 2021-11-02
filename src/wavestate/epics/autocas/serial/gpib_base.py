@@ -10,7 +10,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-from .. import cas9core
+from .. import cascore
 from .serial_base import (
     SerialSubBlock,
 )
@@ -19,17 +19,17 @@ from .serial_base import (
 
 
 class GPIBAddressed(SerialSubBlock):
-    @cas9core.dproperty
+    @cascore.dproperty
     def GPIB_addr(self, val):
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_parent(self):
         return self.SB_addressed_block
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_communicating(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="COMM",
@@ -42,7 +42,7 @@ class GPIBAddressed(SerialSubBlock):
         rb.register(callback=pass_up)
         return rb
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def SB_addressed_block(self):
         def action_sequence(cmd):
             cmd.writeline("++addr {0}".format(self.GPIB_addr))

@@ -17,7 +17,7 @@ from wavestate import declarative
 import fcntl
 import termios
 
-from .. import cas9core
+from .. import cascore
 from .serial_base import (
     SerialConnection,
     SerialError,
@@ -28,7 +28,7 @@ from .serial_base import (
 
 
 class USBDeviceRS232(SerialConnection):
-    @cas9core.dproperty_ctree(default="/dev/serial/by-id/ttyUSB")
+    @cascore.dproperty_ctree(default="/dev/serial/by-id/ttyUSB")
     def device_path(self, val):
         """
         path to the serial block device, usually something in /dev/serial/by-id/. Can use
@@ -43,7 +43,7 @@ class USBDeviceRS232(SerialConnection):
             )
         return val
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def poll_rate_s(self, val=1):
         """
         Poll rate to attempt connections to the serial device in seconds
@@ -52,7 +52,7 @@ class USBDeviceRS232(SerialConnection):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default=9600)
+    @cascore.dproperty_ctree(default=9600)
     def baud_rate(self, val):
         """
         Baud Rate for the connection. Must match settings of device
@@ -61,7 +61,7 @@ class USBDeviceRS232(SerialConnection):
         assert val > 0
         return val
 
-    @cas9core.dproperty_ctree(default="N")
+    @cascore.dproperty_ctree(default="N")
     def parity(self, val):
         """
         configtype : serial_parity
@@ -70,7 +70,7 @@ class USBDeviceRS232(SerialConnection):
         assert val in ["N", "O", "E"]
         return val
 
-    @cas9core.dproperty_ctree(default=1)
+    @cascore.dproperty_ctree(default=1)
     def stop_bits(self, val):
         """
         Stop Bits for the connection, may be one of [1, 2]
@@ -79,7 +79,7 @@ class USBDeviceRS232(SerialConnection):
         assert val in [1, 2]
         return val
 
-    @cas9core.dproperty_ctree(default=8)
+    @cascore.dproperty_ctree(default=8)
     def byte_size(self, val):
         """
         byte size for the connection, may be one of [7, 8]
@@ -88,7 +88,7 @@ class USBDeviceRS232(SerialConnection):
         assert val in [7, 8]
         return val
 
-    @cas9core.dproperty_ctree(default=True)
+    @cascore.dproperty_ctree(default=True)
     def exclusive_lock(self, val):
         """
         Set the device into exclusive lock mode to prevent external manipulation
@@ -96,9 +96,9 @@ class USBDeviceRS232(SerialConnection):
         val = bool(val)
         return val
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def rb_communicating(self):
-        rb = cas9core.RelayBool(False)
+        rb = cascore.RelayBool(False)
         self.cas_host(
             rb,
             name="COMM",
@@ -140,7 +140,7 @@ class USBDeviceRS232(SerialConnection):
             self.queue_clear()
             self.rb_connected.assign(True)
 
-    @cas9core.dproperty
+    @cascore.dproperty
     def _startup(self):
         self.reactor.enqueue_looping(self._connect_task, period_s=self.poll_rate_s)
 
