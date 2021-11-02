@@ -63,7 +63,7 @@ author = "Lee McCuller"
 # built documents.
 #
 # The short X.Y version.
-import cas9epics
+from wavestate.epics import autocas
 
 version = cas9epics.__version__
 # The full version, including alpha/beta/rc tags.

@@ -2,7 +2,7 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 from __future__ import division, print_function, unicode_literals
-import cas9epics
+from wavestate.epics import autocas
 
 
 class RVTester(cas9epics.CASUser):
