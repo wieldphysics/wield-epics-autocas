@@ -18,3 +18,6 @@ Timeline of contributions:
 2021-: Lee McCuller is a principle contributor and maintainer of wavestate.
 Wavestate is originally constructed from a set of software projects related to
 the LIGO graviational-wave observatories and optical squeezing research at MIT.
+
+2018-2021: Chris Whittle wrote and editted many of the MIT serial device interfaces,
+updated to code to python3.
