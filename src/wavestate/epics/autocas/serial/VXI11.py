@@ -10,6 +10,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 from wavestate import declarative
+from wavestate.bunch import Bunch
 import vxi11
 import socket
 import errno
@@ -125,7 +126,7 @@ class VXI11Connection(SerialConnection):
         if self._debug_echo:
             print("serialw:", line)
         try:
-            self._serial_obj.write(line)
+            self._serial_obj.write(line.encode())
         except socket.timeout as E:
             raise SerialTimeout(E.message)
         return

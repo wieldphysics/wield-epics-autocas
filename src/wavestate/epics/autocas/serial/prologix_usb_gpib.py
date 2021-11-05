@@ -12,6 +12,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 import warnings
 import serial
 from wavestate import declarative
+from wavestate.bunch import Bunch
 
 # for exclusive device locks
 import fcntl
@@ -95,10 +96,10 @@ class USBPrologixGPIB(SerialConnection):
                 # put an exclusive lock on the device!
                 fcntl.ioctl(sdev.fd, termios.TIOCEXCL)
 
-            sdev.write("++mode 1\n")
+            sdev.write(b"++mode 1\n")
             # MUST Be in controller mode or auto will freeze the device!
-            sdev.write("++auto 0\n")
-            sdev.write("++ifc\n")
+            sdev.write(b"++auto 0\n")
+            sdev.write(b"++ifc\n")
 
         except serial.SerialException as E:
             self.error(0, E.message)
@@ -145,7 +146,7 @@ class USBPrologixGPIB(SerialConnection):
     def _device_writeline(self, line):
         if self._debug_echo:
             print("serialw:", line)
-        self._serial_obj.write(line + "\n")
+        self._serial_obj.write((line + "\n").encode())
         return
 
     def _device_readline(self, timeout_s=None):
@@ -154,7 +155,7 @@ class USBPrologixGPIB(SerialConnection):
 
         try:
             # gpib devices have a read mode which must be activated at start
-            self._serial_obj.write("++read eoi\n")
+            self._serial_obj.write(b"++read eoi\n")
             line = self._serial_obj.readline()
             if line == "":
                 # can only happen if timeout occured

@@ -12,6 +12,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 import warnings
 import serial
 from wavestate import declarative
+from wavestate.bunch import Bunch
 
 # for exclusive device locks
 import fcntl
@@ -174,7 +175,7 @@ class USBDeviceRS232(SerialConnection):
     def _device_writeline(self, line):
         if self._debug_echo:
             print("serialw:", line)
-        self._serial_obj.write(line + "\n")
+        self._serial_obj.write((line + "\n").encode())
         return
 
     def _device_readline(self, timeout_s=None):
