@@ -108,7 +108,8 @@ class RelayValueFloatLowHighMod(RelayValueFloat):
             raise RelayValueRejected()
 
         if self.modulo is not None:
-            new_val = new_val - new_val % self.modulo
+            eps = self.modulo * 1e-8
+            new_val = ((new_val + eps) - (new_val + eps) % self.modulo)
 
         if self.high_limit is not None and (new_val > self.high_limit):
             raise RelayValueRejected()
