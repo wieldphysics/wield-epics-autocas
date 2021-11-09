@@ -131,7 +131,7 @@ class USBDeviceRS232(SerialConnection):
                 fcntl.ioctl(sdev.fd, termios.TIOCEXCL)
 
         except serial.SerialException as E:
-            self.error(0, E.message)
+            self.error(0, str(E))
         else:
             self._serial_obj = sdev
             self.error.clear()
@@ -150,7 +150,7 @@ class USBDeviceRS232(SerialConnection):
             try:
                 return super(USBDeviceRS232, self).run()
             except serial.SerialException as E:
-                self.error(0, E.message)
+                self.error(0, str(E))
                 self._serial_obj = None
                 self.rb_connected.assign(False)
                 self.rb_communicating.assign(False)
@@ -183,7 +183,7 @@ class USBDeviceRS232(SerialConnection):
             timeout_prev = self._serial_obj.timeout
 
         try:
-            line = self._serial_obj.readline()
+            line = self._serial_obj.readline().decode()
             if line == "":
                 # can only happen if timeout occured
                 raise SerialTimeout("Timeout")

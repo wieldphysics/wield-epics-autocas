@@ -102,7 +102,7 @@ class USBPrologixGPIB(SerialConnection):
             sdev.write(b"++ifc\n")
 
         except serial.SerialException as E:
-            self.error(0, E.message)
+            self.error(0, str(E))
         else:
             self._serial_obj = sdev
             self.error.clear()
@@ -121,7 +121,7 @@ class USBPrologixGPIB(SerialConnection):
             try:
                 return super(USBPrologixGPIB, self).run()
             except serial.SerialException as E:
-                self.error(0, E.message)
+                self.error(0, str(E))
                 self._serial_obj = None
                 self.rb_connected.assign(False)
                 self.rb_communicating.assign(False)
@@ -156,7 +156,7 @@ class USBPrologixGPIB(SerialConnection):
         try:
             # gpib devices have a read mode which must be activated at start
             self._serial_obj.write(b"++read eoi\n")
-            line = self._serial_obj.readline()
+            line = self._serial_obj.readline().decode()
             if line == "":
                 # can only happen if timeout occured
                 raise SerialTimeout("Timeout")
