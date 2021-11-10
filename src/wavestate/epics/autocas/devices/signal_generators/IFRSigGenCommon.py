@@ -22,6 +22,46 @@ float_re = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?"
 class IFRSigGenChannel(SerialUser):
     "Must be hosted by a IFR2026 or IFR 2023"
 
+    #############################
+    # RF PHASE
+    #############################
+    @cascore.dproperty
+    def rv_phase_shift(self):
+        rv = cascore.RelayValueFloatLowHighMod(
+            0,
+            low  = -180,
+            high = +180,
+            modulo = 0.1,
+        )
+
+        self.cas_host(
+            rv,
+            'phase_shift',
+            interaction = "command",
+            prec       = 1,
+        )
+        return rv
+
+    @cascore.dproperty
+    def SB_phase_shift(self):
+        def action_sequence(cmd):
+            cmd.writeline(':CFRQ:PHASE {0:f}'.format(self.rv_phase_shift.value))
+            #now reset the shift ammount
+            self.rv_phase_shift.value = 0
+            return
+
+        block = self.serial.block_add(
+            action_sequence,
+            ordering = 0,
+            parent = self.SB_parent,
+            name = 'phase_shift',
+            prefix = self.prefix,
+        )
+        self.SBlist_setters.append(block)
+
+        self.rv_phase_shift.register(callback = block)
+        return block
+
     @cascore.dproperty
     def FM(self):
         fm = IFRSigGenChannelFM(

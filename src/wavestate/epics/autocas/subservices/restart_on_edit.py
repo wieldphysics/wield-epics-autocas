@@ -105,7 +105,9 @@ def modlist(include_pyc=True, ignores=None, accepts=[]):
             try:
                 fname = mod.__file__
             except AttributeError:
-                pass
+                continue
+            if fname is None:
+                continue
             else:
                 pbase, pext = path.splitext(fname)
                 if pext in [".py", ".pyc"]:

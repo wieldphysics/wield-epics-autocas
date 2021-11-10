@@ -91,12 +91,12 @@ class SerialDevice(SerialUser):
                 try:
                     cmd.block_remainder()
                 except SerialError as E:
-                    self.serial.error(1, E.message)
-                    print(self, "ERROR", E.message)
+                    self.serial.error(1, str(E))
+                    print(self, "ERROR", str(E))
                     self.serial.rb_communicating.put(False)
                 except Exception as E:
-                    self.serial.error(0, E.message)
-                    print(self, "ERROR", E.message)
+                    self.serial.error(0, str(E))
+                    print(self, "ERROR", str(E))
                     self.serial.rb_communicating.put(False)
                     raise
                 else:

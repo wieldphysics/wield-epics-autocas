@@ -10,6 +10,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 from wavestate import declarative
+from wavestate.bunch import Bunch
 import vxi11
 import socket
 import errno
@@ -75,7 +76,7 @@ class VXI11Connection(SerialConnection):
             sdev.open()
 
         except socket.timeout as E:
-            self.error(0, E.message)
+            self.error(0, str(E))
         except socket.error as E:
             # E.errno == errno.EHOSTUNREACH
             self.error(0, E)
@@ -102,7 +103,7 @@ class VXI11Connection(SerialConnection):
                 return super(VXI11Connection, self).run()
             # TODO must also check RPCError in case it connects a socket to the wrong device!
             except SerialError as E:
-                self.error(0, E.message)
+                self.error(0, str(E))
                 self._serial_obj = None
                 self.rb_connected.assign(False)
                 self.rb_communicating.assign(False)
@@ -127,7 +128,7 @@ class VXI11Connection(SerialConnection):
         try:
             self._serial_obj.write(line)
         except socket.timeout as E:
-            raise SerialTimeout(E.message)
+            raise SerialTimeout(str(E))
         return
 
     def _device_readline(self, timeout_s=None):
@@ -140,7 +141,7 @@ class VXI11Connection(SerialConnection):
                 # can only happen if timeout occured
                 raise SerialTimeout("Timeout")
         except socket.timeout as E:
-            raise SerialTimeout(E.message)
+            raise SerialTimeout(str(E))
         except Exception as E:
             if self._debug_echo:
                 print("serialr:", E)

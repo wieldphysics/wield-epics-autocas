@@ -12,6 +12,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 import warnings
 import serial
 from wavestate import declarative
+from wavestate.bunch import Bunch
 
 # for exclusive device locks
 import fcntl
@@ -130,7 +131,7 @@ class USBDeviceRS232(SerialConnection):
                 fcntl.ioctl(sdev.fd, termios.TIOCEXCL)
 
         except serial.SerialException as E:
-            self.error(0, E.message)
+            self.error(0, str(E))
         else:
             self._serial_obj = sdev
             self.error.clear()
@@ -149,7 +150,7 @@ class USBDeviceRS232(SerialConnection):
             try:
                 return super(USBDeviceRS232, self).run()
             except serial.SerialException as E:
-                self.error(0, E.message)
+                self.error(0, str(E))
                 self._serial_obj = None
                 self.rb_connected.assign(False)
                 self.rb_communicating.assign(False)
@@ -174,7 +175,7 @@ class USBDeviceRS232(SerialConnection):
     def _device_writeline(self, line):
         if self._debug_echo:
             print("serialw:", line)
-        self._serial_obj.write(line + "\n")
+        self._serial_obj.write((line + "\n").encode())
         return
 
     def _device_readline(self, timeout_s=None):
@@ -182,7 +183,7 @@ class USBDeviceRS232(SerialConnection):
             timeout_prev = self._serial_obj.timeout
 
         try:
-            line = self._serial_obj.readline()
+            line = self._serial_obj.readline().decode()
             if line == "":
                 # can only happen if timeout occured
                 raise SerialTimeout("Timeout")

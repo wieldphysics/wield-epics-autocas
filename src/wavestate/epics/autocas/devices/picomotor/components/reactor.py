@@ -142,7 +142,7 @@ class PicomotorBridgeReactor(declarative.OverridableObject):
                         #use telnet port on the devices
                         self._params_socket.connect((address, 23))
                     except socket.error as E:
-                        set_connection_str(E.message)
+                        set_connection_str(str(E))
                         if E.errno in (
                             errno.ECONNREFUSED,
                             errno.ENOENT,
@@ -161,7 +161,7 @@ class PicomotorBridgeReactor(declarative.OverridableObject):
                     except socket.timeout:
                         continue
                     except Exception as E:
-                        set_connection_str(E.message)
+                        set_connection_str(str(E))
                         print("reactor unknown error", E)
                         self._quit_event.wait(self.connection_timeout_s)
                         continue

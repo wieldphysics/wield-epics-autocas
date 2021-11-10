@@ -61,8 +61,8 @@ class SRS_SG380(SerialDevice):
                 try:
                     cmd.block_remainder()
                 except SerialError as E:
-                    self.serial.error(1, E.message)
-                    print(self, "ERROR", E.message)
+                    self.serial.error(1, str(E))
+                    print(self, "ERROR", str(E))
                 else:
                     self.serial.rb_communicating.put(True)
 
