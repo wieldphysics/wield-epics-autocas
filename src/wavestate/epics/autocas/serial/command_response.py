@@ -176,7 +176,7 @@ class SerialCommandResponse(cascore.CASUser):
                     print("DIRECT RESPONSE: ", resp)
 
             except SerialError as E:
-                self.serial.error(2, E.message)
+                self.serial.error(2, str(E))
             finally:
                 pass
 
