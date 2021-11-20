@@ -125,7 +125,7 @@ class CADriverServer(pcaspy.Driver):
 
         self.db_cas_raw = db_cas_raw
         # print("INT:")
-        # pprint(self.db_cas_raw)
+        # dprint(self.db_cas_raw)
         # have to setup createPV before starting the driver
         self.cas.createPV("", self.db_cas_raw)
         super(CADriverServer, self).__init__()

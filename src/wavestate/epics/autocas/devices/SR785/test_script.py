@@ -6,14 +6,13 @@
 # NOTICE: authors should document their contributions in concisely in NOTICE
 # with details inline in source files, comments, and docstrings.
 """
-Script for EPICS communication with Newport 3040 Temperature controller
 """
 
 import time
 from wavestate import declarative
 import numpy as np
 from YALL.controls.filters.sos_cascades2 import sos_zp
-from openLoop.utilities.np import logspaced
+from wavestate.utilities.np import logspaced
 
 
 class GPIBControllerScript(declarative.OverridableObject):

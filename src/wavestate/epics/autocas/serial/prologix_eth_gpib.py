@@ -159,7 +159,7 @@ class SerialConnection(
                 stack.append(bparent)
 
         cmd = self.cmd_object()
-        # utilities.pprint(plists)
+        # utilities.dprint(plists)
 
         # get first list
         def block_call(bfunc):
