@@ -95,7 +95,7 @@ display {
 		height=40
 	}
 	control {
-		chan="M1:TEST-TEST_VAL"
+		chan="T1:TEST-TEST_VAL"
 		clr=14
 		bclr=4
 	}
@@ -112,7 +112,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="M1:TEST-TEST_VAL"
+	textix="T1:TEST-TEST_VAL"
 }
 meter {
 	object {
@@ -122,7 +122,7 @@ meter {
 		height=120
 	}
 	monitor {
-		chan="M1:TEST-TEST_VAL"
+		chan="T1:TEST-TEST_VAL"
 		clr=14
 		bclr=4
 	}
@@ -137,7 +137,7 @@ meter {
 		height=38
 	}
 	control {
-		chan="M1:TEST-TEST_VAL"
+		chan="T1:TEST-TEST_VAL"
 		clr=14
 		bclr=4
 	}
@@ -152,7 +152,7 @@ meter {
 		height=38
 	}
 	control {
-		chan="M1:TEST-TEST_VAL"
+		chan="T1:TEST-TEST_VAL"
 		clr=14
 		bclr=4
 	}

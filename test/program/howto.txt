@@ -1,0 +1,14 @@
+
+Main program run test:
+
+python test_program.py -c config.toml run
+
+then while that is going, run medm
+
+medm -x test_program.adl
+
+
+Cool, it starts up epics variables. Programatically updates them and you can see them in medm.
+
+
+You can look at what is inside of config.toml and inside the test_program.py to figure out how to extend the code and make your own variables

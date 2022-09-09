@@ -11,7 +11,6 @@
 import time
 from wavestate import declarative
 import numpy as np
-from YALL.controls.filters.sos_cascades2 import sos_zp
 from wavestate.utilities.np import logspaced
 
 
@@ -46,6 +45,7 @@ class GPIBControllerScript(declarative.OverridableObject):
     def main(self):
         ctime = time.time()
         self.reactor.flush(to_time=ctime + 1)
+        from YALL.controls.filters.sos_cascades2 import sos_zp
 
         F_Hz = logspaced(1, 100e3, 1000)
         # filt = sos_zp((-1000. + 1j, -1000. - 1j), (-10.+1j, -10.-1j), gain = 1.)
