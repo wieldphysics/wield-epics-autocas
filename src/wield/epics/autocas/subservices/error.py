@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative
+from wield import declarative
 import contextlib
 
 from .. import cascore

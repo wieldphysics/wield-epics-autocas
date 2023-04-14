@@ -9,9 +9,9 @@
 """
 
 import time
-from wavestate import declarative
+from wield import declarative
 import numpy as np
-from wavestate.utilities.np import logspaced
+from wield.utilities.np import logspaced
 
 
 class GPIBControllerScript(declarative.OverridableObject):

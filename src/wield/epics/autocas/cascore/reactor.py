@@ -11,7 +11,7 @@
 import threading
 import time
 import functools
-from wavestate.bunch import Bunch
+from wield.bunch import Bunch
 
 try:
     import queue as queue

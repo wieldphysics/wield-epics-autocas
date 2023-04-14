@@ -13,8 +13,8 @@ import os
 import sys
 import socket
 
-from wavestate import declarative
-from wavestate.declarative import argparse as declarg
+from wield import declarative
+from wield.declarative import argparse as declarg
 
 from ..config import pytoml
 
@@ -50,7 +50,7 @@ class CAS9MetaProgram(
     @declarative.dproperty
     def reloader(self):
         if self.cmd.auto_restart:
-            from wavestate.epics.autocas.subservices.restart_on_edit import RestartOnEdit
+            from wield.epics.autocas.subservices.restart_on_edit import RestartOnEdit
             reloader = RestartOnEdit(
                 name = 'reloader',
                 parent = self.root,

@@ -7,7 +7,7 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-from wavestate.bunch.deep_bunch import DeepBunch
+from wield.bunch.deep_bunch import DeepBunch
 import collections
 
 

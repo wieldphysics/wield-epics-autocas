@@ -8,7 +8,7 @@
 """
 """
 
-from wavestate import declarative
+from wield import declarative
 import numbers
 
 import YALL.controls.epics as epics

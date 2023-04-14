@@ -9,7 +9,7 @@
 """
 
 
-from wavestate.epics import autocas
+from wield.epics import autocas
 import socket
 
 from LabJackPython import LabJackException

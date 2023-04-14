@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative
+from wield import declarative
 import numpy as np
 import pcaspy
 import pcaspy.tools

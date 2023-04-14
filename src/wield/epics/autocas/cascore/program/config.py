@@ -9,8 +9,8 @@
 """
 
 
-from wavestate import declarative
-from wavestate.declarative import argparse as declarg
+from wield import declarative
+from wield.declarative import argparse as declarg
 
 from ...config import nested_dict_utils
 from ...config import pytoml

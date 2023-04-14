@@ -11,8 +11,8 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 
 import warnings
 import serial
-from wavestate import declarative
-from wavestate.bunch import Bunch
+from wield import declarative
+from wield.bunch import Bunch
 
 # for exclusive device locks
 import fcntl

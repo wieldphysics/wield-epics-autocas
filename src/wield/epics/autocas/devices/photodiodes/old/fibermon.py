@@ -8,7 +8,7 @@
 """
 """
 
-from wavestate import declarative
+from wield import declarative
 
 import YALL.controls.core.contexts as contexts
 import YALL.controls.epics as epics

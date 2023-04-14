@@ -2,7 +2,7 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 
-from wavestate.epics import autocas
+from wield.epics import autocas
 
 
 class RVTester(autocas.CASUser):

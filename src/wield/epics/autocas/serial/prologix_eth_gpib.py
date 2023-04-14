@@ -10,8 +10,8 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-from wavestate import declarative
-from wavestate.bunch import Bunch
+from wield import declarative
+from wield.bunch import Bunch
 
 from . import relay_values
 from . import instacas

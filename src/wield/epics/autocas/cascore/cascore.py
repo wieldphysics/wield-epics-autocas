@@ -7,7 +7,7 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-from wavestate import declarative
+from wield import declarative
 
 from . import reactor
 from . import pcaspy_backend

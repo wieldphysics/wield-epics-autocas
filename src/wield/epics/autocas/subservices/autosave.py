@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative
+from wield import declarative
 import sys
 import os
 import datetime

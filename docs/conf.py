@@ -63,7 +63,7 @@ author = "Lee McCuller"
 # built documents.
 #
 # The short X.Y version.
-from wavestate.epics import autocas
+from wield.epics import autocas
 
 version = autocas.__version__
 # The full version, including alpha/beta/rc tags.

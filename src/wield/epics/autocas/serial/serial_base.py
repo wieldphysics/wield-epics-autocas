@@ -10,7 +10,7 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-from wavestate import declarative
+from wield import declarative
 
 from .. import cascore
 from ..subservices import error

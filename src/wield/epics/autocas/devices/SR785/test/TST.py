@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative
+from wield import declarative
 
 from YALL.controls.core import (
     StandardSystem,

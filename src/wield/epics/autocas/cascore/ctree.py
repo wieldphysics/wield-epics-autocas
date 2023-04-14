@@ -10,7 +10,7 @@
 import logging
 from collections import namedtuple, Mapping
 
-from wavestate.bunch.deep_bunch import DeepBunchSingleAssign, DeepBunch
+from wield.bunch.deep_bunch import DeepBunchSingleAssign, DeepBunch
 
 CTreeKey = namedtuple('CTreeKey', ['namespace', 'name'])
 

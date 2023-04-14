@@ -11,7 +11,7 @@ import epics
 import time
 import numpy as np
 
-from wavestate import declarative
+from wield import declarative
 
 import warnings
 

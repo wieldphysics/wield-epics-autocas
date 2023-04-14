@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative
+from wield import declarative
 
 
 dproperty = declarative.dproperty

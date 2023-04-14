@@ -3,8 +3,8 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 import sys
-from wavestate.epics import autocas
-from wavestate import declarative
+from wield.epics import autocas
+from wield import declarative
 
 
 class RVExternals(autocas.CASUser):

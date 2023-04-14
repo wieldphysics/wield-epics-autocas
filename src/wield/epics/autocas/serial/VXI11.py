@@ -9,8 +9,8 @@
 TODO, make a burt.req generator and a monitor.req generator, as well as a utility for merging monitor.reqs into a single SDF monitor.req file (and possibly restarting a soft SDF system)
 """
 
-from wavestate import declarative
-from wavestate.bunch import Bunch
+from wield import declarative
+from wield.bunch import Bunch
 import vxi11
 import socket
 import errno

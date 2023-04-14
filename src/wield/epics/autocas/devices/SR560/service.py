@@ -9,7 +9,7 @@
 """
 import sys as sysmod
 import contextlib
-from wavestate import declarative
+from wield import declarative
 
 from YALL.controls import epics
 from YALL.controls.core import contexts

@@ -9,7 +9,7 @@
 """
 
 
-from wavestate import declarative as decl
+from wield import declarative as decl
 
 import t7
 

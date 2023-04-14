@@ -7,7 +7,7 @@
 # with details inline in source files, comments, and docstrings.
 """
 """
-from wavestate import declarative
+from wield import declarative
 from YALL.controls import epics
 from YALL.controls.epics import panels as epics_panels
 from YALL.controls.core import processes

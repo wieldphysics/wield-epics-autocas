@@ -10,12 +10,12 @@ TODO, make a burt.req generator and a monitor.req generator, as well as a utilit
 """
 
 
-from wavestate.epics import autocas
-from wavestate.epics.autocas import serial
-from wavestate.epics.autocas.devices.IFR2023 import IFR2023
+from wield.epics import autocas
+from wield.epics.autocas import serial
+from wield.epics.autocas.devices.IFR2023 import IFR2023
 
-# from wavestate.epics.autocas.devices.IFR2026 import IFR2026
-from wavestate.epics.autocas.devices.SRS_SG380 import SRS_SG380
+# from wield.epics.autocas.devices.IFR2026 import IFR2026
+from wield.epics.autocas.devices.SRS_SG380 import SRS_SG380
 
 
 class IFR2023Controller(autocas.CAS9Module):

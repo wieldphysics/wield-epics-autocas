@@ -14,7 +14,7 @@ import serial
 
 # from epics import PV
 import re
-from wavestate import declarative
+from wield import declarative
 
 
 terminator_string = "\r\n"
