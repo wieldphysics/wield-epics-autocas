@@ -1,3 +1,5 @@
+test_results/
+
 timer.update
 .svn/
 #needed for the PLC as it is under syncthing
