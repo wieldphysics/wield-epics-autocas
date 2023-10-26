@@ -4,6 +4,8 @@ timer.update
 .stversions/
 _configtest.o.d
 
+test_results/
+
 RUNDATA*/
 burt_archives/
 
